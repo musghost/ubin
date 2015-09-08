@@ -73,8 +73,147 @@ class CountriesViewSet(viewsets.ModelViewSet):
     serializer_class = CountriesSerializer
     queryset = Countries.objects.all()
  
-class AutorViewSet(viewsets.ModelViewSet):
+class StatesViewSet(viewsets.ModelViewSet):
  
-    serializer_class = AutorSerializer
-    queryset = Autor.objects.all()
-    
+    serializer_class = StatesSerializer
+    queryset = States.objects.all()
+
+class TownsViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = TownsSerializer
+    queryset = Towns.objects.all()
+
+class CoinsViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = CoinsSerializer
+    queryset = Coins.objects.all()
+
+class TypesImmovablesViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = TypesImmovablesSerializer
+    queryset = Types_Immovables.objects.all()
+
+class TypesPropertyViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = TypesPropertySerializer
+    queryset = Types_Property.objects.all()
+
+class TypesAdvisorsViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = TypesAdvisorsSerializer
+    queryset = Types_Advisors.objects.all()
+
+class TypesProvidersViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = TypesProvidersSerializer
+    queryset = Types_Providers.objects.all()
+
+class TypesProvidersViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = TypesProvidersSerializer
+    queryset = Types_Providers.objects.all()
+
+class TypesContactsViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = TypesContactsSerializer
+    queryset = Types_Contacts.objects.all()
+
+class TypesEventsViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = TypesEventsSerializer
+    queryset = Types_Events.objects.all()
+
+class TypesDocumentsViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = TypesDocumentsSerializer
+    queryset = Types_Documents.objects.all()
+
+class TypesPhotosViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = TypesPhotosSerializer
+    queryset = Types_Photos.objects.all()
+
+class AdministratorsViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = AdministratorsSerializer
+    queryset = Administrators.objects.all()
+
+class UsersViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = UsersSerializer
+    queryset = Users.objects.all()
+
+class ProvidersViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = ProvidersSerializer
+    queryset = Providers.objects.all()
+
+class ClassificationProvidersViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = ClassificationProvidersSerializer
+    queryset = Classification_Providers.objects.all()
+
+class PropertyProvidersViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = PropertySerializer
+    queryset = Property.objects.all()
+
+class CommentsViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = CommentsSerializer
+    queryset = Comments.objects.all()
+
+class ContactsViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = ContactsSerializer
+    queryset = Contacts.objects.all()
+
+class DocumnetsViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = DocumnetsSerializer
+    queryset = Documnets.objects.all()
+
+class EventsViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = EventsSerializer
+    queryset = Events.objects.all()
+
+class FavoritesViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = FavoritesSerializer
+    queryset = Favorites.objects.all()
+
+class NotificationsViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = NotificationsSerializer
+    queryset = Notifications.objects.all()
+
+class NotificationsPushViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = NotificationsPushSerializer
+    queryset = NotificationsPush.objects.all()
+
+class FavoritesProvidersViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = FavoritesProvidersSerializer
+    queryset = FavoritesProviders.objects.all()
+
+class PhotosSerializerViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = PhotosSerializer
+    queryset = PhotosSerializer.objects.all()
+
+class TypesReportsViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = TypesReportsSerializer
+    queryset = TypesReports.objects.all()
+
+class ReportsViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = ReportsSerializer
+    queryset = Reports.objects.all()
+
+class UserUbicationViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = UserUbicationSerializer
+    queryset = UserUbication.objects.all()

@@ -48,10 +48,10 @@ class StatesSerializer(serializers.ModelSerializer):
         model = States
         fields = ('id','name', 'country')
 
-class StatesSerializer(serializers.ModelSerializer):
+class TownsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = States
-        fields = ('id','name', 'country')
+        model = Towns
+        fields = ('id','name', 'state')
 
 class CoinsSerializer(serializers.ModelSerializer):
     class Meta:
