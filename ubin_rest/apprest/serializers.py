@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from .models import Countries
 from .models import States
 from .models import Towns
@@ -36,14 +37,13 @@ from .models import Reports
 from .models import User_Ubication
 
 
-
-
 class CountriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Countries
         fields = ('id','name')
 
 class StatesSerializer(serializers.ModelSerializer):
+    country = serializers.StringRelatedField(many=True)
     class Meta:
         model = States
         fields = ('id','name', 'country')
@@ -91,11 +91,6 @@ class TypesEventsSerializer(serializers.ModelSerializer):
 class TypesDocumentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Types_Documents
-        fields = ('id','name', 'status')
-
-class TypesPhotosSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Types_Photos
         fields = ('id','name', 'status')
 
 class TypesPhotosSerializer(serializers.ModelSerializer):
@@ -217,7 +212,7 @@ class ContactsSerializer(serializers.ModelSerializer):
         	'note'
         	)
 
-class DocumnetsSerializer(serializers.ModelSerializer):
+class DocumentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contacts
         fields = (

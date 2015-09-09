@@ -36,10 +36,10 @@ from .models import Types_Reports
 from .models import Reports
 from .models import User_Ubication
 
-
 from .serializers import CountriesSerializer
 from .serializers import StatesSerializer
 from .serializers import TownsSerializer
+from .serializers import CoinsSerializer
 from .serializers import TypesImmovablesSerializer
 from .serializers import TypesPropertySerializer
 from .serializers import TypesAdvisorsSerializer
@@ -55,7 +55,7 @@ from .serializers import ClassificationProvidersSerializer
 from .serializers import PropertySerializer
 from .serializers import CommentsSerializer
 from .serializers import ContactsSerializer
-from .serializers import DocumnetsSerializer
+from .serializers import DocumentsSerializer
 from .serializers import EventsSerializer
 from .serializers import FavoritesSerializer
 from .serializers import NotificationsSerializer
@@ -67,6 +67,7 @@ from .serializers import ReportsSerializer
 from .serializers import UserUbicationSerializer
 
 from rest_framework import viewsets
+
  
 class CountriesViewSet(viewsets.ModelViewSet):
  
@@ -108,10 +109,6 @@ class TypesProvidersViewSet(viewsets.ModelViewSet):
     serializer_class = TypesProvidersSerializer
     queryset = Types_Providers.objects.all()
 
-class TypesProvidersViewSet(viewsets.ModelViewSet):
- 
-    serializer_class = TypesProvidersSerializer
-    queryset = Types_Providers.objects.all()
 
 class TypesContactsViewSet(viewsets.ModelViewSet):
  
@@ -168,10 +165,10 @@ class ContactsViewSet(viewsets.ModelViewSet):
     serializer_class = ContactsSerializer
     queryset = Contacts.objects.all()
 
-class DocumnetsViewSet(viewsets.ModelViewSet):
+class DocumentsViewSet(viewsets.ModelViewSet):
  
-    serializer_class = DocumnetsSerializer
-    queryset = Documnets.objects.all()
+    serializer_class = DocumentsSerializer
+    queryset = Documents.objects.all()
 
 class EventsViewSet(viewsets.ModelViewSet):
  
@@ -191,22 +188,22 @@ class NotificationsViewSet(viewsets.ModelViewSet):
 class NotificationsPushViewSet(viewsets.ModelViewSet):
  
     serializer_class = NotificationsPushSerializer
-    queryset = NotificationsPush.objects.all()
+    queryset = Notifications_Push.objects.all()
 
 class FavoritesProvidersViewSet(viewsets.ModelViewSet):
  
     serializer_class = FavoritesProvidersSerializer
-    queryset = FavoritesProviders.objects.all()
+    queryset = Favorites_Providers.objects.all()
 
 class PhotosSerializerViewSet(viewsets.ModelViewSet):
  
     serializer_class = PhotosSerializer
-    queryset = PhotosSerializer.objects.all()
+    queryset = Photos.objects.all()
 
 class TypesReportsViewSet(viewsets.ModelViewSet):
  
     serializer_class = TypesReportsSerializer
-    queryset = TypesReports.objects.all()
+    queryset = Types_Reports.objects.all()
 
 class ReportsViewSet(viewsets.ModelViewSet):
  
@@ -216,4 +213,4 @@ class ReportsViewSet(viewsets.ModelViewSet):
 class UserUbicationViewSet(viewsets.ModelViewSet):
  
     serializer_class = UserUbicationSerializer
-    queryset = UserUbication.objects.all()
+    queryset = User_Ubication.objects.all()
