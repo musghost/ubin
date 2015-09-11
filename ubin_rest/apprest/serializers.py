@@ -35,6 +35,11 @@ from .models import Photos
 from .models import Types_Reports
 from .models import Reports
 from .models import User_Ubication
+from .models import Types_Customers
+from .models import Customers
+from .models import Favorites_Customers
+from .models import Tasks
+
 
 
 class CountriesSerializer(serializers.ModelSerializer):
@@ -43,7 +48,6 @@ class CountriesSerializer(serializers.ModelSerializer):
         fields = ('id','name')
 
 class StatesSerializer(serializers.ModelSerializer):
-    country = serializers.StringRelatedField(many=True)
     class Meta:
         model = States
         fields = ('id','name', 'country')
@@ -119,21 +123,20 @@ class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
         fields = (
-        	'id',
-        	'profile_name',
-        	'email', 
-        	'password',
-        	'birthday',
-        	'gender',
-        	'phone',
-        	'type_advisor',
-        	'immovable_name',
-        	'immovable_phone',
-        	'photo',
-        	'key',
-        	'register_date',
-        	'status'
-        	)
+            'id',
+            'profile_name',
+            'email',
+            'password',
+            'birthday',
+            'gender',
+            'phone',
+            'type_advisor',
+            'immovable_name',
+            'immovable_phone',
+            'photo',
+            'register_date',
+            'status'
+            )
 
 class ProvidersSerializer(serializers.ModelSerializer):
     class Meta:
@@ -318,3 +321,36 @@ class UserUbicationSerializer(serializers.ModelSerializer):
         	'state',
         	'date'
         	)
+
+class TypeCustomersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Types_Customers
+        fields = ('id','name')
+
+class CustomersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customers
+        fields = (
+            'id',
+            'name',
+            'LastName',
+            'phone',
+            'email',
+            'contact'
+            )
+
+class FavoritesCustomersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Favorites_Customers
+        fields = ('customer','user')
+
+class TasksSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tasks
+        fields = (
+            'id',
+            'description',
+            'date',
+            'hour',
+            'contact'
+            )

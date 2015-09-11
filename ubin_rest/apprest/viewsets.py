@@ -35,6 +35,11 @@ from .models import Photos
 from .models import Types_Reports
 from .models import Reports
 from .models import User_Ubication
+from .models import Types_Customers
+from .models import Customers
+from .models import Favorites_Customers
+from .models import Tasks
+
 
 from .serializers import CountriesSerializer
 from .serializers import StatesSerializer
@@ -65,6 +70,11 @@ from .serializers import PhotosSerializer
 from .serializers import TypesReportsSerializer
 from .serializers import ReportsSerializer
 from .serializers import UserUbicationSerializer
+from .serializers import TypeCustomersSerializer
+from .serializers import CustomersSerializer
+from .serializers import FavoritesCustomersSerializer
+from .serializers import TasksSerializer
+
 
 from rest_framework import viewsets
 

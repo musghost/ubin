@@ -9,7 +9,7 @@ class Countries(models.Model):
 
 class States(models.Model):
     name = models.TextField(max_length=100)
-    country = models.ForeignKey(Countries,related_name='country')
+    country = models.ForeignKey(Countries)
 
 class Towns(models.Model):
     name = models.TextField(max_length=100)
@@ -74,7 +74,6 @@ class Users(models.Model):
     immovable_name = models.TextField(max_length=250)
     immovable_phone = models.TextField(max_length=20)
     photo = models.FilePathField(max_length=100)
-    key = models.TextField(max_length=250)
     register_date= models.DateField(auto_now_add=True)
     status = models.BooleanField(default=True)
 
@@ -201,6 +200,27 @@ class User_Ubication(models.Model):
     country=models.ForeignKey(Countries)
     state=models.ForeignKey(States)
     date= models.DateField(auto_now_add=True)
+
+class Types_Customers(models.Model):
+    name = models.TextField(max_length=100)
+    status = models.BooleanField(default=True)
+
+class Customers(models.Model):
+    name= models.TextField(max_length=50)
+    LastName= models.TextField(max_length=50)
+    phone= models.TextField(max_length=0)
+    email= models.EmailField(max_length=100)
+    contact=models.ForeignKey(Contacts)
+
+class Favorites_Customers(models.Model):
+    customer=models.ForeignKey(Customers)
+    user= models.ForeignKey(Users)
+
+class Tasks(models.Model):
+    description= models.TextField(max_length=300)
+    date= models.DateField(auto_now_add=True)
+    hour= models.TimeField(auto_now=False, auto_now_add=False)
+    contact=models.ForeignKey(Contacts)
     
 
 

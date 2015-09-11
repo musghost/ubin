@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
 from django.conf.urls import include, url
+from rest_framework_nested import routers
 from django.contrib import admin
 admin.autodiscover()
 
@@ -50,9 +51,21 @@ from apprest.viewsets import UserUbicationViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
+router.register(r'users',UsersViewSet)
 router.register(r'countries', CountriesViewSet)
-router.register(r'states', StatesViewSet)
-router.register(r'tows', TownsViewSet)
+
+router.register(r'states', StatesViewSet, base_name='states')
+states_router = routers.NestedSimpleRouter(router, r'states', lookup='state')
+states_router.register(r'country', CountriesViewSet, base_name='country')
+
+router.register(r'towns', TownsViewSet, base_name='towns')
+
+towns_router = routers.NestedSimpleRouter(router, r'towns', lookup='town')
+towns_router.register(r'state', StatesViewSet, base_name='state')
+
+towns_countries_router = routers.NestedSimpleRouter(towns_router, r'state', lookup='state')
+towns_countries_router.register(r'country',CountriesViewSet, base_name='country')
+
 router.register(r'coins',CoinsViewSet)
 router.register(r'typesImmovables',TypesImmovablesViewSet)
 router.register(r'typesProperty',TypesPropertyViewSet)
@@ -63,8 +76,14 @@ router.register(r'typesEvents',TypesEventsViewSet)
 router.register(r'typesDocuments',TypesDocumentsViewSet)
 router.register(r'typesPhotos',TypesPhotosViewSet)
 router.register(r'administrators',AdministratorsViewSet)
-router.register(r'users',UsersViewSet)
+"""
+router.register(r'users',UsersViewSet,base_name='users')
+user_type_router = routers.NestedSimpleRouter(router, r'users', lookup='user')
+user_type_router.register(r'typeAdvisor', TypesAdvisorsViewSet, base_name='typeAdvisor')
+"""
+
 router.register(r'providers',ProvidersViewSet)
+
 router.register(r'classificationProviders',ClassificationProvidersViewSet)
 router.register(r'propertyProviders',PropertyProvidersViewSet)
 router.register(r'comments',CommentsViewSet)
@@ -88,4 +107,9 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^', include(states_router.urls)),
+    url(r'^', include(towns_router.urls)),
+    url(r'^', include(towns_countries_router.urls)),
+    #url(r'^', include(user_type_router.urls)),
+    
 ]
