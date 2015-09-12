@@ -34,7 +34,7 @@ from apprest.viewsets import AdministratorsViewSet
 from apprest.viewsets import UsersViewSet
 from apprest.viewsets import ProvidersViewSet
 from apprest.viewsets import ClassificationProvidersViewSet
-from apprest.viewsets import PropertyProvidersViewSet
+from apprest.viewsets import PropertyViewSet
 from apprest.viewsets import CommentsViewSet
 from apprest.viewsets import ContactsViewSet
 from apprest.viewsets import DocumentsViewSet
@@ -47,11 +47,15 @@ from apprest.viewsets import PhotosSerializerViewSet
 from apprest.viewsets import TypesReportsViewSet
 from apprest.viewsets import ReportsViewSet
 from apprest.viewsets import UserUbicationViewSet
+from apprest.viewsets import TypeCustomersViewSet
+from apprest.viewsets import CustomersViewSet
+from apprest.viewsets import FavoritesCustomersViewSet
+from apprest.viewsets import TasksViewSet
 
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register(r'users',UsersViewSet)
+
 router.register(r'countries', CountriesViewSet)
 
 router.register(r'states', StatesViewSet, base_name='states')
@@ -76,30 +80,24 @@ router.register(r'typesEvents',TypesEventsViewSet)
 router.register(r'typesDocuments',TypesDocumentsViewSet)
 router.register(r'typesPhotos',TypesPhotosViewSet)
 router.register(r'administrators',AdministratorsViewSet)
-"""
+
 router.register(r'users',UsersViewSet,base_name='users')
 user_type_router = routers.NestedSimpleRouter(router, r'users', lookup='user')
 user_type_router.register(r'typeAdvisor', TypesAdvisorsViewSet, base_name='typeAdvisor')
-"""
 
-router.register(r'providers',ProvidersViewSet)
+router.register(r'users',UsersViewSet)
 
-router.register(r'classificationProviders',ClassificationProvidersViewSet)
-router.register(r'propertyProviders',PropertyProvidersViewSet)
-router.register(r'comments',CommentsViewSet)
-router.register(r'contacts',ContactsViewSet)
-router.register(r'documents',DocumentsViewSet)
-router.register(r'events',EventsViewSet)
-router.register(r'favorites',FavoritesViewSet)
-router.register(r'notifications',NotificationsViewSet)
-router.register(r'notificationsPush',NotificationsPushViewSet)
-router.register(r'favoritesProviders',FavoritesProvidersViewSet)
-router.register(r'photos',PhotosSerializerViewSet)
-router.register(r'typesReports',TypesReportsViewSet)
-router.register(r'reports',ReportsViewSet)
-router.register(r'userLocation',UserUbicationViewSet)
+router.register(r'providers',ProvidersViewSet,base_name='providers')
+provider_type_router = routers.NestedSimpleRouter(router, r'providers', lookup='provider')
+provider_type_router.register(r'typeProvider',TypesProvidersViewSet, base_name='typeProvider')
+provider_town_router = routers.NestedSimpleRouter(router, r'providers', lookup='provider')
+provider_town_router.register(r'town',TownsViewSet, base_name='town')
 
-
+router.register(r'classificationProviders',ClassificationProvidersViewSet,base_name='classificationProviders')
+classification_providers=routers.NestedSimpleRouter(router, r'classificationProviders', lookup='classificationProviders')
+classification_providers.register(r'user',UsersViewSet, base_name='user')
+classification_provider=routers.NestedSimpleRouter(router, r'classificationProviders', lookup='classificationProviders')
+classification_provider.register(r'provider',ProvidersViewSet,base_name='provider')
 
 
 
@@ -110,6 +108,7 @@ urlpatterns = [
     url(r'^', include(states_router.urls)),
     url(r'^', include(towns_router.urls)),
     url(r'^', include(towns_countries_router.urls)),
-    #url(r'^', include(user_type_router.urls)),
     
+
+
 ]

@@ -78,8 +78,7 @@ class Users(models.Model):
     status = models.BooleanField(default=True)
 
 class Providers(models.Model):
-    name = models.EmailField(max_length=100)
-    admin = models.ForeignKey(Administrators)
+    name = models.TextField(max_length=100)
     type_provider= models.ForeignKey(Types_Providers)
     town= models.ForeignKey(Towns)
     register_date= models.DateField(auto_now_add=True)
@@ -146,7 +145,7 @@ class Events(models.Model):
     name= models.TextField(max_length=200)
     description= models.TextField(max_length=1000)
     administrator=models.ForeignKey(Administrators)
-    type_document= models.ForeignKey(Types_Documents)
+    type_event= models.ForeignKey(Types_Events)
     state=models.ForeignKey(States)
     town=models.ForeignKey(Towns)
     path=models.FilePathField(max_length=100)
@@ -211,6 +210,7 @@ class Customers(models.Model):
     phone= models.TextField(max_length=0)
     email= models.EmailField(max_length=100)
     contact=models.ForeignKey(Contacts)
+    type_customer=models.ForeignKey(Types_Customers)
 
 class Favorites_Customers(models.Model):
     customer=models.ForeignKey(Customers)
@@ -221,7 +221,7 @@ class Tasks(models.Model):
     date= models.DateField(auto_now_add=True)
     hour= models.TimeField(auto_now=False, auto_now_add=False)
     contact=models.ForeignKey(Contacts)
-    
+    user= models.ForeignKey(Users)
 
 
 

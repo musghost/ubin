@@ -144,7 +144,6 @@ class ProvidersSerializer(serializers.ModelSerializer):
         fields = (
         	'id',
         	'name',
-        	'admin', 
         	'type_provider',
         	'town',
         	'register_date',
@@ -336,7 +335,8 @@ class CustomersSerializer(serializers.ModelSerializer):
             'LastName',
             'phone',
             'email',
-            'contact'
+            'contact',
+            'type_customer'
             )
 
 class FavoritesCustomersSerializer(serializers.ModelSerializer):

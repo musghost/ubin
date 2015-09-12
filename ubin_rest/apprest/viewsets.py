@@ -160,7 +160,7 @@ class ClassificationProvidersViewSet(viewsets.ModelViewSet):
     serializer_class = ClassificationProvidersSerializer
     queryset = Classification_Providers.objects.all()
 
-class PropertyProvidersViewSet(viewsets.ModelViewSet):
+class PropertyViewSet(viewsets.ModelViewSet):
  
     serializer_class = PropertySerializer
     queryset = Property.objects.all()
@@ -224,3 +224,23 @@ class UserUbicationViewSet(viewsets.ModelViewSet):
  
     serializer_class = UserUbicationSerializer
     queryset = User_Ubication.objects.all()
+
+class TypeCustomersViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = TypeCustomersSerializer
+    queryset = Types_Customers.objects.all()
+
+class CustomersViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = CustomersSerializer
+    queryset = Customers.objects.all() 
+
+class FavoritesCustomersViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = FavoritesCustomersSerializer
+    queryset = Favorites_Customers.objects.all()     
+
+class TasksViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = TasksSerializer
+    queryset = Tasks.objects.all()     
