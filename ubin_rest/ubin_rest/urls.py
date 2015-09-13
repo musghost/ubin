@@ -81,23 +81,6 @@ router.register(r'typesDocuments',TypesDocumentsViewSet)
 router.register(r'typesPhotos',TypesPhotosViewSet)
 router.register(r'administrators',AdministratorsViewSet)
 
-router.register(r'users',UsersViewSet,base_name='users')
-user_type_router = routers.NestedSimpleRouter(router, r'users', lookup='user')
-user_type_router.register(r'typeAdvisor', TypesAdvisorsViewSet, base_name='typeAdvisor')
-
-router.register(r'users',UsersViewSet)
-
-router.register(r'providers',ProvidersViewSet,base_name='providers')
-provider_type_router = routers.NestedSimpleRouter(router, r'providers', lookup='provider')
-provider_type_router.register(r'typeProvider',TypesProvidersViewSet, base_name='typeProvider')
-provider_town_router = routers.NestedSimpleRouter(router, r'providers', lookup='provider')
-provider_town_router.register(r'town',TownsViewSet, base_name='town')
-
-router.register(r'classificationProviders',ClassificationProvidersViewSet,base_name='classificationProviders')
-classification_providers=routers.NestedSimpleRouter(router, r'classificationProviders', lookup='classificationProviders')
-classification_providers.register(r'user',UsersViewSet, base_name='user')
-classification_provider=routers.NestedSimpleRouter(router, r'classificationProviders', lookup='classificationProviders')
-classification_provider.register(r'provider',ProvidersViewSet,base_name='provider')
 
 
 
@@ -108,7 +91,11 @@ urlpatterns = [
     url(r'^', include(states_router.urls)),
     url(r'^', include(towns_router.urls)),
     url(r'^', include(towns_countries_router.urls)),
-    
+    url(r'^', include(provider_type_router.urls)),
+    url(r'^', include(provider_town_router.urls)),
+    url(r'^', include(classification_providers.urls)),
+    url(r'^', include(classification_provider.urls)),
+  
 
 
 ]
