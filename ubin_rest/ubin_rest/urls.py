@@ -14,7 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
 from django.conf.urls import include, url
+from django.contrib.auth import login, authenticate, logout
 from rest_framework_nested import routers
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from django.contrib import admin
 admin.autodiscover()
 
@@ -194,9 +196,12 @@ location_state=routers.NestedSimpleRouter(router,r'userLocation',lookup='userLoc
 location_state.register(r'state',StatesViewSet,base_name='state')
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api/v1/admin/', include(admin.site.urls)),
+    url(r'^api/v1/', include(router.urls)),
+    #url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api/v1/api-token-auth/', 'rest_framework_jwt.views.obtain_jwt_token'),
+    url(r'^api/v1/api-token-refresh/', 'rest_framework_jwt.views.refresh_jwt_token'),
+    url(r'^api/v1/api-token-verify/', 'rest_framework_jwt.views.verify_jwt_token'),
     url(r'^', include(states_router.urls)),
     url(r'^', include(towns_router.urls)),
     url(r'^', include(towns_countries_router.urls)),
