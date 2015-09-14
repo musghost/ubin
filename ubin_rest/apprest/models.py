@@ -73,7 +73,7 @@ class Users(models.Model):
     type_advisor= models.ForeignKey(Types_Advisors)
     immovable_name = models.TextField(max_length=250)
     immovable_phone = models.TextField(max_length=20)
-    photo = models.FilePathField(max_length=100)
+    photo = models.TextField(max_length=100)
     register_date= models.DateField(auto_now_add=True)
     status = models.BooleanField(default=True)
 
@@ -121,7 +121,7 @@ class Comments(models.Model):
     property= models.ForeignKey(Property)
     user= models.ForeignKey(Users)
     provider=models.ForeignKey(Providers)
-    commet= models.TextField(max_length=1000)
+    comment= models.TextField(max_length=1000)
     date= models.DateField(auto_now_add=True)
 
 class Contacts(models.Model):
@@ -139,16 +139,16 @@ class Documents(models.Model):
     type_document= models.ForeignKey(Types_Documents)
     state=models.ForeignKey(States)
     town=models.ForeignKey(Towns)
-    path=models.FilePathField(max_length=100)
+    path=models.TextField(max_length=100)
 
 class Events(models.Model):
     name= models.TextField(max_length=200)
     description= models.TextField(max_length=1000)
     administrator=models.ForeignKey(Administrators)
-    type_event= models.ForeignKey(Types_Events)
+    type_event=models.ForeignKey(Types_Events)
     state=models.ForeignKey(States)
     town=models.ForeignKey(Towns)
-    path=models.FilePathField(max_length=100)
+    path=models.TextField(max_length=100)
 
 class Favorites(models.Model):
     property=models.ForeignKey(Property)
@@ -178,7 +178,7 @@ class Favorites_Providers(models.Model):
 
 class Photos(models.Model):
     name=models.TextField(max_length=60)
-    path=models.FilePathField(max_length=100)
+    path=models.TextField(max_length=100)
     order = models.IntegerField()
     property=models.ForeignKey(Property)
     provider=models.ForeignKey(Providers)

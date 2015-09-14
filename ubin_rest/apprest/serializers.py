@@ -116,7 +116,7 @@ class AdministratorsSerializer(serializers.ModelSerializer):
         	'permit_proficient',
         	'permit_events',
         	'permit_documents',
-        	'status '
+        	'status'
         	)
 
 class UsersSerializer(serializers.ModelSerializer):
@@ -179,7 +179,7 @@ class PropertySerializer(serializers.ModelSerializer):
         	'bathrooms',
         	'old',
         	'ground_surface',
-        	'construnction_area',
+        	'construction_area',
         	'type_advisor',
         	'country',
         	'state',
@@ -210,13 +210,13 @@ class ContactsSerializer(serializers.ModelSerializer):
         	'phone',
         	'email',
         	'user',
-        	'type',
+        	'type_contact',
         	'note'
         	)
 
 class DocumentsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Contacts
+        model = Documents
         fields = (
         	'id',
         	'name',
@@ -235,7 +235,7 @@ class EventsSerializer(serializers.ModelSerializer):
         	'name',
         	'description', 
         	'administrator',
-        	'type_document',
+        	'type_event',
         	'state',
         	'town',
         	'path'
@@ -243,7 +243,7 @@ class EventsSerializer(serializers.ModelSerializer):
 
 class FavoritesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Events
+        model = Favorites
         fields = ('id','property','user', 'status')
 
 class NotificationsSerializer(serializers.ModelSerializer):
