@@ -1,7 +1,82 @@
+# -*- coding: utf-8 -*-
+from django.conf import settings
+from django.contrib.auth.models import (
+    AbstractBaseUser, BaseUserManager, PermissionsMixin)
+from django.core.mail import EmailMultiAlternatives
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
+
 
 # Create your models here.
 
+class Types_Advisors(models.Model):
+    name = models.TextField(max_length=100)
+    status = models.BooleanField(default=True)
+
+class UsuarioManager(BaseUserManager):
+    """
+    Manager personalizado para el modelo usuario.
+    """
+    def _create_user(self, username, email,password,is_superuser=False,
+                     **extra_fields):
+        """
+        Método base para la creación de nuevos usuarios.
+        """
+        if not username:
+            raise ValueError('The given username must be set.')
+
+        email = self.normalize_email(email)
+        user = self.model(
+            username=username,
+            email=email,
+            is_superuser=is_superuser,
+            **extra_fields
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+
+        return user
+
+    def create_user(self, username, password=None, **extra_fields):
+        """
+        Crea un nuevo usuario.
+        """
+        return self._create_user(username, password, False, False, **extra_fields)
+
+    def create_superuser(self, username, password=None, **extra_fields):
+        """
+        Crea un nuevo usuario marcándolo como super usuario.
+        """
+        return self._create_user(username, password, True, True, **extra_fields)
+
+
+class Users(AbstractBaseUser, PermissionsMixin):
+    username = models.TextField(max_length=100,unique=True)
+    name = models.TextField(max_length=50,blank=True)
+    last_name = models.TextField(max_length=100, blank=True)
+    email = models.EmailField(max_length=100)
+    birthday = models.DateField(null=True)
+    gender = models.TextField(max_length=50,blank=True)
+    phone = models.TextField(max_length=20,blank=True)
+    type_advisor= models.ForeignKey(Types_Advisors,blank=True, null=True)
+    immovable_name = models.TextField(max_length=250,blank=True)
+    immovable_phone = models.TextField(max_length=20,blank=True)
+    photo = models.TextField(max_length=100,blank=True)
+    register_date= models.DateField(auto_now_add=True)   
+    permit_handbag = models.BooleanField(default=False)
+    permit_diary = models.BooleanField(default=False)
+    permit_notary = models.BooleanField(default=False)
+    permit_broker = models.BooleanField(default=False)
+    permit_proficient = models.BooleanField(default=False)
+    permit_events = models.BooleanField(default=False)
+    permit_documents = models.BooleanField(default=False)
+    is_active = models.BooleanField(
+        default=False,
+        verbose_name=_('is active')
+    )
+    objects = UsuarioManager()
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = []
 
 class Countries(models.Model):
     name = models.TextField(max_length=100)
@@ -27,10 +102,6 @@ class Types_Property(models.Model):
     name = models.TextField(max_length=100)
     status = models.BooleanField(default=True)
 
-class Types_Advisors(models.Model):
-    name = models.TextField(max_length=100)
-    status = models.BooleanField(default=True)
-
 class Types_Providers(models.Model):
     name = models.TextField(max_length=100)
     status = models.BooleanField(default=True)
@@ -51,31 +122,6 @@ class Types_Photos(models.Model):
     name = models.TextField(max_length=100)
     status = models.BooleanField(default=True)
 
-class Administrators(models.Model):
-    user = models.TextField(max_length=100)
-    password = models.TextField(max_length=250)
-    permit_handbag = models.BooleanField(default=False)
-    permit_diary = models.BooleanField(default=False)
-    permit_notary = models.BooleanField(default=False)
-    permit_broker = models.BooleanField(default=False)
-    permit_proficient = models.BooleanField(default=False)
-    permit_events = models.BooleanField(default=False)
-    permit_documents = models.BooleanField(default=False)
-    status = models.BooleanField(default=True)
-
-class Users(models.Model):
-    profile_name = models.TextField(max_length=250)
-    email = models.EmailField(max_length=100)
-    password = models.TextField(max_length=250)
-    birthday = models.DateField()
-    gender = models.TextField(max_length=50)
-    phone = models.TextField(max_length=20)
-    type_advisor= models.ForeignKey(Types_Advisors)
-    immovable_name = models.TextField(max_length=250)
-    immovable_phone = models.TextField(max_length=20)
-    photo = models.TextField(max_length=100)
-    register_date= models.DateField(auto_now_add=True)
-    status = models.BooleanField(default=True)
 
 class Providers(models.Model):
     name = models.TextField(max_length=100)
@@ -135,7 +181,7 @@ class Contacts(models.Model):
 
 class Documents(models.Model):
     name= models.TextField(max_length=100)
-    administrator=models.ForeignKey(Administrators)
+    administrator=models.ForeignKey(Users)
     type_document= models.ForeignKey(Types_Documents)
     state=models.ForeignKey(States)
     town=models.ForeignKey(Towns)
@@ -144,7 +190,7 @@ class Documents(models.Model):
 class Events(models.Model):
     name= models.TextField(max_length=200)
     description= models.TextField(max_length=1000)
-    administrator=models.ForeignKey(Administrators)
+    administrator=models.ForeignKey(Users)
     type_event=models.ForeignKey(Types_Events)
     state=models.ForeignKey(States)
     town=models.ForeignKey(Towns)

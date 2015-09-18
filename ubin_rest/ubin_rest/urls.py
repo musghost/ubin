@@ -32,7 +32,6 @@ from apprest.viewsets import TypesContactsViewSet
 from apprest.viewsets import TypesEventsViewSet
 from apprest.viewsets import TypesDocumentsViewSet
 from apprest.viewsets import TypesPhotosViewSet
-from apprest.viewsets import AdministratorsViewSet
 from apprest.viewsets import UsersViewSet
 from apprest.viewsets import ProvidersViewSet
 from apprest.viewsets import ClassificationProvidersViewSet
@@ -81,7 +80,6 @@ router.register(r'typesContacts',TypesContactsViewSet)
 router.register(r'typesEvents',TypesEventsViewSet)
 router.register(r'typesDocuments',TypesDocumentsViewSet)
 router.register(r'typesPhotos',TypesPhotosViewSet)
-router.register(r'administrators',AdministratorsViewSet)
 
 router.register(r'users',UsersViewSet,base_name='users')
 user_type_router = routers.NestedSimpleRouter(router, r'users', lookup='user')
@@ -132,14 +130,14 @@ type_contact=routers.NestedSimpleRouter(router,r'contacts',lookup='contact')
 type_contact.register(r'typeContact',TypesContactsViewSet,base_name='typeContact')
 
 router.register(r'documents',DocumentsViewSet,base_name='documents')
-documents_administrator=routers.NestedSimpleRouter(router,r'documents',lookup='document')
-documents_administrator.register(r'administrator',AdministratorsViewSet,base_name='administrator')
+documents_user=routers.NestedSimpleRouter(router,r'documents',lookup='document')
+documents_user.register(r'user',UsersViewSet,base_name='user')
 type_document=routers.NestedSimpleRouter(router,r'documents',lookup='document')
 type_document.register(r'typeDocument',DocumentsViewSet,base_name="typeDocument")
 
 router.register(r'events',EventsViewSet,base_name="events")
-event_administrator=routers.NestedSimpleRouter(router,r'events',lookup='event')
-event_administrator.register(r'administrator',AdministratorsViewSet,base_name='administrator')
+event_user=routers.NestedSimpleRouter(router,r'events',lookup='event')
+event_user.register(r'user',UsersViewSet,base_name='user')
 type_event=routers.NestedSimpleRouter(router,r'events',lookup='event')
 type_event.register(r'typeEvent',TypesEventsViewSet,base_name='typeEvent')
 event_state=routers.NestedSimpleRouter(router,r'events',lookup='event')
@@ -224,7 +222,7 @@ urlpatterns = [
     url(r'^', include(contacts_user.urls)),
     url(r'^', include(type_contact.urls)),
     url(r'^', include(type_document.urls)),
-    url(r'^', include(event_administrator.urls)),
+    url(r'^', include(event_user.urls)),
     url(r'^', include(type_event.urls)),
     url(r'^', include(event_state.urls)),
     url(r'^', include(event_town.urls)),

@@ -17,7 +17,6 @@ from .models import Types_Contacts
 from .models import Types_Events
 from .models import Types_Documents
 from .models import Types_Photos
-from .models import Administrators
 from .models import Users
 from .models import Providers
 from .models import Classification_Providers
@@ -53,7 +52,6 @@ from .serializers import TypesContactsSerializer
 from .serializers import TypesEventsSerializer
 from .serializers import TypesDocumentsSerializer
 from .serializers import TypesPhotosSerializer
-from .serializers import AdministratorsSerializer
 from .serializers import UsersSerializer
 from .serializers import ProvidersSerializer
 from .serializers import ClassificationProvidersSerializer
@@ -77,6 +75,7 @@ from .serializers import TasksSerializer
 
 
 from rest_framework import viewsets
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
  
 class CountriesViewSet(viewsets.ModelViewSet):
@@ -85,7 +84,7 @@ class CountriesViewSet(viewsets.ModelViewSet):
     queryset = Countries.objects.all()
  
 class StatesViewSet(viewsets.ModelViewSet):
- 
+    authentication_classes = (JSONWebTokenAuthentication, )
     serializer_class = StatesSerializer
     queryset = States.objects.all()
 
@@ -140,10 +139,6 @@ class TypesPhotosViewSet(viewsets.ModelViewSet):
     serializer_class = TypesPhotosSerializer
     queryset = Types_Photos.objects.all()
 
-class AdministratorsViewSet(viewsets.ModelViewSet):
- 
-    serializer_class = AdministratorsSerializer
-    queryset = Administrators.objects.all()
 
 class UsersViewSet(viewsets.ModelViewSet):
  

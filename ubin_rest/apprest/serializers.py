@@ -17,7 +17,6 @@ from .models import Types_Contacts
 from .models import Types_Events
 from .models import Types_Documents
 from .models import Types_Photos
-from .models import Administrators
 from .models import Users
 from .models import Providers
 from .models import Classification_Providers
@@ -39,7 +38,6 @@ from .models import Types_Customers
 from .models import Customers
 from .models import Favorites_Customers
 from .models import Tasks
-
 
 
 class CountriesSerializer(serializers.ModelSerializer):
@@ -102,31 +100,17 @@ class TypesPhotosSerializer(serializers.ModelSerializer):
         model = Types_Photos
         fields = ('id','name', 'status')
 
-class AdministratorsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Administrators
-        fields = (
-        	'id',
-        	'user', 
-        	'password',
-        	'permit_handbag',
-        	'permit_diary',
-        	'permit_notary',
-        	'permit_broker',
-        	'permit_proficient',
-        	'permit_events',
-        	'permit_documents',
-        	'status'
-        	)
 
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
         fields = (
             'id',
-            'profile_name',
+            'username',
             'email',
             'password',
+            'name',
+            'last_name',
             'birthday',
             'gender',
             'phone',
@@ -134,8 +118,18 @@ class UsersSerializer(serializers.ModelSerializer):
             'immovable_name',
             'immovable_phone',
             'photo',
+            'permit_handbag',
+            'permit_diary',
+            'permit_notary',
+            'permit_broker'
             'register_date',
-            'status'
+            'permit_proficient',
+            'permit_events',
+            'permit_documents',
+            'type_user',
+            'register_date',
+            'is_superuser',
+            'is_active'
             )
 
 class ProvidersSerializer(serializers.ModelSerializer):
