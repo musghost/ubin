@@ -17,18 +17,18 @@ class UsuarioManager(BaseUserManager):
     """
     Manager personalizado para el modelo usuario.
     """
-    def _create_user(self, username, email,password,is_superuser=False,
+    def _create_user(self, email, password, is_staff=False, is_superuser=False,
                      **extra_fields):
         """
         Método base para la creación de nuevos usuarios.
         """
-        if not username:
-            raise ValueError('The given username must be set.')
+        if not email:
+            raise ValueError('The given email address must be set.')
 
         email = self.normalize_email(email)
         user = self.model(
-            username=username,
             email=email,
+            is_staff=is_staff,
             is_superuser=is_superuser,
             **extra_fields
         )
@@ -37,24 +37,24 @@ class UsuarioManager(BaseUserManager):
 
         return user
 
-    def create_user(self, username, password=None, **extra_fields):
+    def create_user(self, email, password=None, **extra_fields):
         """
         Crea un nuevo usuario.
         """
-        return self._create_user(username, password, False, False, **extra_fields)
+        return self._create_user(email, password, False, False, **extra_fields)
 
-    def create_superuser(self, username, password=None, **extra_fields):
+    def create_superuser(self, email, password=None, **extra_fields):
         """
         Crea un nuevo usuario marcándolo como super usuario.
         """
-        return self._create_user(username, password, True, True, **extra_fields)
+        return self._create_user(email, password, True, True, **extra_fields)
 
 
 class Users(AbstractBaseUser, PermissionsMixin):
     username = models.TextField(max_length=100,unique=True)
     name = models.TextField(max_length=50,blank=True)
     last_name = models.TextField(max_length=100, blank=True)
-    email = models.EmailField(max_length=100)
+    email = models.EmailField(max_length=100,unique=True)
     birthday = models.DateField(null=True)
     gender = models.TextField(max_length=50,blank=True)
     phone = models.TextField(max_length=20,blank=True)
@@ -70,12 +70,16 @@ class Users(AbstractBaseUser, PermissionsMixin):
     permit_proficient = models.BooleanField(default=False)
     permit_events = models.BooleanField(default=False)
     permit_documents = models.BooleanField(default=False)
-    is_active = models.BooleanField(
+    is_staff = models.BooleanField(
         default=False,
+        verbose_name=_('is staff')
+    )
+    is_active = models.BooleanField(
+        default=True,
         verbose_name=_('is active')
     )
     objects = UsuarioManager()
-    USERNAME_FIELD = 'username'
+    USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
 class Countries(models.Model):

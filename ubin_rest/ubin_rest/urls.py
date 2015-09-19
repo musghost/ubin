@@ -242,4 +242,7 @@ urlpatterns = [
     url(r'^', include(location_user.urls)),
     url(r'^', include(location_country.urls)),
     url(r'^', include(location_state.urls)),
+
+
+    url(r'^docs/', include('rest_framework_swagger.urls')),
 ]   

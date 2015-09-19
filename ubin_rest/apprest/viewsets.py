@@ -75,7 +75,7 @@ from .serializers import TasksSerializer
 
 
 from rest_framework import viewsets
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+#from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
  
 class CountriesViewSet(viewsets.ModelViewSet):
@@ -84,7 +84,7 @@ class CountriesViewSet(viewsets.ModelViewSet):
     queryset = Countries.objects.all()
  
 class StatesViewSet(viewsets.ModelViewSet):
-    authentication_classes = (JSONWebTokenAuthentication, )
+    #authentication_classes = (JSONWebTokenAuthentication, )
     serializer_class = StatesSerializer
     queryset = States.objects.all()
 
