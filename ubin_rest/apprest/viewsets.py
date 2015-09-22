@@ -5,12 +5,11 @@ from .models import States
 from .models import Towns
 from .models import Coins
 from .models import Types_Immovables
-from .models import Types_Property
+from .models import Types_Publications
 from .models import Types_Advisors
 from .models import Types_Providers
 from .models import Coins
 from .models import Types_Immovables
-from .models import Types_Property
 from .models import Types_Advisors
 from .models import Types_Providers
 from .models import Types_Contacts
@@ -20,7 +19,7 @@ from .models import Types_Photos
 from .models import Users
 from .models import Providers
 from .models import Classification_Providers
-from .models import Property
+from .models import Publications
 from .models import Comments
 from .models import Contacts 
 from .models import Documents
@@ -38,14 +37,14 @@ from .models import Types_Customers
 from .models import Customers
 from .models import Favorites_Customers
 from .models import Tasks
-
+from .models import Terms
 
 from .serializers import CountriesSerializer
 from .serializers import StatesSerializer
 from .serializers import TownsSerializer
 from .serializers import CoinsSerializer
 from .serializers import TypesImmovablesSerializer
-from .serializers import TypesPropertySerializer
+from .serializers import TypesPublicationsSerializer
 from .serializers import TypesAdvisorsSerializer
 from .serializers import TypesProvidersSerializer
 from .serializers import TypesContactsSerializer
@@ -55,7 +54,7 @@ from .serializers import TypesPhotosSerializer
 from .serializers import UsersSerializer
 from .serializers import ProvidersSerializer
 from .serializers import ClassificationProvidersSerializer
-from .serializers import PropertySerializer
+from .serializers import PublicationsSerializer
 from .serializers import CommentsSerializer
 from .serializers import ContactsSerializer
 from .serializers import DocumentsSerializer
@@ -72,14 +71,14 @@ from .serializers import TypeCustomersSerializer
 from .serializers import CustomersSerializer
 from .serializers import FavoritesCustomersSerializer
 from .serializers import TasksSerializer
-
+from .serializers import TermsSerializer
 
 from rest_framework import viewsets
-#from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
  
 class CountriesViewSet(viewsets.ModelViewSet):
- 
+    authentication_classes = (JSONWebTokenAuthentication, )
     serializer_class = CountriesSerializer
     queryset = Countries.objects.all()
  
@@ -103,10 +102,10 @@ class TypesImmovablesViewSet(viewsets.ModelViewSet):
     serializer_class = TypesImmovablesSerializer
     queryset = Types_Immovables.objects.all()
 
-class TypesPropertyViewSet(viewsets.ModelViewSet):
+class TypesPublicationsViewSet(viewsets.ModelViewSet):
  
-    serializer_class = TypesPropertySerializer
-    queryset = Types_Property.objects.all()
+    serializer_class = TypesPublicationsSerializer
+    queryset = Types_Publications.objects.all()
 
 class TypesAdvisorsViewSet(viewsets.ModelViewSet):
  
@@ -155,10 +154,10 @@ class ClassificationProvidersViewSet(viewsets.ModelViewSet):
     serializer_class = ClassificationProvidersSerializer
     queryset = Classification_Providers.objects.all()
 
-class PropertyViewSet(viewsets.ModelViewSet):
+class PublicationsViewSet(viewsets.ModelViewSet):
  
-    serializer_class = PropertySerializer
-    queryset = Property.objects.all()
+    serializer_class = PublicationsSerializer
+    queryset = Publications.objects.all()
 
 class CommentsViewSet(viewsets.ModelViewSet):
  
@@ -238,4 +237,9 @@ class FavoritesCustomersViewSet(viewsets.ModelViewSet):
 class TasksViewSet(viewsets.ModelViewSet):
  
     serializer_class = TasksSerializer
-    queryset = Tasks.objects.all()     
+    queryset = Tasks.objects.all()   
+
+class TermsViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = TermsSerializer
+    queryset = Terms.objects.all()   
