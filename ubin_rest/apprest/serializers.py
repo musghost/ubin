@@ -5,12 +5,11 @@ from .models import States
 from .models import Towns
 from .models import Coins
 from .models import Types_Immovables
-from .models import Types_Property
+from .models import Types_Publications
 from .models import Types_Advisors
 from .models import Types_Providers
 from .models import Coins
 from .models import Types_Immovables
-from .models import Types_Property
 from .models import Types_Advisors
 from .models import Types_Providers
 from .models import Types_Contacts
@@ -20,7 +19,7 @@ from .models import Types_Photos
 from .models import Users
 from .models import Providers
 from .models import Classification_Providers
-from .models import Property
+from .models import Publications
 from .models import Comments
 from .models import Contacts 
 from .models import Documents
@@ -38,6 +37,7 @@ from .models import Types_Customers
 from .models import Customers
 from .models import Favorites_Customers
 from .models import Tasks
+from .models import Terms
 
 
 class CountriesSerializer(serializers.ModelSerializer):
@@ -65,9 +65,9 @@ class TypesImmovablesSerializer(serializers.ModelSerializer):
         model = Types_Immovables
         fields = ('id','name', 'status')
 
-class TypesPropertySerializer(serializers.ModelSerializer):
+class TypesPublicationsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Types_Property
+        model = Types_Publications
         fields = ('id','name', 'status')
 
 class TypesAdvisorsSerializer(serializers.ModelSerializer):
@@ -106,11 +106,11 @@ class UsersSerializer(serializers.ModelSerializer):
         model = Users
         fields = (
             'id',
-            'username',
             'email',
             'password',
             'name',
             'last_name',
+            'mother_last_name',
             'birthday',
             'gender',
             'phone',
@@ -121,14 +121,13 @@ class UsersSerializer(serializers.ModelSerializer):
             'permit_handbag',
             'permit_diary',
             'permit_notary',
-            'permit_broker'
+            'permit_broker',
             'register_date',
             'permit_proficient',
             'permit_events',
             'permit_documents',
-            'type_user',
             'register_date',
-            'is_superuser',
+            'is_admin',
             'is_active'
             )
 
@@ -143,7 +142,6 @@ class ProvidersSerializer(serializers.ModelSerializer):
         	'register_date',
         	'location',
         	'address',
-        	'phone',
         	'email',
         	'web_page',
         	'status'
@@ -154,27 +152,26 @@ class ClassificationProvidersSerializer(serializers.ModelSerializer):
         model = Classification_Providers
         fields = ('id','score','user','provider')
 
-class PropertySerializer(serializers.ModelSerializer):
+class PublicationsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Property
+        model = Publications
         fields = (
         	'id',
         	'canvas_number',
         	'user', 
-        	'type_property',
+        	'type_publication',
         	'type_immovable',
         	'town',
         	'location',
         	'title',
         	'description',
-        	'one_price',
-        	'two_price',
+        	'price_first',
+        	'price_second',
         	'coin',
         	'bathrooms',
         	'old',
         	'ground_surface',
         	'construction_area',
-        	'type_advisor',
         	'country',
         	'state',
         	'date',
@@ -186,7 +183,7 @@ class CommentsSerializer(serializers.ModelSerializer):
         model = Comments
         fields = (
         	'id',
-        	'property',
+        	'publication',
         	'user', 
         	'provider',
         	'comment',
@@ -238,14 +235,14 @@ class EventsSerializer(serializers.ModelSerializer):
 class FavoritesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorites
-        fields = ('id','property','user', 'status')
+        fields = ('id','publication','user', 'status')
 
 class NotificationsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notifications
         fields = (
         	'id',
-        	'property',
+        	'publication',
         	'user', 
         	'message',
         	'date',
@@ -259,7 +256,7 @@ class NotificationsPushSerializer(serializers.ModelSerializer):
         model = Notifications_Push
         fields = (
         	'id',
-        	'property',
+        	'publication',
         	'user', 
         	'device_token',
         	'device',
@@ -280,7 +277,7 @@ class PhotosSerializer(serializers.ModelSerializer):
         	'name',
         	'path',
         	'order',
-        	'property',
+        	'publication',
         	'provider',
         	'type_photo'
         	)
@@ -326,7 +323,8 @@ class CustomersSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name',
-            'LastName',
+            'last_name',
+            'mother_last_name',
             'phone',
             'email',
             'contact',
@@ -347,4 +345,14 @@ class TasksSerializer(serializers.ModelSerializer):
             'date',
             'hour',
             'contact'
+            )
+
+class TermsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Terms
+        fields = (
+            'id',
+            'text',
+            'date',
+            'status'
             )
