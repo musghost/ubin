@@ -17,7 +17,7 @@ class UsuarioManager(BaseUserManager):
     """
     Manager personalizado para el modelo usuario.
     """
-    def _create_user(self, email, password, is_staff=False, is_superuser=False,
+    def _create_user(self, email, password,is_admin=False,is_active=False,
                      **extra_fields):
         """
         Método base para la creación de nuevos usuarios.
@@ -28,8 +28,8 @@ class UsuarioManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(
             email=email,
-            is_staff=is_staff,
-            is_superuser=is_superuser,
+            is_admin=is_admin,
+            is_active=is_active,
             **extra_fields
         )
         user.set_password(password)
@@ -41,23 +41,43 @@ class UsuarioManager(BaseUserManager):
         """
         Crea un nuevo usuario.
         """
-        return self._create_user(email, password, False, False, **extra_fields)
+        return self._create_user(email, password,False, **extra_fields)
 
     def create_superuser(self, email, password=None, **extra_fields):
         """
         Crea un nuevo usuario marcándolo como super usuario.
         """
-        return self._create_user(email, password, True, True, **extra_fields)
+        return self._create_user(email, password,**extra_fields)
 
 
 class Users(AbstractBaseUser, PermissionsMixin):
-    username = models.TextField(max_length=100,unique=True)
-    name = models.TextField(max_length=50,blank=True)
-    last_name = models.TextField(max_length=100, blank=True)
-    email = models.EmailField(max_length=100,unique=True)
+    name = models.TextField(
+        max_length=50,
+        blank=False,
+        null=False
+        )
+    last_name = models.TextField(
+        max_length=100, 
+        blank=False,
+        null=False,
+        )
+    mother_last_name=models.TextField(
+        max_length=50,
+        blank=True,
+        null=True
+        )
+    email = models.EmailField(
+        max_length=100,
+        unique=True,
+        null=False
+        )
     birthday = models.DateField(null=True)
     gender = models.TextField(max_length=50,blank=True)
-    phone = models.TextField(max_length=20,blank=True)
+    phone = models.TextField(
+        max_length=20,
+        blank=False,
+        null=False
+        )
     type_advisor= models.ForeignKey(Types_Advisors,blank=True, null=True)
     immovable_name = models.TextField(max_length=250,blank=True)
     immovable_phone = models.TextField(max_length=20,blank=True)
@@ -70,17 +90,23 @@ class Users(AbstractBaseUser, PermissionsMixin):
     permit_proficient = models.BooleanField(default=False)
     permit_events = models.BooleanField(default=False)
     permit_documents = models.BooleanField(default=False)
-    is_staff = models.BooleanField(
+    is_admin = models.BooleanField(
         default=False,
-        verbose_name=_('is staff')
+        verbose_name=_('is_admin')
     )
     is_active = models.BooleanField(
         default=True,
-        verbose_name=_('is active')
+        verbose_name=_('is_active')
     )
     objects = UsuarioManager()
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = [
+    'name',
+    'last_name',
+    'is_admin',
+    'is_active',
+    'phone'
+    ]
 
 class Countries(models.Model):
     name = models.TextField(max_length=100)
@@ -102,7 +128,7 @@ class Types_Immovables(models.Model):
     name = models.TextField(max_length=100)
     status = models.BooleanField(default=True)
 
-class Types_Property(models.Model):
+class Types_Publications(models.Model):
     name = models.TextField(max_length=100)
     status = models.BooleanField(default=True)
 
@@ -144,31 +170,30 @@ class Classification_Providers(models.Model):
     user= models.ForeignKey(Users)
     provider=models.ForeignKey(Providers)
 
-class Property(models.Model):
-    canvas_number = models.IntegerField()
-    user= models.ForeignKey(Users)
-    type_property= models.ForeignKey(Types_Property)
-    type_immovable= models.ForeignKey(Types_Immovables)
-    town= models.ForeignKey(Towns)
-    location=models.TextField(max_length=200)
-    title=models.TextField(max_length=100)
-    description=models.TextField(max_length=500)
-    one_price=models.DecimalField(decimal_places=2,max_digits=10)
-    two_price=models.DecimalField(decimal_places=2,max_digits=10)
-    coin=models.ForeignKey(Coins)
-    bathrooms=models.IntegerField()
-    old=models.IntegerField()
-    ground_surface=models.TextField(max_length=50)
-    construction_area=models.TextField(max_length=50)
-    type_advisor=models.ForeignKey(Types_Advisors)
-    country=models.ForeignKey(Countries)
-    state=models.ForeignKey(States)
+class Publications(models.Model):
+    canvas_number = models.IntegerField(null=True)
+    user= models.ForeignKey(Users,null=False)
+    type_publications= models.ForeignKey(Types_Publications,null=False)
+    type_immovable= models.ForeignKey(Types_Immovables,null=True)
+    town= models.ForeignKey(Towns,null=False)
+    location=models.TextField(max_length=200,null=False)
+    title=models.TextField(max_length=100,null=False)
+    description=models.TextField(max_length=500,null=False)
+    price_first=models.DecimalField(decimal_places=2,max_digits=10,null=False)
+    price_second=models.DecimalField(decimal_places=2,max_digits=10,null=True)
+    coin=models.ForeignKey(Coins,null=False)
+    old=models.IntegerField(null=True)
+    bathrooms=models.IntegerField(null=True)
+    ground_surface=models.TextField(max_length=50,null=True)
+    construction_area=models.TextField(max_length=50,null=True)
+    country=models.ForeignKey(Countries,null=False)
+    state=models.ForeignKey(States,null=False)
     date= models.DateField(auto_now_add=True)
     status = models.BooleanField(default=True)
 
 
 class Comments(models.Model):
-    property= models.ForeignKey(Property)
+    publication= models.ForeignKey(Publications)
     user= models.ForeignKey(Users)
     provider=models.ForeignKey(Providers)
     comment= models.TextField(max_length=1000)
@@ -201,12 +226,12 @@ class Events(models.Model):
     path=models.TextField(max_length=100)
 
 class Favorites(models.Model):
-    property=models.ForeignKey(Property)
+    publication=models.ForeignKey(Publications)
     user= models.ForeignKey(Users)
     status = models.BooleanField(default=False)
 
 class Notifications(models.Model):
-    property=models.ForeignKey(Property)
+    publication=models.ForeignKey(Publications)
     user= models.ForeignKey(Users)
     message= models.TextField(max_length=200)
     date= models.DateField(auto_now_add=True)
@@ -215,7 +240,7 @@ class Notifications(models.Model):
     expired = models.BooleanField(default=False)
 
 class Notifications_Push(models.Model):
-    property=models.ForeignKey(Property)
+    publication=models.ForeignKey(Publications)
     user= models.ForeignKey(Users)
     device_token= models.TextField(max_length=200)
     device= models.TextField(max_length=20)
@@ -229,8 +254,7 @@ class Favorites_Providers(models.Model):
 class Photos(models.Model):
     name=models.TextField(max_length=60)
     path=models.TextField(max_length=100)
-    order = models.IntegerField()
-    property=models.ForeignKey(Property)
+    publication=models.ForeignKey(Publications)
     provider=models.ForeignKey(Providers)
     type_photo=models.ForeignKey(Types_Photos)
 
@@ -256,7 +280,8 @@ class Types_Customers(models.Model):
 
 class Customers(models.Model):
     name= models.TextField(max_length=50)
-    LastName= models.TextField(max_length=50)
+    last_name= models.TextField(max_length=50,blank=False,null=False)
+    mother_last_name=models.TextField(max_length=50,blank=True,null=True)
     phone= models.TextField(max_length=0)
     email= models.EmailField(max_length=100)
     contact=models.ForeignKey(Contacts)
@@ -272,6 +297,12 @@ class Tasks(models.Model):
     hour= models.TimeField(auto_now=False, auto_now_add=False)
     contact=models.ForeignKey(Contacts)
     user= models.ForeignKey(Users)
+
+class Terms(models.Model):
+    text= models.TextField(max_length=800)
+    date= models.DateField(auto_now_add=True)
+    status = models.BooleanField(default=True)
+    
 
 
 
