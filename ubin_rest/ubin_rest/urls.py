@@ -15,14 +15,16 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib.auth import login, authenticate, logout
-from rest_framework_nested import routers
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from django.contrib import admin
 admin.autodiscover()
 
 from apprest.viewsets import CountriesViewSet
+from apprest.viewsets import vwCountriesViewSet
 from apprest.viewsets import StatesViewSet
+from apprest.viewsets import vwStatesViewSet
 from apprest.viewsets import TownsViewSet
+from apprest.viewsets import vwTownsViewSet
 from apprest.viewsets import CoinsViewSet
 from apprest.viewsets import TypesImmovablesViewSet
 from apprest.viewsets import TypesPublicationsViewSet
@@ -54,23 +56,31 @@ from apprest.viewsets import FavoritesCustomersViewSet
 from apprest.viewsets import TasksViewSet
 from apprest.viewsets import TermsViewSet
 
-from rest_framework.routers import DefaultRouter
+#from rest_framework.routers import DefaultRouter
+from rest_framework_nested import routers
 
-router = DefaultRouter()
+#router = DefaultRouter()
+router = routers.SimpleRouter()
+'''
+Countries
+'''
+#CRUD
+router.register(r'country',CountriesViewSet)
 
-router.register(r'countries', CountriesViewSet)
+#VIEW
+router.register(r'countries',vwCountriesViewSet,base_name='countries')
+vw_countries=routers.NestedSimpleRouter(router, r'countries',lookup='country')
+vw_countries.register(r'states',vwStatesViewSet,base_name='states')
+vw_towns=routers.NestedSimpleRouter(vw_countries,r'states',lookup='state')
+vw_towns.register(r'towns',vwTownsViewSet,base_name='towns')
 
-router.register(r'states', StatesViewSet, base_name='states')
-states_router = routers.NestedSimpleRouter(router, r'states', lookup='state')
-states_router.register(r'country', CountriesViewSet, base_name='country')
+'''
+States
+'''
+router.register(r'state',StatesViewSet)
 
-router.register(r'towns', TownsViewSet, base_name='towns')
 
-towns_router = routers.NestedSimpleRouter(router, r'towns', lookup='town')
-towns_router.register(r'state', StatesViewSet, base_name='state')
-
-towns_countries_router = routers.NestedSimpleRouter(towns_router, r'state', lookup='state')
-towns_countries_router.register(r'country',CountriesViewSet, base_name='country')
+router.register(r'town', TownsViewSet)
 
 router.register(r'coins',CoinsViewSet)
 router.register(r'typesImmovables',TypesImmovablesViewSet)
@@ -83,168 +93,47 @@ router.register(r'typesDocuments',TypesDocumentsViewSet)
 router.register(r'typesPhotos',TypesPhotosViewSet)
 router.register(r'terms',TermsViewSet)
 
-router.register(r'users',UsersViewSet,base_name='users')
-user_type_router = routers.NestedSimpleRouter(router, r'users', lookup='user')
-user_type_router.register(r'typeAdvisor', TypesAdvisorsViewSet, base_name='typeAdvisor')
+router.register(r'users',UsersViewSet)
 
-router.register(r'providers',ProvidersViewSet,base_name='providers')
-provider_type_router = routers.NestedSimpleRouter(router, r'providers', lookup='provider')
-provider_type_router.register(r'typeProvider',TypesProvidersViewSet, base_name='typeProvider')
-provider_town_router = routers.NestedSimpleRouter(router, r'providers', lookup='provider')
-provider_town_router.register(r'town',TownsViewSet, base_name='town')
+router.register(r'providers',ProvidersViewSet)
 
-router.register(r'classificationProviders',ClassificationProvidersViewSet,base_name='classificationProviders')
-classification_providers=routers.NestedSimpleRouter(router, r'classificationProviders', lookup='classificationProviders')
-classification_providers.register(r'user',UsersViewSet, base_name='user')
-classification_provider=routers.NestedSimpleRouter(router, r'classificationProviders', lookup='classificationProviders')
-classification_provider.register(r'provider',ProvidersViewSet,base_name='provider')
+router.register(r'classificationProviders',ClassificationProvidersViewSet)
 
-router.register(r'publications',PublicationsViewSet,base_name='publications')
-publications_user=routers.NestedSimpleRouter(router, r'publications', lookup='publications')
-publications_user.register(r'user',UsersViewSet,base_name='user')
-publications_type_publications=routers.NestedSimpleRouter(router, r'publications', lookup='publications')
-publications_type_publications.register(r'typePublications',TypesPublicationsViewSet,base_name='typePublications')
-publications_type_immovable=routers.NestedSimpleRouter(router, r'publications', lookup='publications')
-publications_type_immovable.register(r'typeImmovable',TypesImmovablesViewSet,base_name='typeImmovable')
-publications_town=routers.NestedSimpleRouter(router, r'publications', lookup='publications')
-publications_town.register(r'town',TownsViewSet,base_name='town')
-publications_coin=routers.NestedSimpleRouter(router, r'publications', lookup='publications')
-publications_coin.register(r'coin',CoinsViewSet,base_name='coin')
-publications_country=routers.NestedSimpleRouter(router, r'publications', lookup='publications')
-publications_country.register(r'country',CountriesViewSet,base_name='country')
-publications_type_advisor=routers.NestedSimpleRouter(router, r'publications', lookup='publications')
-publications_type_advisor.register(r'typeAdvisor',TypesAdvisorsViewSet,base_name='TypeAdvisor')
-publications_state=routers.NestedSimpleRouter(router, r'publications', lookup='publications')
-publications_state.register(r'state',StatesViewSet,base_name='state')
+router.register(r'publications',PublicationsViewSet)
 
-router.register(r'comments',CommentsViewSet,base_name='comments')
-commets_publications=routers.NestedSimpleRouter(router,r'comments',lookup='comment')
-commets_publications.register(r'publications',PublicationsViewSet,base_name='publications')
-commets_user=routers.NestedSimpleRouter(router,r'comments',lookup='comment')
-commets_user.register(r'user',UsersViewSet,base_name='user')
-commets_provider=routers.NestedSimpleRouter(router, r'comments', lookup='comment')
-commets_provider.register(r'provider',ProvidersViewSet,base_name='provider')
+router.register(r'comments',CommentsViewSet)
 
-router.register(r'contacts',ContactsViewSet,base_name="contact")
-contacts_user=routers.NestedSimpleRouter(router,r'contacts',lookup='contact')
-contacts_user.register(r'user',UsersViewSet,base_name='user')
-type_contact=routers.NestedSimpleRouter(router,r'contacts',lookup='contact')
-type_contact.register(r'typeContact',TypesContactsViewSet,base_name='typeContact')
+router.register(r'contacts',ContactsViewSet)
 
-router.register(r'documents',DocumentsViewSet,base_name='documents')
-documents_user=routers.NestedSimpleRouter(router,r'documents',lookup='document')
-documents_user.register(r'user',UsersViewSet,base_name='user')
-type_document=routers.NestedSimpleRouter(router,r'documents',lookup='document')
-type_document.register(r'typeDocument',DocumentsViewSet,base_name="typeDocument")
+router.register(r'documents',DocumentsViewSet)
 
-router.register(r'events',EventsViewSet,base_name="events")
-event_user=routers.NestedSimpleRouter(router,r'events',lookup='event')
-event_user.register(r'user',UsersViewSet,base_name='user')
-type_event=routers.NestedSimpleRouter(router,r'events',lookup='event')
-type_event.register(r'typeEvent',TypesEventsViewSet,base_name='typeEvent')
-event_state=routers.NestedSimpleRouter(router,r'events',lookup='event')
-event_state.register(r'state',StatesViewSet,base_name='state')
-event_town=routers.NestedSimpleRouter(router,r'events',lookup='event')
-event_town.register(r'town',TownsViewSet,base_name='town')
+router.register(r'events',EventsViewSet)
 
-router.register(r'favorites',FavoritesViewSet,base_name='favorites')
-favorite_publications=routers.NestedSimpleRouter(router,r'favorites',lookup='favorite')
-favorite_publications.register(r'publications',PublicationsViewSet,base_name='publications')
-favorite_user=routers.NestedSimpleRouter(router,r'favorites',lookup='favorite')
-favorite_user.register(r'user',UsersViewSet,base_name='user')
+router.register(r'favorites',FavoritesViewSet)
 
-router.register(r'notifications',NotificationsViewSet,base_name='notifications')
-notifications_publications=routers.NestedSimpleRouter(router,r'notifications',lookup='notification')
-notifications_publications.register(r'publications',PublicationsViewSet,base_name='publications')
-notifications_user=routers.NestedSimpleRouter(router,r'notifications',lookup='notification')
-notifications_user.register(r'user',UsersViewSet,base_name='user')
+router.register(r'notifications',NotificationsViewSet)
 
-router.register(r'notificationsPush',NotificationsPushViewSet,base_name='notificationsPush')
-notificationsPush_publications=routers.NestedSimpleRouter(router,r'notificationsPush',lookup='notificationPush')
-notificationsPush_publications.register(r'publications',PublicationsViewSet,base_name='publications')
-notificationsPush_user=routers.NestedSimpleRouter(router,r'notificationsPush',lookup='notificationPush')
-notificationsPush_user.register(r'user',UsersViewSet,base_name='user')
+router.register(r'notificationsPush',NotificationsPushViewSet)
 
-router.register(r'favoritesProviders',FavoritesProvidersViewSet,base_name='favoritesProviders')
-favorite_provider_user=routers.NestedSimpleRouter(router,r'favoritesProviders',lookup='favoriteProvider')
-favorite_provider_user.register(r'user',UsersViewSet,base_name='user')
-favorite_provider=routers.NestedSimpleRouter(router,r'favoritesProviders',lookup='favoriteProvider')
-favorite_provider.register(r'provider',ProvidersViewSet,base_name='provider')
+router.register(r'favoritesProviders',FavoritesProvidersViewSet)
 
-router.register(r'photos',PhotosSerializerViewSet,base_name='photos')
-photos_publications=routers.NestedSimpleRouter(router,r'photos',lookup='photo')
-photos_publications.register(r'publications',PublicationsViewSet,base_name='publications')
-photos_provider=routers.NestedSimpleRouter(router,r'photos',lookup='photo')
-photos_provider.register(r'provider',ProvidersViewSet,base_name='provider')
-type_photo=routers.NestedSimpleRouter(router,r'photos',lookup='photo')
-type_photo.register(r'typePhoto',TypesPhotosViewSet,base_name='typePhoto')
+router.register(r'photos',PhotosSerializerViewSet)
+
 
 router.register(r'typesReports',TypesReportsViewSet)
 
-router.register(r'reports',ReportsViewSet,base_name='reports')
-reports_user=routers.NestedSimpleRouter(router,r'reports',lookup='report')
-reports_user.register(r'user',UsersViewSet,base_name='user')
-type_report=routers.NestedSimpleRouter(router,r'reports',lookup='report')
-type_report.register(r'typeReport',UsersViewSet,base_name='typeReport')
+router.register(r'reports',ReportsViewSet)
 
-router.register(r'userLocation',UserUbicationViewSet,base_name='userLocation')
-location_user=routers.NestedSimpleRouter(router,r'userLocation',lookup='userLocation')
-location_user.register(r'user',UsersViewSet,base_name='user')
-location_country=routers.NestedSimpleRouter(router,r'userLocation',lookup='userLocation')
-location_country.register(r'country',CountriesViewSet,base_name='country')
-location_state=routers.NestedSimpleRouter(router,r'userLocation',lookup='userLocation')
-location_state.register(r'state',StatesViewSet,base_name='state')
+router.register(r'userLocation',UserUbicationViewSet)
 
 urlpatterns = [
-    url(r'^api/v1/admin/', include(admin.site.urls)),
-    url(r'^api/v1/', include(router.urls)),
-    #url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^api/v1/api-token-auth/', 'rest_framework_jwt.views.obtain_jwt_token'),
-    url(r'^api/v1/api-token-refresh/', 'rest_framework_jwt.views.refresh_jwt_token'),
-    url(r'^api/v1/api-token-verify/', 'rest_framework_jwt.views.verify_jwt_token'),
-    url(r'^', include(states_router.urls)),
-    url(r'^', include(towns_router.urls)),
-    url(r'^', include(towns_countries_router.urls)),
-    url(r'^', include(user_type_router.urls)),
-    url(r'^', include(provider_type_router.urls)), 
-    url(r'^', include(provider_town_router.urls)),
-    url(r'^', include(classification_providers.urls)),
-    url(r'^', include(classification_provider.urls)), 
-    url(r'^', include(publications_user.urls)),  
-    url(r'^', include(publications_type_publications.urls)),
-    url(r'^', include(publications_type_immovable.urls)),
-    url(r'^', include(publications_town.urls)),
-    url(r'^', include(publications_coin.urls)),
-    url(r'^', include(publications_country.urls)),
-    url(r'^', include(publications_type_advisor.urls)),
-    url(r'^', include(publications_state.urls)),
-    url(r'^', include(commets_publications.urls)),
-    url(r'^', include(commets_user.urls)),
-    url(r'^', include(commets_provider.urls)),
-    url(r'^', include(contacts_user.urls)),
-    url(r'^', include(type_contact.urls)),
-    url(r'^', include(type_document.urls)),
-    url(r'^', include(event_user.urls)),
-    url(r'^', include(type_event.urls)),
-    url(r'^', include(event_state.urls)),
-    url(r'^', include(event_town.urls)),
-    url(r'^', include(favorite_publications.urls)),
-    url(r'^', include(favorite_user.urls)),
-    url(r'^', include(notifications_publications.urls)),
-    url(r'^', include(notifications_user.urls)),
-    url(r'^', include(notificationsPush_publications.urls)),
-    url(r'^', include(notificationsPush_user.urls)),
-    url(r'^', include(favorite_provider_user.urls)),
-    url(r'^', include(favorite_provider.urls)),
-    url(r'^', include(photos_publications.urls)),
-    url(r'^', include(photos_provider.urls)),
-    url(r'^', include(type_photo.urls)),
-    url(r'^', include(reports_user.urls)),
-    url(r'^', include(type_report.urls)),
-    url(r'^', include(location_user.urls)),
-    url(r'^', include(location_country.urls)),
-    url(r'^', include(location_state.urls)),
-
-
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^',include(router.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api-token-auth/', 'rest_framework_jwt.views.obtain_jwt_token'),
+    url(r'^api-token-refresh/', 'rest_framework_jwt.views.refresh_jwt_token'),
+    url(r'^api-token-verify/', 'rest_framework_jwt.views.verify_jwt_token'),
+    url(r'^',include(vw_countries.urls)),
+    url(r'^',include(vw_towns.urls)),
     url(r'^docs/', include('rest_framework_swagger.urls')),
 ]   

@@ -74,23 +74,72 @@ from .serializers import TasksSerializer
 from .serializers import TermsSerializer
 
 from rest_framework import viewsets
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+#from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
- 
 class CountriesViewSet(viewsets.ModelViewSet):
-    authentication_classes = (JSONWebTokenAuthentication, )
     serializer_class = CountriesSerializer
     queryset = Countries.objects.all()
+
+class vwCountriesViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Countries.objects.all()
+        serializer = CountriesSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self,request, pk=None):
+        queryset = Countries.objects.all()
+        country = get_object_or_404(queryset, pk=pk)
+        serializer = CountriesSerializer(country)
+
+        return Response(serializer.data)
  
 class StatesViewSet(viewsets.ModelViewSet):
-    #authentication_classes = (JSONWebTokenAuthentication, )
+
     serializer_class = StatesSerializer
     queryset = States.objects.all()
+
+class vwStatesViewSet(viewsets.ViewSet):
+    def list(self, request, country_pk=None):
+        queryset = States.objects.filter(
+            country__pk=country_pk
+        )
+
+        serializer = StatesSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, country_pk=None, pk=None):
+        queryset = States.objects.filter(
+            country__pk=country_pk
+        )
+        state = get_object_or_404(queryset, pk=pk)
+        serializer = StatesSerializer(state)
+
+        return Response(serializer.data)
 
 class TownsViewSet(viewsets.ModelViewSet):
  
     serializer_class = TownsSerializer
     queryset = Towns.objects.all()
+
+class vwTownsViewSet(viewsets.ViewSet):
+    def list(self, request,country_pk=None,state_pk=None):
+        queryset = Towns.objects.filter(
+            state__pk=state_pk
+        )
+
+        serializer = TownsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,country_pk=None,state_pk=None, pk=None):
+        queryset = Towns.objects.filter(
+            state__pk=state_pk
+        )
+        town = get_object_or_404(queryset, pk=pk)
+        serializer = TownsSerializer(town)
+
+        return Response(serializer.data)
 
 class CoinsViewSet(viewsets.ModelViewSet):
  
