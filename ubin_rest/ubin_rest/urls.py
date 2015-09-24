@@ -23,11 +23,15 @@ from apprest.viewsets import CountriesViewSet
 from apprest.viewsets import vwCountriesViewSet
 from apprest.viewsets import StatesViewSet
 from apprest.viewsets import vwStatesViewSet
+from apprest.viewsets import vwStatesTownsViewSet
 from apprest.viewsets import TownsViewSet
 from apprest.viewsets import vwTownsViewSet
+from apprest.viewsets import vwTownsStatesViewSet
 from apprest.viewsets import CoinsViewSet
 from apprest.viewsets import TypesImmovablesViewSet
+from apprest.viewsets import vwTypesImmovablesViewSet
 from apprest.viewsets import TypesPublicationsViewSet
+from apprest.viewsets import vwTypesPublicationsViewSet
 from apprest.viewsets import TypesAdvisorsViewSet
 from apprest.viewsets import TypesProvidersViewSet
 from apprest.viewsets import TypesContactsViewSet
@@ -38,6 +42,8 @@ from apprest.viewsets import UsersViewSet
 from apprest.viewsets import ProvidersViewSet
 from apprest.viewsets import ClassificationProvidersViewSet
 from apprest.viewsets import PublicationsViewSet
+from apprest.viewsets import vwPublicationsInTypeImmovableViewSet
+from apprest.viewsets import vwPublicationsInTypePublicationViewSet
 from apprest.viewsets import CommentsViewSet
 from apprest.viewsets import ContactsViewSet
 from apprest.viewsets import DocumentsViewSet
@@ -67,7 +73,7 @@ Countries
 #CRUD
 router.register(r'country',CountriesViewSet)
 
-#VIEW
+#VIEW : /countries/pk/states/pk/towns/pk
 router.register(r'countries',vwCountriesViewSet,base_name='countries')
 vw_countries=routers.NestedSimpleRouter(router, r'countries',lookup='country')
 vw_countries.register(r'states',vwStatesViewSet,base_name='states')
@@ -77,14 +83,45 @@ vw_towns.register(r'towns',vwTownsViewSet,base_name='towns')
 '''
 States
 '''
+#CRUD
 router.register(r'state',StatesViewSet)
 
+#VIEW : /states/pk/towns/pk
+router.register(r'states',vwStatesTownsViewSet,base_name='states')
+vw_state_tows=routers.NestedSimpleRouter(router, r'states',lookup='state')
+vw_state_tows.register(r'towns',vwTownsStatesViewSet,base_name="towns")
 
+'''
+Towns
+'''
 router.register(r'town', TownsViewSet)
 
+'''
+Coins
+'''
 router.register(r'coins',CoinsViewSet)
-router.register(r'typesImmovables',TypesImmovablesViewSet)
-router.register(r'typesPublications',TypesPublicationsViewSet)
+
+'''
+Types Immovables
+'''
+#CRUD
+router.register(r'typeImmovable',TypesImmovablesViewSet)
+
+#VIEW : /typesImmovables/pk/publications/pk
+router.register(r'typesImmovables',vwTypesImmovablesViewSet,base_name="typesImmovables")
+vw_immovable_publications=routers.NestedSimpleRouter(router, r'typesImmovables',lookup='typeImmovable')
+vw_immovable_publications.register(r'publications',vwPublicationsInTypeImmovableViewSet,base_name='publications')
+
+'''
+Types Publications
+'''
+#CRUD
+router.register(r'typePublication',TypesPublicationsViewSet)
+#VIEW : /typesPublications/pk/publications/pk
+router.register(r'typesPublications',vwTypesPublicationsViewSet,base_name='typesPublications')
+vw_type_publications=routers.NestedSimpleRouter(router, r'typesPublications',lookup='typePublication')
+vw_type_publications.register(r'publications',vwPublicationsInTypePublicationViewSet,base_name='publications')
+
 router.register(r'typesAdvisors',TypesAdvisorsViewSet)
 router.register(r'typesProviders',TypesProvidersViewSet)
 router.register(r'typesContacts',TypesContactsViewSet)
@@ -135,5 +172,8 @@ urlpatterns = [
     url(r'^api-token-verify/', 'rest_framework_jwt.views.verify_jwt_token'),
     url(r'^',include(vw_countries.urls)),
     url(r'^',include(vw_towns.urls)),
+    url(r'^',include(vw_state_tows.urls)),
+    url(r'^',include(vw_immovable_publications.urls)),
+    url(r'^',include(vw_type_publications.urls)),
     url(r'^docs/', include('rest_framework_swagger.urls')),
 ]   

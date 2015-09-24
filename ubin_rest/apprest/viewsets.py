@@ -118,6 +118,19 @@ class vwStatesViewSet(viewsets.ViewSet):
 
         return Response(serializer.data)
 
+class vwStatesTownsViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = States.objects.all()
+        serializer = StatesSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,pk=None):
+        queryset = States.objects.all()
+        state = get_object_or_404(queryset, pk=pk)
+        serializer = StatesSerializer(state)
+
+        return Response(serializer.data)
+
 class TownsViewSet(viewsets.ModelViewSet):
  
     serializer_class = TownsSerializer
@@ -139,6 +152,22 @@ class vwTownsViewSet(viewsets.ViewSet):
         town = get_object_or_404(queryset, pk=pk)
         serializer = TownsSerializer(town)
 
+class vwTownsStatesViewSet(viewsets.ViewSet):
+    def list(self, request,state_pk=None):
+        queryset = Towns.objects.filter(
+            state__pk=state_pk
+        )
+
+        serializer = TownsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,state_pk=None, pk=None):
+        queryset = Towns.objects.filter(
+            state__pk=state_pk
+        )
+        town = get_object_or_404(queryset, pk=pk)
+        serializer = TownsSerializer(town)
+
         return Response(serializer.data)
 
 class CoinsViewSet(viewsets.ModelViewSet):
@@ -151,10 +180,36 @@ class TypesImmovablesViewSet(viewsets.ModelViewSet):
     serializer_class = TypesImmovablesSerializer
     queryset = Types_Immovables.objects.all()
 
+class vwTypesImmovablesViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Types_Immovables.objects.all()
+        serializer = TypesImmovablesSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,pk=None):
+        queryset = Types_Immovables.objects.all()
+        type_immovable = get_object_or_404(queryset, pk=pk)
+        serializer = TypesImmovablesSerializer(type_immovable)
+
+        return Response(serializer.data)
+
 class TypesPublicationsViewSet(viewsets.ModelViewSet):
  
     serializer_class = TypesPublicationsSerializer
     queryset = Types_Publications.objects.all()
+
+class vwTypesPublicationsViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Types_Publications.objects.all()
+        serializer = TypesPublicationsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,pk=None):
+        queryset = Types_Publications.objects.all()
+        type_publication = get_object_or_404(queryset, pk=pk)
+        serializer = TypesPublicationsSerializer(type_publication)
+
+        return Response(serializer.data)
 
 class TypesAdvisorsViewSet(viewsets.ModelViewSet):
  
@@ -207,6 +262,41 @@ class PublicationsViewSet(viewsets.ModelViewSet):
  
     serializer_class = PublicationsSerializer
     queryset = Publications.objects.all()
+
+class vwPublicationsInTypeImmovableViewSet(viewsets.ViewSet):
+    def list(self, request,typeImmovable_pk=None):
+        queryset = Publications.objects.filter(
+            type_immovable__pk=typeImmovable_pk
+        )
+
+        serializer = PublicationsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,typeImmovable_pk=None,pk=None):
+        queryset = Publications.objects.filter(
+            type_immovable__pk=typeImmovable_pk
+        )
+        publication = get_object_or_404(queryset, pk=pk)
+        serializer = PublicationsSerializer(publication)
+        return Response(serializer.data)
+
+class vwPublicationsInTypePublicationViewSet(viewsets.ViewSet):
+    def list(self, request,typePublication_pk=None):
+        queryset = Publications.objects.filter(
+            type_publications__pk=typePublication_pk
+        )
+
+        serializer = PublicationsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,typePublication_pk=None,pk=None):
+        queryset = Publications.objects.filter(
+            type_publications__pk=typePublication_pk
+        )
+        publication = get_object_or_404(queryset, pk=pk)
+        serializer = PublicationsSerializer(publication)
+        return Response(serializer.data)
+
 
 class CommentsViewSet(viewsets.ModelViewSet):
  

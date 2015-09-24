@@ -159,7 +159,7 @@ class PublicationsSerializer(serializers.ModelSerializer):
         	'id',
         	'canvas_number',
         	'user', 
-        	'type_publication',
+        	'type_publications',
         	'type_immovable',
         	'town',
         	'location',
