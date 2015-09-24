@@ -77,7 +77,9 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 #from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-
+'''
+-----------  Countries --------------------------
+'''
 class CountriesViewSet(viewsets.ModelViewSet):
     serializer_class = CountriesSerializer
     queryset = Countries.objects.all()
@@ -94,7 +96,9 @@ class vwCountriesViewSet(viewsets.ViewSet):
         serializer = CountriesSerializer(country)
 
         return Response(serializer.data)
- 
+'''
+-----------  Sates --------------------------
+''' 
 class StatesViewSet(viewsets.ModelViewSet):
 
     serializer_class = StatesSerializer
@@ -131,6 +135,9 @@ class vwStatesTownsViewSet(viewsets.ViewSet):
 
         return Response(serializer.data)
 
+'''
+-----------  Towns --------------------------
+'''
 class TownsViewSet(viewsets.ModelViewSet):
  
     serializer_class = TownsSerializer
@@ -170,6 +177,10 @@ class vwTownsStatesViewSet(viewsets.ViewSet):
 
         return Response(serializer.data)
 
+
+'''
+-----------  Coins --------------------------
+'''
 class CoinsViewSet(viewsets.ModelViewSet):
  
     serializer_class = CoinsSerializer
@@ -187,6 +198,11 @@ class vwCoinsViewSet(viewsets.ViewSet):
         serializer = CoinsSerializer(state)
 
         return Response(serializer.data)
+
+
+'''
+-----------  Types immovable --------------------------
+'''
 
 class TypesImmovablesViewSet(viewsets.ModelViewSet):
  
@@ -206,6 +222,11 @@ class vwTypesImmovablesViewSet(viewsets.ViewSet):
 
         return Response(serializer.data)
 
+
+'''
+-----------  Types Publications --------------------------
+'''
+
 class TypesPublicationsViewSet(viewsets.ModelViewSet):
  
     serializer_class = TypesPublicationsSerializer
@@ -224,10 +245,26 @@ class vwTypesPublicationsViewSet(viewsets.ViewSet):
 
         return Response(serializer.data)
 
+'''
+----------- Type Advisor --------------------------
+'''
 class TypesAdvisorsViewSet(viewsets.ModelViewSet):
  
     serializer_class = TypesAdvisorsSerializer
     queryset = Types_Advisors.objects.all()
+
+class vwTypesAdvisorsViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Types_Advisors.objects.all()
+        serializer = TypesAdvisorsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,pk=None):
+        queryset = Types_Advisors.objects.all()
+        type_advisor = get_object_or_404(queryset, pk=pk)
+        serializer = TypesAdvisorsSerializer(type_advisor)
+
+        return Response(serializer.data)
 
 class TypesProvidersViewSet(viewsets.ModelViewSet):
  
@@ -255,11 +292,31 @@ class TypesPhotosViewSet(viewsets.ModelViewSet):
     serializer_class = TypesPhotosSerializer
     queryset = Types_Photos.objects.all()
 
-
+'''
+----------------  Users -------------------------
+'''
 class UsersViewSet(viewsets.ModelViewSet):
  
     serializer_class = UsersSerializer
     queryset = Users.objects.all()
+
+class AdvisorUsersViewSet(viewsets.ViewSet):
+    def list(self, request,typeAdvisor_pk=None):
+        queryset = Users.objects.filter(
+            type_advisor__pk=typeAdvisor_pk
+        )
+
+        serializer = UsersSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,typeAdvisor_pk=None,pk=None):
+        queryset = Users.objects.filter(
+            type_advisor__pk=typeAdvisor_pk
+        )
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = UsersSerializer(user)
+        return Response(serializer.data)
+
 
 class ProvidersViewSet(viewsets.ModelViewSet):
  
