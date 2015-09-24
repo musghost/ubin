@@ -175,6 +175,19 @@ class CoinsViewSet(viewsets.ModelViewSet):
     serializer_class = CoinsSerializer
     queryset = Coins.objects.all()
 
+class vwCoinsViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Coins.objects.all()
+        serializer = CoinsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,pk=None):
+        queryset = Coins.objects.all()
+        state = get_object_or_404(queryset, pk=pk)
+        serializer = CoinsSerializer(state)
+
+        return Response(serializer.data)
+
 class TypesImmovablesViewSet(viewsets.ModelViewSet):
  
     serializer_class = TypesImmovablesSerializer
@@ -292,6 +305,23 @@ class vwPublicationsInTypePublicationViewSet(viewsets.ViewSet):
     def retrieve(self, request,typePublication_pk=None,pk=None):
         queryset = Publications.objects.filter(
             type_publications__pk=typePublication_pk
+        )
+        publication = get_object_or_404(queryset, pk=pk)
+        serializer = PublicationsSerializer(publication)
+        return Response(serializer.data)
+
+class vwPublicationsCoinsViewSet(viewsets.ViewSet):
+    def list(self, request,coin_pk=None):
+        queryset = Publications.objects.filter(
+            coin__pk=coin_pk
+        )
+
+        serializer = PublicationsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,coin_pk=None,pk=None):
+        queryset = Publications.objects.filter(
+            coin__pk=coin_pk
         )
         publication = get_object_or_404(queryset, pk=pk)
         serializer = PublicationsSerializer(publication)

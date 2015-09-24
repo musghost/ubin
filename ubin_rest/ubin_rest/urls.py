@@ -28,6 +28,7 @@ from apprest.viewsets import TownsViewSet
 from apprest.viewsets import vwTownsViewSet
 from apprest.viewsets import vwTownsStatesViewSet
 from apprest.viewsets import CoinsViewSet
+from apprest.viewsets import vwCoinsViewSet
 from apprest.viewsets import TypesImmovablesViewSet
 from apprest.viewsets import vwTypesImmovablesViewSet
 from apprest.viewsets import TypesPublicationsViewSet
@@ -44,6 +45,7 @@ from apprest.viewsets import ClassificationProvidersViewSet
 from apprest.viewsets import PublicationsViewSet
 from apprest.viewsets import vwPublicationsInTypeImmovableViewSet
 from apprest.viewsets import vwPublicationsInTypePublicationViewSet
+from apprest.viewsets import vwPublicationsCoinsViewSet
 from apprest.viewsets import CommentsViewSet
 from apprest.viewsets import ContactsViewSet
 from apprest.viewsets import DocumentsViewSet
@@ -99,7 +101,13 @@ router.register(r'town', TownsViewSet)
 '''
 Coins
 '''
-router.register(r'coins',CoinsViewSet)
+#CRUD
+router.register(r'coin',CoinsViewSet)
+#VIEW 
+router.register(r'coins',vwCoinsViewSet,base_name='coins')
+vw_coins_publications=routers.NestedSimpleRouter(router, r'coins',lookup='coin')
+vw_coins_publications.register(r'publications',vwPublicationsCoinsViewSet,base_name="publications")
+
 
 '''
 Types Immovables
@@ -175,5 +183,6 @@ urlpatterns = [
     url(r'^',include(vw_state_tows.urls)),
     url(r'^',include(vw_immovable_publications.urls)),
     url(r'^',include(vw_type_publications.urls)),
+    url(r'^',include(vw_coins_publications.urls)),
     url(r'^docs/', include('rest_framework_swagger.urls')),
 ]   
