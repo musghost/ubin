@@ -288,10 +288,27 @@ class vwTypesProvidersViewSet(viewsets.ViewSet):
 
         return Response(serializer.data)
 
+
+'''
+------------- Types Contacts ----------------------
+'''
 class TypesContactsViewSet(viewsets.ModelViewSet):
  
     serializer_class = TypesContactsSerializer
     queryset = Types_Contacts.objects.all()
+
+class vwTypesContactsViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Types_Contacts.objects.all()
+        serializer = TypesContactsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,pk=None):
+        queryset = Types_Contacts.objects.all()
+        type_contact = get_object_or_404(queryset, pk=pk)
+        serializer = TypesContactsSerializer(type_contact)
+
+        return Response(serializer.data)
 
 class TypesEventsViewSet(viewsets.ModelViewSet):
  
@@ -426,10 +443,32 @@ class CommentsViewSet(viewsets.ModelViewSet):
     serializer_class = CommentsSerializer
     queryset = Comments.objects.all()
 
+
+
+'''
+----------------  Contacts ---------------------
+'''
 class ContactsViewSet(viewsets.ModelViewSet):
  
     serializer_class = ContactsSerializer
     queryset = Contacts.objects.all()
+
+class vwContactsTypeViewSet(viewsets.ViewSet):
+    def list(self, request,typeContact_pk=None):
+        queryset = Contacts.objects.filter(
+            type_contact__pk=typeContact_pk
+        )
+
+        serializer = ContactsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,typeContact_pk=None, pk=None):
+        queryset = Contacts.bjects.filter(
+            type_contact__pk=typeContact_pk
+        )
+        contact = get_object_or_404(queryset, pk=pk)
+        serializer = ContactsSerializer(contact)
+
 
 class DocumentsViewSet(viewsets.ModelViewSet):
  

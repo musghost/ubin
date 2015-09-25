@@ -39,6 +39,7 @@ from apprest.viewsets import AdvisorUsersViewSet
 from apprest.viewsets import TypesProvidersViewSet
 from apprest.viewsets import vwTypesProvidersViewSet
 from apprest.viewsets import TypesContactsViewSet
+from apprest.viewsets import vwTypesContactsViewSet
 from apprest.viewsets import TypesEventsViewSet
 from apprest.viewsets import TypesDocumentsViewSet
 from apprest.viewsets import TypesPhotosViewSet
@@ -52,6 +53,7 @@ from apprest.viewsets import vwPublicationsInTypePublicationViewSet
 from apprest.viewsets import vwPublicationsCoinsViewSet
 from apprest.viewsets import CommentsViewSet
 from apprest.viewsets import ContactsViewSet
+from apprest.viewsets import vwContactsTypeViewSet
 from apprest.viewsets import DocumentsViewSet
 from apprest.viewsets import EventsViewSet
 from apprest.viewsets import FavoritesViewSet
@@ -149,12 +151,22 @@ Types Providers
 '''
 #CRUD
 router.register(r'typeProvider',TypesProvidersViewSet)
-#VIEW
+#VIEW : typeProviders/pk/providers/pk
 router.register(r'typesProviders',vwTypesProvidersViewSet,base_name='typesProviders')
 vw_providers_type=routers.NestedSimpleRouter(router,r'typesProviders',lookup='typeProvider')
 vw_providers_type.register(r'providers',vwProvidersTypeViewSet,base_name='providers')
 
-router.register(r'typesContacts',TypesContactsViewSet)
+'''
+Types Contacts
+'''
+#CRUD
+router.register(r'typeContact',TypesContactsViewSet)
+#VIEW
+router.register(r'typesContacts',vwTypesContactsViewSet,base_name='vwTypesContactsViewSet')
+vw_contacts_type=routers.NestedSimpleRouter(router,r'typesContacts',lookup='typeContact')
+vw_contacts_type.register(r'contacts',vwContactsTypeViewSet,base_name='contacts')
+
+
 router.register(r'typesEvents',TypesEventsViewSet)
 router.register(r'typesDocuments',TypesDocumentsViewSet)
 router.register(r'typesPhotos',TypesPhotosViewSet)
@@ -208,6 +220,6 @@ urlpatterns = [
     url(r'^',include(vw_coins_publications.urls)),
     url(r'^',include(vw_advisors_users.urls)),
     url(r'^',include(vw_providers_type.urls)),
-    
+    url(r'^',include(vw_contacts_type.urls)), 
     url(r'^docs/', include('rest_framework_swagger.urls')),
 ]   
