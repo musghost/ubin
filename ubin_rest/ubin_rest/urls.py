@@ -37,12 +37,14 @@ from apprest.viewsets import TypesAdvisorsViewSet
 from apprest.viewsets import vwTypesAdvisorsViewSet
 from apprest.viewsets import AdvisorUsersViewSet
 from apprest.viewsets import TypesProvidersViewSet
+from apprest.viewsets import vwTypesProvidersViewSet
 from apprest.viewsets import TypesContactsViewSet
 from apprest.viewsets import TypesEventsViewSet
 from apprest.viewsets import TypesDocumentsViewSet
 from apprest.viewsets import TypesPhotosViewSet
 from apprest.viewsets import UsersViewSet
 from apprest.viewsets import ProvidersViewSet
+from apprest.viewsets import vwProvidersTypeViewSet
 from apprest.viewsets import ClassificationProvidersViewSet
 from apprest.viewsets import PublicationsViewSet
 from apprest.viewsets import vwPublicationsInTypeImmovableViewSet
@@ -142,8 +144,16 @@ router.register(r'typesAdvisors',vwTypesAdvisorsViewSet,base_name='typesAdvisors
 vw_advisors_users=routers.NestedSimpleRouter(router, r'typesAdvisors',lookup='typeAdvisor')
 vw_advisors_users.register(r'users',AdvisorUsersViewSet,base_name='users')
 
+'''
+Types Providers
+'''
+#CRUD
+router.register(r'typeProvider',TypesProvidersViewSet)
+#VIEW
+router.register(r'typesProviders',vwTypesProvidersViewSet,base_name='typesProviders')
+vw_providers_type=routers.NestedSimpleRouter(router,r'typesProviders',lookup='typeProvider')
+vw_providers_type.register(r'providers',vwProvidersTypeViewSet,base_name='providers')
 
-router.register(r'typesProviders',TypesProvidersViewSet)
 router.register(r'typesContacts',TypesContactsViewSet)
 router.register(r'typesEvents',TypesEventsViewSet)
 router.register(r'typesDocuments',TypesDocumentsViewSet)
@@ -197,5 +207,7 @@ urlpatterns = [
     url(r'^',include(vw_type_publications.urls)),
     url(r'^',include(vw_coins_publications.urls)),
     url(r'^',include(vw_advisors_users.urls)),
+    url(r'^',include(vw_providers_type.urls)),
+    
     url(r'^docs/', include('rest_framework_swagger.urls')),
 ]   

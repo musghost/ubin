@@ -246,7 +246,7 @@ class vwTypesPublicationsViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 '''
------------ Type Advisor --------------------------
+----------- Types Advisor --------------------------
 '''
 class TypesAdvisorsViewSet(viewsets.ModelViewSet):
  
@@ -266,11 +266,27 @@ class vwTypesAdvisorsViewSet(viewsets.ViewSet):
 
         return Response(serializer.data)
 
+
+'''
+----------- Types providers --------------------------
+'''
 class TypesProvidersViewSet(viewsets.ModelViewSet):
  
     serializer_class = TypesProvidersSerializer
     queryset = Types_Providers.objects.all()
 
+class vwTypesProvidersViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Types_Providers.objects.all()
+        serializer = TypesProvidersSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,pk=None):
+        queryset = Types_Providers.objects.all()
+        type_provider = get_object_or_404(queryset, pk=pk)
+        serializer = TypesProvidersSerializer(type_provider)
+
+        return Response(serializer.data)
 
 class TypesContactsViewSet(viewsets.ModelViewSet):
  
@@ -317,11 +333,31 @@ class AdvisorUsersViewSet(viewsets.ViewSet):
         serializer = UsersSerializer(user)
         return Response(serializer.data)
 
-
+'''
+----------------- Providers -----------------------
+'''
 class ProvidersViewSet(viewsets.ModelViewSet):
  
     serializer_class = ProvidersSerializer
     queryset = Providers.objects.all()
+
+class vwProvidersTypeViewSet(viewsets.ViewSet):
+    def list(self, request,typeProvider_pk=None):
+        queryset = Providers.objects.filter(
+            type_provider__pk=typeProvider_pk
+        )
+
+        serializer = ProvidersSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,typeProvider_pk=None, pk=None):
+        queryset = Providers.objects.filter(
+            type_provider__pk=provider_pk
+        )
+        provider = get_object_or_404(queryset, pk=pk)
+        serializer = ProvidersSerializer(provider)
+
+        return Response(serializer.data)
 
 class ClassificationProvidersViewSet(viewsets.ModelViewSet):
  
