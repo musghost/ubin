@@ -15,7 +15,6 @@ from .models import Types_Providers
 from .models import Types_Contacts
 from .models import Types_Events
 from .models import Types_Documents
-from .models import Types_Photos
 from .models import Users
 from .models import Providers
 from .models import Classification_Providers
@@ -93,11 +92,6 @@ class TypesEventsSerializer(serializers.ModelSerializer):
 class TypesDocumentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Types_Documents
-        fields = ('id','name', 'status')
-
-class TypesPhotosSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Types_Photos
         fields = ('id','name', 'status')
 
 
@@ -213,9 +207,7 @@ class DocumentsSerializer(serializers.ModelSerializer):
         	'name',
         	'administrator', 
         	'type_document',
-        	'state',
-        	'town',
-        	'path',
+        	'path'
         	)
 
 class EventsSerializer(serializers.ModelSerializer):
@@ -278,8 +270,7 @@ class PhotosSerializer(serializers.ModelSerializer):
         	'path',
         	'order',
         	'publication',
-        	'provider',
-        	'type_photo'
+        	'provider'
         	)
 class TypesReportsSerializer(serializers.ModelSerializer):
     class Meta:

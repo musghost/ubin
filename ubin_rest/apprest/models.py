@@ -148,11 +148,6 @@ class Types_Documents(models.Model):
     name = models.TextField(max_length=100)
     status = models.BooleanField(default=True)
 
-class Types_Photos(models.Model):
-    name = models.TextField(max_length=100)
-    status = models.BooleanField(default=True)
-
-
 class Providers(models.Model):
     name = models.TextField(max_length=100)
     type_provider= models.ForeignKey(Types_Providers)
@@ -212,8 +207,6 @@ class Documents(models.Model):
     name= models.TextField(max_length=100)
     administrator=models.ForeignKey(Users)
     type_document= models.ForeignKey(Types_Documents)
-    state=models.ForeignKey(States)
-    town=models.ForeignKey(Towns)
     path=models.TextField(max_length=100)
 
 class Events(models.Model):
@@ -256,7 +249,6 @@ class Photos(models.Model):
     path=models.TextField(max_length=100)
     publication=models.ForeignKey(Publications)
     provider=models.ForeignKey(Providers)
-    type_photo=models.ForeignKey(Types_Photos)
 
 class Types_Reports(models.Model):
     name=models.TextField(max_length=60)
