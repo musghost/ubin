@@ -15,7 +15,6 @@ from .models import Types_Providers
 from .models import Types_Contacts
 from .models import Types_Events
 from .models import Types_Documents
-from .models import Types_Photos
 from .models import Users
 from .models import Providers
 from .models import Classification_Providers
@@ -50,7 +49,6 @@ from .serializers import TypesProvidersSerializer
 from .serializers import TypesContactsSerializer
 from .serializers import TypesEventsSerializer
 from .serializers import TypesDocumentsSerializer
-from .serializers import TypesPhotosSerializer
 from .serializers import UsersSerializer
 from .serializers import ProvidersSerializer
 from .serializers import ClassificationProvidersSerializer
@@ -332,15 +330,30 @@ class vwTypesEventsViewSet(viewsets.ViewSet):
 
         return Response(serializer.data)
 
+
+
+'''
+------------------ Types Documents -----------------
+'''
 class TypesDocumentsViewSet(viewsets.ModelViewSet):
  
     serializer_class = TypesDocumentsSerializer
     queryset = Types_Documents.objects.all()
 
-class TypesPhotosViewSet(viewsets.ModelViewSet):
- 
-    serializer_class = TypesPhotosSerializer
-    queryset = Types_Photos.objects.all()
+class vwTypesDocumentsViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Types_Documents.objects.all()
+        serializer = TypesDocumentsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,pk=None):
+        queryset = Types_Documents.objects.all()
+        type_document = get_object_or_404(queryset, pk=pk)
+        serializer = TypesDocumentsSerializer(type_document)
+
+        return Response(serializer.data)
+
+
 
 '''
 ----------------  Users -------------------------
@@ -487,10 +500,33 @@ class vwContactsTypeViewSet(viewsets.ViewSet):
         serializer = ContactsSerializer(contact)
 
 
+
+'''
+--------------- Documents ---------------------
+'''
 class DocumentsViewSet(viewsets.ModelViewSet):
  
     serializer_class = DocumentsSerializer
     queryset = Documents.objects.all()
+
+class DocumentsTypeViewSet(viewsets.ViewSet):
+    def list(self, request,typeDocument_pk=None):
+        queryset = Documents.objects.filter(
+            type_document__pk=typeDocument_pk
+        )
+
+        serializer = DocumentsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,typeDocument_pk=None,pk=None):
+        queryset = Documents.objects.filter(
+            type_document__pk=typeDocument_pk
+        )
+        document = get_object_or_404(queryset, pk=pk)
+        serializer = DocumentsSerializer(document)
+        return Response(serializer.data)
+
+
 
 '''
 -------------- Events --------------------------

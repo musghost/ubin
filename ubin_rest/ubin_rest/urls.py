@@ -43,7 +43,7 @@ from apprest.viewsets import vwTypesContactsViewSet
 from apprest.viewsets import TypesEventsViewSet
 from apprest.viewsets import vwTypesEventsViewSet
 from apprest.viewsets import TypesDocumentsViewSet
-from apprest.viewsets import TypesPhotosViewSet
+from apprest.viewsets import vwTypesDocumentsViewSet
 from apprest.viewsets import UsersViewSet
 from apprest.viewsets import ProvidersViewSet
 from apprest.viewsets import vwProvidersTypeViewSet
@@ -56,6 +56,7 @@ from apprest.viewsets import CommentsViewSet
 from apprest.viewsets import ContactsViewSet
 from apprest.viewsets import vwContactsTypeViewSet
 from apprest.viewsets import DocumentsViewSet
+from apprest.viewsets import DocumentsTypeViewSet
 from apprest.viewsets import EventsViewSet
 from apprest.viewsets import EventsTypeViewSet
 from apprest.viewsets import FavoritesViewSet
@@ -178,9 +179,17 @@ router.register(r'typesEvents',vwTypesEventsViewSet,base_name='typesEvents')
 vw_events_type=routers.NestedSimpleRouter(router,r'typesEvents',lookup='typeEvent')
 vw_events_type.register(r'events',EventsTypeViewSet,base_name='events')
 
-router.register(r'typesDocuments',TypesDocumentsViewSet)
+'''
+Types documents
+'''
+#CRUD
+router.register(r'typeDocument',TypesDocumentsViewSet)
+#VIEW typesDocuments/pk/documents/pk
+router.register(r'typesDocuments',vwTypesDocumentsViewSet,base_name='typesDocuments')
+vw_type_documents=routers.NestedSimpleRouter(router,r'typesDocuments',lookup='typeDocument')
+vw_type_documents.register(r'documents',DocumentsTypeViewSet,base_name='documents')
 
-router.register(r'typesPhotos',TypesPhotosViewSet)
+
 
 router.register(r'terms',TermsViewSet)
 
@@ -234,5 +243,6 @@ urlpatterns = [
     url(r'^',include(vw_providers_type.urls)),
     url(r'^',include(vw_contacts_type.urls)),
     url(r'^',include(vw_events_type.urls)),
+    url(r'^',include(vw_type_documents.urls)),
     url(r'^docs/', include('rest_framework_swagger.urls')),
 ]   
