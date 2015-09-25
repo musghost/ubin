@@ -310,10 +310,27 @@ class vwTypesContactsViewSet(viewsets.ViewSet):
 
         return Response(serializer.data)
 
+
+'''
+------------- Types Events ----------------------
+'''
 class TypesEventsViewSet(viewsets.ModelViewSet):
  
     serializer_class = TypesEventsSerializer
     queryset = Types_Events.objects.all()
+
+class vwTypesEventsViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Types_Events.objects.all()
+        serializer = TypesEventsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,pk=None):
+        queryset = Types_Events.objects.all()
+        type_event = get_object_or_404(queryset, pk=pk)
+        serializer = TypesEventsSerializer(type_event)
+
+        return Response(serializer.data)
 
 class TypesDocumentsViewSet(viewsets.ModelViewSet):
  
@@ -475,10 +492,30 @@ class DocumentsViewSet(viewsets.ModelViewSet):
     serializer_class = DocumentsSerializer
     queryset = Documents.objects.all()
 
+'''
+-------------- Events --------------------------
+'''
 class EventsViewSet(viewsets.ModelViewSet):
  
     serializer_class = EventsSerializer
     queryset = Events.objects.all()
+
+class EventsTypeViewSet(viewsets.ViewSet):
+    def list(self, request,typeEvent_pk=None):
+        queryset = Events.objects.filter(
+            type_event__pk=typeEvent_pk
+        )
+
+        serializer = EventsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,typeEvent_pk=None, pk=None):
+        queryset = Events.bjects.filter(
+            type_event__pk=typeEvent_pk
+        )
+        event = get_object_or_404(queryset, pk=pk)
+        serializer = EventsSerializer(contact)
+
 
 class FavoritesViewSet(viewsets.ModelViewSet):
  
