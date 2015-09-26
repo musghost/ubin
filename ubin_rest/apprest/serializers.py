@@ -266,9 +266,7 @@ class PhotosSerializer(serializers.ModelSerializer):
         	'id',
         	'name',
         	'path',
-        	'order',
-        	'publication',
-        	'provider'
+        	'publication'
         	)
 class TypesReportsSerializer(serializers.ModelSerializer):
     class Meta:

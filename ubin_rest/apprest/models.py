@@ -247,7 +247,6 @@ class Photos(models.Model):
     name=models.TextField(max_length=60)
     path=models.TextField(max_length=100)
     publication=models.ForeignKey(Publications)
-    provider=models.ForeignKey(Providers)
 
 class Types_Reports(models.Model):
     name=models.TextField(max_length=60)

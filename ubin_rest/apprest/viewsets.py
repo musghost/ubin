@@ -888,11 +888,31 @@ class vwProviderFavoritesProvidersViewSet(viewsets.ViewSet):
         serializer = FavoritesProvidersSerializer(favorite_provider)
         return Response(serializer.data)
 
-
-class PhotosSerializerViewSet(viewsets.ModelViewSet):
+'''
+------------------- Photos ----------------------------
+'''
+class PhotosViewSet(viewsets.ModelViewSet):
  
     serializer_class = PhotosSerializer
     queryset = Photos.objects.all()
+
+class vwPhotosPublicationsViewSet(viewsets.ViewSet):
+    def list(self, request,publication_pk=None):
+        queryset = Photos.objects.filter(
+            publication__pk=publication_pk
+        )
+
+        serializer =PhotosSerializer(queryset,many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,publication_pk=None, pk=None):
+        queryset =Photos.objects.filter(
+            publication__pk=publication_pk
+        )
+        photo = get_object_or_404(queryset, pk=pk)
+        serializer = PhotosSerializer(photo)
+        return Response(serializer.data)
+
 
 class TypesReportsViewSet(viewsets.ModelViewSet):
  

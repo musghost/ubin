@@ -80,7 +80,8 @@ from apprest.viewsets import vwPushNotificationsPubViewSet
 from apprest.viewsets import FavoritesProvidersViewSet
 from apprest.viewsets import vwProviderFavoritesProvidersViewSet
 from apprest.viewsets import vwFavoritesProvidersViewSet
-from apprest.viewsets import PhotosSerializerViewSet
+from apprest.viewsets import PhotosViewSet
+from apprest.viewsets import vwPhotosPublicationsViewSet
 from apprest.viewsets import TypesReportsViewSet
 from apprest.viewsets import ReportsViewSet
 from apprest.viewsets import vwReportsViewSet
@@ -294,7 +295,9 @@ vw_notifications_publications.register(r'notifications',vwNotificationsPublicati
 #VIEW : publications/pk/pushNotifications/pk
 vw_push_notifications_publications=routers.NestedSimpleRouter(router,r'publications',lookup='publication')
 vw_push_notifications_publications.register(r'pushNotifications',vwPushNotificationsPubViewSet,base_name='pushNotifications')
-vw_photos_publications=""
+#VIEW : publications/pk/photos/pk
+vw_photos_publications=routers.NestedSimpleRouter(router,r'publications',lookup='publication')
+vw_photos_publications.register(r'photos',vwPhotosPublicationsViewSet,base_name='photos')
 
 router.register(r'comment',CommentsViewSet)
 
@@ -312,7 +315,7 @@ router.register(r'pushNotification',PushNotificationsViewSet)
 
 router.register(r'favoriteProvider',FavoritesProvidersViewSet)
 
-router.register(r'photos',PhotosSerializerViewSet)
+router.register(r'photo',PhotosViewSet)
 
 router.register(r'typeCustomer',TypeCustomersViewSet)
 
@@ -365,6 +368,7 @@ urlpatterns = [
     url(r'^',include(vw_favorites_publications.urls)),
     url(r'^',include(vw_notifications_publications.urls)),
     url(r'^',include(vw_push_notifications_publications.urls)),
+    url(r'^',include(vw_photos_publications.urls)),
     
     url(r'^docs/', include('rest_framework_swagger.urls')),
 ]   
