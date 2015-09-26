@@ -674,10 +674,30 @@ class FavoritesViewSet(viewsets.ModelViewSet):
     serializer_class = FavoritesSerializer
     queryset = Favorites.objects.all()
 
+
+'''
+------------------ Notifications ----------------------
+'''
 class NotificationsViewSet(viewsets.ModelViewSet):
  
     serializer_class = NotificationsSerializer
     queryset = Notifications.objects.all()
+
+class vwNotificationsViewSet(viewsets.ViewSet):
+    def list(self, request,user_pk=None):
+        queryset = Notifications.objects.filter(
+            user__pk=user_pk
+        )
+
+        serializer = NotificationsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,user_pk=None, pk=None):
+        queryset = Notifications.bjects.filter(
+            user__pk=user_pk
+        )
+        notification = get_object_or_404(queryset, pk=pk)
+        serializer = NotificationsSerializer(notification)
 
 class NotificationsPushViewSet(viewsets.ModelViewSet):
  
