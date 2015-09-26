@@ -179,7 +179,6 @@ class CommentsSerializer(serializers.ModelSerializer):
         	'id',
         	'publication',
         	'user', 
-        	'provider',
         	'comment',
         	'date'
         	)
@@ -325,7 +324,8 @@ class CustomersSerializer(serializers.ModelSerializer):
 class FavoritesCustomersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorites_Customers
-        fields = ('customer','user')
+        fields = ('id','customer','user')
+
 
 class TasksSerializer(serializers.ModelSerializer):
     class Meta:

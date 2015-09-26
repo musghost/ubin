@@ -74,6 +74,7 @@ from .serializers import TermsSerializer
 from rest_framework import viewsets
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from django.db import connection
 #from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 '''
 -----------  Countries --------------------------
@@ -421,6 +422,19 @@ class vwProvidersTypeViewSet(viewsets.ViewSet):
 
         return Response(serializer.data)
 
+class vwProvidersViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Providers.objects.all()
+        serializer = ProvidersSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,pk=None):
+        queryset = Providers.objects.all()
+        provider = get_object_or_404(queryset, pk=pk)
+        serializer = ProvidersSerializer(provider)
+
+        return Response(serializer.data)
+
 
 
 '''
@@ -443,6 +457,24 @@ class vwClassificationProvidersViewSet(viewsets.ViewSet):
     def retrieve(self, request,user_pk=None, pk=None):
         queryset = Classification_Providers.objects.filter(
             user__pk=user_pk
+        )
+        classificationPro = get_object_or_404(queryset, pk=pk)
+        serializer = ClassificationProvidersSerializer(classificationPro)
+
+        return Response(serializer.data)
+
+class vwProviderClassificationProvidersViewSet(viewsets.ViewSet):
+    def list(self, request,provider_pk=None):
+        queryset = Classification_Providers.objects.filter(
+            provider__pk=provider_pk
+        )
+
+        serializer = ClassificationProvidersSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,provider_pk=None, pk=None):
+        queryset = Classification_Providers.objects.filter(
+            provider__pk=provider_pk
         )
         classificationPro = get_object_or_404(queryset, pk=pk)
         serializer = ClassificationProvidersSerializer(classificationPro)
@@ -754,6 +786,24 @@ class vwFavoritesProvidersViewSet(viewsets.ViewSet):
         serializer = FavoritesProvidersSerializer(favorite_provider)
         return Response(serializer.data)
 
+class vwProviderFavoritesProvidersViewSet(viewsets.ViewSet):
+    def list(self, request,provider_pk=None):
+        queryset = Favorites_Providers.objects.filter(
+            provider__pk=provider_pk
+        )
+
+        serializer = FavoritesProvidersSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,provider_pk=None, pk=None):
+        queryset =Favorites_Providers.objects.filter(
+            provider__pk=provider_pk
+        )
+        favorite_provider = get_object_or_404(queryset, pk=pk)
+        serializer = FavoritesProvidersSerializer(favorite_provider)
+        return Response(serializer.data)
+
+
 class PhotosSerializerViewSet(viewsets.ModelViewSet):
  
     serializer_class = PhotosSerializer
@@ -882,3 +932,5 @@ class TermsViewSet(viewsets.ModelViewSet):
  
     serializer_class = TermsSerializer
     queryset = Terms.objects.all()   
+ 
+

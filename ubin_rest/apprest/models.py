@@ -190,7 +190,6 @@ class Publications(models.Model):
 class Comments(models.Model):
     publication= models.ForeignKey(Publications)
     user= models.ForeignKey(Users)
-    provider=models.ForeignKey(Providers)
     comment= models.TextField(max_length=1000)
     date= models.DateField(auto_now_add=True)
 

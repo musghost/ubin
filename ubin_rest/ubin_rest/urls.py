@@ -47,9 +47,11 @@ from apprest.viewsets import vwTypesDocumentsViewSet
 from apprest.viewsets import UsersViewSet
 from apprest.viewsets import vwUsersViewSet
 from apprest.viewsets import ProvidersViewSet
+from apprest.viewsets import vwProvidersViewSet
 from apprest.viewsets import vwProvidersTypeViewSet
 from apprest.viewsets import ClassificationProvidersViewSet
 from apprest.viewsets import vwClassificationProvidersViewSet
+from apprest.viewsets import vwProviderClassificationProvidersViewSet
 from apprest.viewsets import PublicationsViewSet
 from apprest.viewsets import vwPublicationsInTypeImmovableViewSet
 from apprest.viewsets import vwPublicationsInTypePublicationViewSet
@@ -71,6 +73,7 @@ from apprest.viewsets import vwNotificationsViewSet
 from apprest.viewsets import NotificationsPushViewSet
 from apprest.viewsets import vwNotificationsPushViewSet
 from apprest.viewsets import FavoritesProvidersViewSet
+from apprest.viewsets import vwProviderFavoritesProvidersViewSet
 from apprest.viewsets import vwFavoritesProvidersViewSet
 from apprest.viewsets import PhotosSerializerViewSet
 from apprest.viewsets import TypesReportsViewSet
@@ -215,7 +218,7 @@ router.register(r'user',UsersViewSet)
 router.register(r'users',vwUsersViewSet,base_name='users')
 #VIEW : /users/pk/clasificationsProviders/pk
 vw_classifications_providers=routers.NestedSimpleRouter(router,r'users',lookup='user')
-vw_classifications_providers.register(r'classificationProviders',vwClassificationProvidersViewSet,base_name='classificationProviders')
+vw_classifications_providers.register(r'clasificationProviders',vwClassificationProvidersViewSet,base_name='clasificationProviders')
 #VIEW : /users/pk/publications/pk
 vw_publications_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
 vw_publications_users.register(r'publications',vwPublicationsViewSet,base_name='publications')
@@ -250,43 +253,55 @@ vw_favorites_customers_users.register(r'favoritesCustomers',vwFavoritesCustomers
 vw_tasks_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
 vw_tasks_users.register(r'tasks',vwTasksViewSet,base_name='tasks')
 
-router.register(r'providers',ProvidersViewSet)
+'''
+Providers
+'''
+#CRUD
+router.register(r'provider',ProvidersViewSet)
+#VIEW : /providers/pk/clasificationProviders/pk
+router.register(r'providers',vwProvidersViewSet,base_name='providers')
+vw_classification_providers=routers.NestedSimpleRouter(router,r'providers',lookup='provider')
+vw_classification_providers.register(r'clasificationProviders',vwProviderClassificationProvidersViewSet,base_name='clasificationProviders')
+#VIEW : /providers/pk/favoritesProviders/pk
+vw_favorite_provider=routers.NestedSimpleRouter(router,r'providers',lookup='provider')
+vw_favorite_provider.register(r'favoriteProvider',vwProviderFavoritesProvidersViewSet,base_name='favoriteProvider')
 
-router.register(r'classificationProviders',ClassificationProvidersViewSet)
+router.register(r'classificationProvider',ClassificationProvidersViewSet)
 
-router.register(r'publications',PublicationsViewSet)
+router.register(r'publication',PublicationsViewSet)
 
-router.register(r'comments',CommentsViewSet)
+router.register(r'comment',CommentsViewSet)
 
-router.register(r'contacts',ContactsViewSet)
+router.register(r'contact',ContactsViewSet)
 
-router.register(r'documents',DocumentsViewSet)
+router.register(r'document',DocumentsViewSet)
 
-router.register(r'events',EventsViewSet)
+router.register(r'event',EventsViewSet)
 
-router.register(r'favorites',FavoritesViewSet)
+router.register(r'favorite',FavoritesViewSet)
 
-router.register(r'notifications',NotificationsViewSet)
+router.register(r'notification',NotificationsViewSet)
 
-router.register(r'notificationsPush',NotificationsPushViewSet)
+router.register(r'notificationPush',NotificationsPushViewSet)
 
-router.register(r'favoritesProviders',FavoritesProvidersViewSet)
+router.register(r'favoriteProvider',FavoritesProvidersViewSet)
 
 router.register(r'photos',PhotosSerializerViewSet)
 
-router.register(r'typeCustomers',TypeCustomersViewSet)
+router.register(r'typeCustomer',TypeCustomersViewSet)
 
-router.register(r'typesReports',TypesReportsViewSet)
+router.register(r'typeReport',TypesReportsViewSet)
 
-router.register(r'reports',ReportsViewSet)
+router.register(r'report',ReportsViewSet)
 
 router.register(r'userLocation',UserUbicationViewSet)
 
-router.register(r'customers',CustomersViewSet)
+router.register(r'customer',CustomersViewSet)
 
-router.register(r'favoritesCustomers',FavoritesCustomersViewSet)
+router.register(r'favoriteCustomer',FavoritesCustomersViewSet)
 
-router.register(r'tasks',TasksViewSet)
+router.register(r'task',TasksViewSet)
+
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -318,6 +333,8 @@ urlpatterns = [
     url(r'^',include(vw_user_ubication_users.urls)),
     url(r'^',include(vw_favorites_customers_users.urls)),
     url(r'^',include(vw_tasks_users.urls)),
+    url(r'^',include(vw_classification_providers.urls)),
+    url(r'^',include(vw_favorite_provider.urls)),
     
     url(r'^docs/', include('rest_framework_swagger.urls')),
 ]   
