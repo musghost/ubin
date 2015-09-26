@@ -74,8 +74,9 @@ from apprest.viewsets import vwFavoritesPublicationsViewSet
 from apprest.viewsets import NotificationsViewSet
 from apprest.viewsets import vwNotificationsPublicationsViewSet
 from apprest.viewsets import vwNotificationsViewSet
-from apprest.viewsets import NotificationsPushViewSet
-from apprest.viewsets import vwNotificationsPushViewSet
+from apprest.viewsets import PushNotificationsViewSet
+from apprest.viewsets import vwPushNotificationsViewSet
+from apprest.viewsets import vwPushNotificationsPubViewSet
 from apprest.viewsets import FavoritesProvidersViewSet
 from apprest.viewsets import vwProviderFavoritesProvidersViewSet
 from apprest.viewsets import vwFavoritesProvidersViewSet
@@ -238,9 +239,9 @@ vw_documents_users.register(r'documents',vwDocumentsViewSet,base_name='documents
 #VIEW : /users/pk/notifications/pk
 vw_notifications_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
 vw_notifications_users.register(r'notifications',vwNotificationsViewSet,base_name='notifications')
-#VIEW : /users/pk/notificationsPush/pk
-vw_notifications_push_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
-vw_notifications_push_users.register(r'notificationsPush',vwNotificationsPushViewSet,base_name='notificationsPush')
+#VIEW : /users/pk/pushNotifications/pk
+vw_push_notifications_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
+vw_push_notifications_users.register(r'pushNotifications',vwPushNotificationsViewSet,base_name='pushNotifications')
 #VIEW : /users/pk/favoritesProviders/pk
 vw_favorites_providers_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
 vw_favorites_providers_users.register(r'favoritesProviders',vwFavoritesProvidersViewSet,base_name='favoritesProviders')
@@ -290,8 +291,9 @@ vw_favorites_publications.register(r'favorites',vwFavoritesPublicationsViewSet,b
 #VIEW : publications/pk/notifications/pk
 vw_notifications_publications=routers.NestedSimpleRouter(router,r'publications',lookup='publication')
 vw_notifications_publications.register(r'notifications',vwNotificationsPublicationsViewSet,base_name='notifications')
-
-vw_notifications_push_publications=""
+#VIEW : publications/pk/pushNotifications/pk
+vw_push_notifications_publications=routers.NestedSimpleRouter(router,r'publications',lookup='publication')
+vw_push_notifications_publications.register(r'pushNotifications',vwPushNotificationsPubViewSet,base_name='pushNotifications')
 vw_photos_publications=""
 
 router.register(r'comment',CommentsViewSet)
@@ -306,7 +308,7 @@ router.register(r'favorite',FavoritesViewSet)
 
 router.register(r'notification',NotificationsViewSet)
 
-router.register(r'notificationPush',NotificationsPushViewSet)
+router.register(r'pushNotification',PushNotificationsViewSet)
 
 router.register(r'favoriteProvider',FavoritesProvidersViewSet)
 
@@ -351,7 +353,7 @@ urlpatterns = [
     url(r'^',include(vw_contacts_users.urls)),
     url(r'^',include(vw_documents_users.urls)),
     url(r'^',include(vw_notifications_users.urls)),    
-    url(r'^',include(vw_notifications_push_users.urls)),
+    url(r'^',include(vw_push_notifications_users.urls)),
     url(r'^',include(vw_favorites_providers_users.urls)),
     url(r'^',include(vw_reports_users.urls)),
     url(r'^',include(vw_user_ubication_users.urls)),
@@ -362,6 +364,7 @@ urlpatterns = [
     url(r'^',include(vw_comments_publications.urls)),
     url(r'^',include(vw_favorites_publications.urls)),
     url(r'^',include(vw_notifications_publications.urls)),
+    url(r'^',include(vw_push_notifications_publications.urls)),
     
     url(r'^docs/', include('rest_framework_swagger.urls')),
 ]   

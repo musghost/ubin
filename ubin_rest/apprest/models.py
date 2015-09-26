@@ -231,7 +231,7 @@ class Notifications(models.Model):
     viewed = models.BooleanField(default=False)
     expired = models.BooleanField(default=False)
 
-class Notifications_Push(models.Model):
+class Push_Notifications(models.Model):
     publication=models.ForeignKey(Publications)
     user= models.ForeignKey(Users)
     device_token= models.TextField(max_length=200)

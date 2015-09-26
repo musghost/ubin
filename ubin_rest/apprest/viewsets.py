@@ -24,7 +24,7 @@ from .models import Documents
 from .models import Events 
 from .models import Favorites
 from .models import Notifications
-from .models import Notifications_Push
+from .models import Push_Notifications
 from .models import Favorites_Providers
 from .models import Favorites_Providers
 from .models import Photos
@@ -58,7 +58,7 @@ from .serializers import DocumentsSerializer
 from .serializers import EventsSerializer
 from .serializers import FavoritesSerializer
 from .serializers import NotificationsSerializer
-from .serializers import NotificationsPushSerializer
+from .serializers import PushNotificationsSerializer
 from .serializers import FavoritesProvidersSerializer
 from .serializers import PhotosSerializer
 from .serializers import TypesReportsSerializer
@@ -805,28 +805,45 @@ class vwNotificationsPublicationsViewSet(viewsets.ViewSet):
 
 
 '''
------------------ Notifications Push -----------------
+----------------- Push Notifications  -----------------
 '''
-class NotificationsPushViewSet(viewsets.ModelViewSet):
+class PushNotificationsViewSet(viewsets.ModelViewSet):
  
-    serializer_class = NotificationsPushSerializer
-    queryset = Notifications_Push.objects.all()
+    serializer_class = PushNotificationsSerializer
+    queryset = Push_Notifications.objects.all()
 
-class vwNotificationsPushViewSet(viewsets.ViewSet):
+class vwPushNotificationsViewSet(viewsets.ViewSet):
     def list(self, request,user_pk=None):
-        queryset = Notifications_Push.objects.filter(
+        queryset = Push_Notifications.objects.filter(
             user__pk=user_pk
         )
 
-        serializer = NotificationsPushSerializer(queryset, many=True)
+        serializer = PushNotificationsSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,user_pk=None, pk=None):
-        queryset = Notifications_Push.bjects.filter(
+        queryset = Push_Notifications.bjects.filter(
             user__pk=user_pk
         )
-        notification_push = get_object_or_404(queryset, pk=pk)
-        serializer = NotificationsPushSerializer(notification_push)
+        push_notification = get_object_or_404(queryset, pk=pk)
+        serializer = PushNotificationsSerializer(push_notification)
+        return Response(serializer.data)
+
+class vwPushNotificationsPubViewSet(viewsets.ViewSet):
+    def list(self, request,publication_pk=None):
+        queryset = Push_Notifications.objects.filter(
+            publication__pk=publication_pk
+        )
+
+        serializer = PushNotificationsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,publication_pk=None, pk=None):
+        queryset = Push_Notifications.objects.filter(
+            publication__pk=publication_pk
+        )
+        push_notification = get_object_or_404(queryset, pk=pk)
+        serializer = PushNotificationsSerializer(push_notification)
         return Response(serializer.data)
 
 '''

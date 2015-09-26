@@ -24,7 +24,7 @@ from .models import Documents
 from .models import Events 
 from .models import Favorites
 from .models import Notifications
-from .models import Notifications_Push
+from .models import Push_Notifications
 from .models import Favorites_Providers
 from .models import Favorites_Providers
 from .models import Photos
@@ -241,9 +241,9 @@ class NotificationsSerializer(serializers.ModelSerializer):
         	'expired'
         	)
 
-class NotificationsPushSerializer(serializers.ModelSerializer):
+class PushNotificationsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Notifications_Push
+        model = Push_Notifications
         fields = (
         	'id',
         	'publication',
