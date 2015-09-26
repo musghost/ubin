@@ -528,10 +528,30 @@ class vwPublicationsViewSet(viewsets.ViewSet):
 
 
 
+'''
+------------------ Comments ------------------------
+'''
 class CommentsViewSet(viewsets.ModelViewSet):
  
     serializer_class = CommentsSerializer
     queryset = Comments.objects.all()
+
+class vwCommentsViewSet(viewsets.ViewSet):
+    def list(self, request,user_pk=None):
+        queryset = Comments.objects.filter(
+            user__pk=user_pk
+        )
+
+        serializer = CommentsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,user_pk=None,pk=None):
+        queryset = Comments.objects.filter(
+            user__pk=user_pk
+        )
+        comment = get_object_or_404(queryset, pk=pk)
+        serializer = CommentsSerializer(comment)
+        return Response(serializer.data)
 
 
 
