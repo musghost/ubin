@@ -622,6 +622,26 @@ class DocumentsTypeViewSet(viewsets.ViewSet):
         serializer = DocumentsSerializer(document)
         return Response(serializer.data)
 
+class vwDocumentsViewSet(viewsets.ViewSet):
+    def list(self, request,user_pk=None):
+        queryset = Documents.objects.filter(
+            administrator__pk=user_pk
+        )
+
+        serializer = DocumentsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,user_pk=None,pk=None):
+        queryset = Documents.objects.filter(
+            administrator__pk=user_pk
+        )
+        document = get_object_or_404(queryset, pk=pk)
+        serializer = DocumentsSerializer(document)
+        return Response(serializer.data)
+
+
+
+
 
 
 '''
