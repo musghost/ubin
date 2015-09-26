@@ -699,10 +699,32 @@ class vwNotificationsViewSet(viewsets.ViewSet):
         notification = get_object_or_404(queryset, pk=pk)
         serializer = NotificationsSerializer(notification)
 
+
+
+
+'''
+----------------- Notifications Push -----------------
+'''
 class NotificationsPushViewSet(viewsets.ModelViewSet):
  
     serializer_class = NotificationsPushSerializer
     queryset = Notifications_Push.objects.all()
+
+class vwNotificationsPushViewSet(viewsets.ViewSet):
+    def list(self, request,user_pk=None):
+        queryset = Notifications_Push.objects.filter(
+            user__pk=user_pk
+        )
+
+        serializer = NotificationsPushSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,user_pk=None, pk=None):
+        queryset = Notifications_Push.bjects.filter(
+            user__pk=user_pk
+        )
+        notification_push = get_object_or_404(queryset, pk=pk)
+        serializer = NotificationsPushSerializer(notification_push)
 
 class FavoritesProvidersViewSet(viewsets.ModelViewSet):
  
