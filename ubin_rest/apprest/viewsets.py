@@ -363,6 +363,18 @@ class UsersViewSet(viewsets.ModelViewSet):
     serializer_class = UsersSerializer
     queryset = Users.objects.all()
 
+class vwUsersViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Users.objects.all()
+        serializer = UsersSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,pk=None):
+        queryset = Users.objects.all()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = UsersSerializer(user)
+        return Response(serializer.data)
+
 class AdvisorUsersViewSet(viewsets.ViewSet):
     def list(self, request,typeAdvisor_pk=None):
         queryset = Users.objects.filter(
@@ -379,6 +391,8 @@ class AdvisorUsersViewSet(viewsets.ViewSet):
         user = get_object_or_404(queryset, pk=pk)
         serializer = UsersSerializer(user)
         return Response(serializer.data)
+
+
 
 '''
 ----------------- Providers -----------------------
@@ -406,10 +420,34 @@ class vwProvidersTypeViewSet(viewsets.ViewSet):
 
         return Response(serializer.data)
 
+
+
+'''
+---------------- Calssifications Providers ---------------------
+'''
 class ClassificationProvidersViewSet(viewsets.ModelViewSet):
  
     serializer_class = ClassificationProvidersSerializer
     queryset = Classification_Providers.objects.all()
+
+class vwClassificationProvidersViewSet(viewsets.ViewSet):
+    def list(self, request,user_pk=None):
+        queryset = Classification_Providers.objects.filter(
+            user__pk=user_pk
+        )
+
+        serializer = ClassificationProvidersSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,user_pk=None, pk=None):
+        queryset = Classification_Providers.objects.filter(
+            user__pk=user_pk
+        )
+        classificationPro = get_object_or_404(queryset, pk=pk)
+        serializer = ClassificationProvidersSerializer(classificationPro)
+
+        return Response(serializer.data)
+
 
 class PublicationsViewSet(viewsets.ModelViewSet):
  

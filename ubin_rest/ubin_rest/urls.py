@@ -45,9 +45,11 @@ from apprest.viewsets import vwTypesEventsViewSet
 from apprest.viewsets import TypesDocumentsViewSet
 from apprest.viewsets import vwTypesDocumentsViewSet
 from apprest.viewsets import UsersViewSet
+from apprest.viewsets import vwUsersViewSet
 from apprest.viewsets import ProvidersViewSet
 from apprest.viewsets import vwProvidersTypeViewSet
 from apprest.viewsets import ClassificationProvidersViewSet
+from apprest.viewsets import vwClassificationProvidersViewSet
 from apprest.viewsets import PublicationsViewSet
 from apprest.viewsets import vwPublicationsInTypeImmovableViewSet
 from apprest.viewsets import vwPublicationsInTypePublicationViewSet
@@ -189,11 +191,32 @@ router.register(r'typesDocuments',vwTypesDocumentsViewSet,base_name='typesDocume
 vw_type_documents=routers.NestedSimpleRouter(router,r'typesDocuments',lookup='typeDocument')
 vw_type_documents.register(r'documents',DocumentsTypeViewSet,base_name='documents')
 
-
-
+'''
+Terms
+'''
 router.register(r'terms',TermsViewSet)
 
-router.register(r'users',UsersViewSet)
+'''
+users
+'''
+#CRUD
+router.register(r'user',UsersViewSet)
+router.register(r'users',vwUsersViewSet,base_name='users')
+#VIEW /users/pk/clasificationsProviders/pk
+vw_classifications_providers=routers.NestedSimpleRouter(router,r'users',lookup='user')
+vw_classifications_providers.register(r'classificationProviders',vwClassificationProvidersViewSet,base_name='classificationProviders')
+
+vw_publications_users=""
+vw_comments_users=""
+vw_contacts_users=""
+vw_documents_users=""
+vw_notifications_users=""
+vw_notifications_push_users=""
+vw_favorites_providers_users=""
+vw_reports_users=""
+vw_user_ubication_users=""
+vw_favorites_customers_users=""
+vw_tasks_users=""
 
 router.register(r'providers',ProvidersViewSet)
 
@@ -244,5 +267,7 @@ urlpatterns = [
     url(r'^',include(vw_contacts_type.urls)),
     url(r'^',include(vw_events_type.urls)),
     url(r'^',include(vw_type_documents.urls)),
+    url(r'^',include(vw_classifications_providers.urls)),
+    
     url(r'^docs/', include('rest_framework_swagger.urls')),
 ]   
