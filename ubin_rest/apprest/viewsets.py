@@ -448,7 +448,9 @@ class vwClassificationProvidersViewSet(viewsets.ViewSet):
 
         return Response(serializer.data)
 
-
+'''
+---------------- Publications ----------------------
+'''
 class PublicationsViewSet(viewsets.ModelViewSet):
  
     serializer_class = PublicationsSerializer
@@ -504,6 +506,26 @@ class vwPublicationsCoinsViewSet(viewsets.ViewSet):
         publication = get_object_or_404(queryset, pk=pk)
         serializer = PublicationsSerializer(publication)
         return Response(serializer.data)
+
+class vwPublicationsViewSet(viewsets.ViewSet):
+    def list(self, request,user_pk=None):
+        queryset = Publications.objects.filter(
+            user__pk=user_pk
+        )
+
+        serializer = PublicationsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,user_pk=None,pk=None):
+        queryset = Publications.objects.filter(
+            user__pk=user_pk
+        )
+        publication = get_object_or_404(queryset, pk=pk)
+        serializer = PublicationsSerializer(publication)
+        return Response(serializer.data)
+
+
+
 
 
 class CommentsViewSet(viewsets.ModelViewSet):

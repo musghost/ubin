@@ -53,6 +53,7 @@ from apprest.viewsets import vwClassificationProvidersViewSet
 from apprest.viewsets import PublicationsViewSet
 from apprest.viewsets import vwPublicationsInTypeImmovableViewSet
 from apprest.viewsets import vwPublicationsInTypePublicationViewSet
+from apprest.viewsets import vwPublicationsViewSet
 from apprest.viewsets import vwPublicationsCoinsViewSet
 from apprest.viewsets import CommentsViewSet
 from apprest.viewsets import ContactsViewSet
@@ -202,11 +203,12 @@ users
 #CRUD
 router.register(r'user',UsersViewSet)
 router.register(r'users',vwUsersViewSet,base_name='users')
-#VIEW /users/pk/clasificationsProviders/pk
+#VIEW : /users/pk/clasificationsProviders/pk
 vw_classifications_providers=routers.NestedSimpleRouter(router,r'users',lookup='user')
 vw_classifications_providers.register(r'classificationProviders',vwClassificationProvidersViewSet,base_name='classificationProviders')
-
-vw_publications_users=""
+#VIEW : /users/pk/publications/pk
+vw_publications_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
+vw_publications_users.register(r'publications',vwPublicationsViewSet,base_name='publications')
 vw_comments_users=""
 vw_contacts_users=""
 vw_documents_users=""
@@ -268,6 +270,6 @@ urlpatterns = [
     url(r'^',include(vw_events_type.urls)),
     url(r'^',include(vw_type_documents.urls)),
     url(r'^',include(vw_classifications_providers.urls)),
-    
+    url(r'^',include(vw_publications_users.urls)),
     url(r'^docs/', include('rest_framework_swagger.urls')),
 ]   
