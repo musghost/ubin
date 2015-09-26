@@ -335,7 +335,8 @@ class TasksSerializer(serializers.ModelSerializer):
             'description',
             'date',
             'hour',
-            'contact'
+            'contact',
+            'user'
             )
 
 class TermsSerializer(serializers.ModelSerializer):
