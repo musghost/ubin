@@ -828,10 +828,30 @@ class CustomersViewSet(viewsets.ModelViewSet):
     serializer_class = CustomersSerializer
     queryset = Customers.objects.all() 
 
+'''
+--------------- Favorites Customers -----------------------
+'''
 class FavoritesCustomersViewSet(viewsets.ModelViewSet):
  
     serializer_class = FavoritesCustomersSerializer
-    queryset = Favorites_Customers.objects.all()     
+    queryset = Favorites_Customers.objects.all() 
+
+class vwFavoritesCustomersViewSet(viewsets.ViewSet):
+    def list(self, request,user_pk=None):
+        queryset = Favorites_Customers.objects.filter(
+            user__pk=user_pk
+        )
+
+        serializer = FavoritesCustomersSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,user_pk=None, pk=None):
+        queryset =Favorites_Customers.objects.filter(
+            user__pk=user_pk
+        )
+        fav_custumer = get_object_or_404(queryset, pk=pk)
+        serializer = FavoritesCustomersSerializer(fav_custumer)
+        return Response(serializer.data)    
 
 class TasksViewSet(viewsets.ModelViewSet):
  

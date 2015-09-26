@@ -81,6 +81,7 @@ from apprest.viewsets import vwUserUbicationViewSet
 from apprest.viewsets import TypeCustomersViewSet
 from apprest.viewsets import CustomersViewSet
 from apprest.viewsets import FavoritesCustomersViewSet
+from apprest.viewsets import vwFavoritesCustomersViewSet
 from apprest.viewsets import TasksViewSet
 from apprest.viewsets import TermsViewSet
 
@@ -241,7 +242,9 @@ vw_reports_users.register(r'reports',vwReportsViewSet,base_name='reports')
 #VIEW : /users/pk/userUbication/pk
 vw_user_ubication_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
 vw_user_ubication_users.register(r'userLocation',vwUserUbicationViewSet,base_name='userLocation')
-vw_favorites_customers_users=""
+#VIEW : /users/pk/favoritesCustomers/pk
+vw_favorites_customers_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
+vw_favorites_customers_users.register(r'favoritesCustomers',vwFavoritesCustomersViewSet,base_name='favoritesCustomers')
 vw_tasks_users=""
 
 router.register(r'providers',ProvidersViewSet)
@@ -268,12 +271,19 @@ router.register(r'favoritesProviders',FavoritesProvidersViewSet)
 
 router.register(r'photos',PhotosSerializerViewSet)
 
+router.register(r'typeCustomers',TypeCustomersViewSet)
 
 router.register(r'typesReports',TypesReportsViewSet)
 
 router.register(r'reports',ReportsViewSet)
 
 router.register(r'userLocation',UserUbicationViewSet)
+
+router.register(r'customers',CustomersViewSet)
+
+router.register(r'favoritesCustomers',FavoritesCustomersViewSet)
+
+router.register(r'tasks',TasksViewSet)
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -303,6 +313,7 @@ urlpatterns = [
     url(r'^',include(vw_favorites_providers_users.urls)),
     url(r'^',include(vw_reports_users.urls)),
     url(r'^',include(vw_user_ubication_users.urls)),
+    url(r'^',include(vw_favorites_customers_users.urls)),
     
     url(r'^docs/', include('rest_framework_swagger.urls')),
 ]   
