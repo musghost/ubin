@@ -156,6 +156,7 @@ class vwTownsViewSet(viewsets.ViewSet):
         )
         town = get_object_or_404(queryset, pk=pk)
         serializer = TownsSerializer(town)
+        return Response(serializer.data)
 
 class vwTownsStatesViewSet(viewsets.ViewSet):
     def list(self, request,state_pk=None):
@@ -667,6 +668,7 @@ class EventsTypeViewSet(viewsets.ViewSet):
         )
         event = get_object_or_404(queryset, pk=pk)
         serializer = EventsSerializer(contact)
+        return Response(serializer.data)
 
 
 class FavoritesViewSet(viewsets.ModelViewSet):
@@ -698,7 +700,7 @@ class vwNotificationsViewSet(viewsets.ViewSet):
         )
         notification = get_object_or_404(queryset, pk=pk)
         serializer = NotificationsSerializer(notification)
-
+        return Response(serializer.data)
 
 
 
@@ -725,11 +727,32 @@ class vwNotificationsPushViewSet(viewsets.ViewSet):
         )
         notification_push = get_object_or_404(queryset, pk=pk)
         serializer = NotificationsPushSerializer(notification_push)
+        return Response(serializer.data)
 
+'''
+--------------- Favorites Providers ---------------------
+'''
 class FavoritesProvidersViewSet(viewsets.ModelViewSet):
  
     serializer_class = FavoritesProvidersSerializer
     queryset = Favorites_Providers.objects.all()
+
+class vwFavoritesProvidersViewSet(viewsets.ViewSet):
+    def list(self, request,user_pk=None):
+        queryset = Favorites_Providers.objects.filter(
+            user__pk=user_pk
+        )
+
+        serializer = FavoritesProvidersSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,user_pk=None, pk=None):
+        queryset =Favorites_Providers.objects.filter(
+            user__pk=user_pk
+        )
+        favorite_provider = get_object_or_404(queryset, pk=pk)
+        serializer = FavoritesProvidersSerializer(favorite_provider)
+        return Response(serializer.data)
 
 class PhotosSerializerViewSet(viewsets.ModelViewSet):
  
