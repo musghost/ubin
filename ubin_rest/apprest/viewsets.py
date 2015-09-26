@@ -8,7 +8,6 @@ from .models import Types_Immovables
 from .models import Types_Publications
 from .models import Types_Advisors
 from .models import Types_Providers
-from .models import Coins
 from .models import Types_Immovables
 from .models import Types_Advisors
 from .models import Types_Providers
@@ -557,6 +556,19 @@ class vwPublicationsViewSet(viewsets.ViewSet):
         serializer = PublicationsSerializer(publication)
         return Response(serializer.data)
 
+class vwAllPublicationsViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Publications.objects.all()
+
+        serializer = PublicationsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,pk=None):
+        queryset = Publications.objects.all()
+        publication = get_object_or_404(queryset, pk=pk)
+        serializer = PublicationsSerializer(publication)
+        return Response(serializer.data)
+
 
 
 
@@ -581,6 +593,23 @@ class vwCommentsViewSet(viewsets.ViewSet):
     def retrieve(self, request,user_pk=None,pk=None):
         queryset = Comments.objects.filter(
             user__pk=user_pk
+        )
+        comment = get_object_or_404(queryset, pk=pk)
+        serializer = CommentsSerializer(comment)
+        return Response(serializer.data)
+
+class vwCommentsPublicationsViewSet(viewsets.ViewSet):
+    def list(self, request,publication_pk=None):
+        queryset = Comments.objects.filter(
+            publication__pk=publication_pk
+        )
+
+        serializer = CommentsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self,request,publication_pk=None,pk=None):
+        queryset = Comments.objects.filter(
+            publication__pk=user_pk
         )
         comment = get_object_or_404(queryset, pk=pk)
         serializer = CommentsSerializer(comment)
@@ -703,10 +732,33 @@ class EventsTypeViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 
+
+'''
+-------------- Favorites -------------------------
+'''
 class FavoritesViewSet(viewsets.ModelViewSet):
  
     serializer_class = FavoritesSerializer
     queryset = Favorites.objects.all()
+
+class vwFavoritesPublicationsViewSet(viewsets.ViewSet):
+    def list(self, request,publication_pk=None):
+        queryset = Favorites.objects.filter(
+            publication__pk=publication_pk
+        )
+
+        serializer = FavoritesSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,publication_pk=None, pk=None):
+        queryset = Favorites.bjects.filter(
+            publication__pk=publication_pk
+        )
+        favorite = get_object_or_404(queryset, pk=pk)
+        serializer = FavoritesSerializer(favorite)
+        return Response(serializer.data)
+
+
 
 
 '''

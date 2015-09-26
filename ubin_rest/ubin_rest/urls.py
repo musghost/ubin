@@ -56,8 +56,10 @@ from apprest.viewsets import PublicationsViewSet
 from apprest.viewsets import vwPublicationsInTypeImmovableViewSet
 from apprest.viewsets import vwPublicationsInTypePublicationViewSet
 from apprest.viewsets import vwPublicationsViewSet
+from apprest.viewsets import vwAllPublicationsViewSet
 from apprest.viewsets import vwPublicationsCoinsViewSet
 from apprest.viewsets import CommentsViewSet
+from apprest.viewsets import vwCommentsPublicationsViewSet
 from apprest.viewsets import vwCommentsViewSet
 from apprest.viewsets import ContactsViewSet
 from apprest.viewsets import vwContactsViewSet
@@ -68,6 +70,7 @@ from apprest.viewsets import vwDocumentsViewSet
 from apprest.viewsets import EventsViewSet
 from apprest.viewsets import EventsTypeViewSet
 from apprest.viewsets import FavoritesViewSet
+from apprest.viewsets import vwFavoritesPublicationsViewSet
 from apprest.viewsets import NotificationsViewSet
 from apprest.viewsets import vwNotificationsViewSet
 from apprest.viewsets import NotificationsPushViewSet
@@ -266,9 +269,26 @@ vw_classification_providers.register(r'clasificationProviders',vwProviderClassif
 vw_favorite_provider=routers.NestedSimpleRouter(router,r'providers',lookup='provider')
 vw_favorite_provider.register(r'favoriteProvider',vwProviderFavoritesProvidersViewSet,base_name='favoriteProvider')
 
+'''
+Classification Providers 
+'''
 router.register(r'classificationProvider',ClassificationProvidersViewSet)
 
+'''
+Publications
+'''
+#CRUD
 router.register(r'publication',PublicationsViewSet)
+#VIEW : publications/pk/comments/pk
+router.register(r'publications',vwAllPublicationsViewSet,base_name='publications')
+vw_comments_publications=routers.NestedSimpleRouter(router,r'publications',lookup='publication')
+vw_comments_publications.register(r'comments',vwCommentsPublicationsViewSet,base_name='comments')
+#VIEW : publications/pk/favoritesPublications/pk
+vw_favorites_publications=routers.NestedSimpleRouter(router,r'publications',lookup='publication')
+vw_favorites_publications.register(r'favorites',vwFavoritesPublicationsViewSet,base_name='favorites')
+vw_notifications_publications=""
+vw_notifications_push_publications=""
+vw_photos_publications=""
 
 router.register(r'comment',CommentsViewSet)
 
@@ -335,6 +355,8 @@ urlpatterns = [
     url(r'^',include(vw_tasks_users.urls)),
     url(r'^',include(vw_classification_providers.urls)),
     url(r'^',include(vw_favorite_provider.urls)),
+    url(r'^',include(vw_comments_publications.urls)),
+    url(r'^',include(vw_favorites_publications.urls)),
     
     url(r'^docs/', include('rest_framework_swagger.urls')),
 ]   

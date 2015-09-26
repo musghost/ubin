@@ -8,7 +8,6 @@ from .models import Types_Immovables
 from .models import Types_Publications
 from .models import Types_Advisors
 from .models import Types_Providers
-from .models import Coins
 from .models import Types_Immovables
 from .models import Types_Advisors
 from .models import Types_Providers
