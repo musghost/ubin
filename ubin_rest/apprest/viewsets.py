@@ -786,6 +786,22 @@ class vwNotificationsViewSet(viewsets.ViewSet):
         serializer = NotificationsSerializer(notification)
         return Response(serializer.data)
 
+class vwNotificationsPublicationsViewSet(viewsets.ViewSet):
+    def list(self, request,publication_pk=None):
+        queryset = Notifications.objects.filter(
+            publication__pk=publication_pk
+        )
+
+        serializer = NotificationsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,publication_pk=None, pk=None):
+        queryset = Notifications.bjects.filter(
+            publication__pk=user_pk
+        )
+        notification = get_object_or_404(queryset, pk=pk)
+        serializer = NotificationsSerializer(notification)
+        return Response(serializer.data)
 
 
 '''

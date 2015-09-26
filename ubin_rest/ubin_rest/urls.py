@@ -72,6 +72,7 @@ from apprest.viewsets import EventsTypeViewSet
 from apprest.viewsets import FavoritesViewSet
 from apprest.viewsets import vwFavoritesPublicationsViewSet
 from apprest.viewsets import NotificationsViewSet
+from apprest.viewsets import vwNotificationsPublicationsViewSet
 from apprest.viewsets import vwNotificationsViewSet
 from apprest.viewsets import NotificationsPushViewSet
 from apprest.viewsets import vwNotificationsPushViewSet
@@ -286,7 +287,10 @@ vw_comments_publications.register(r'comments',vwCommentsPublicationsViewSet,base
 #VIEW : publications/pk/favoritesPublications/pk
 vw_favorites_publications=routers.NestedSimpleRouter(router,r'publications',lookup='publication')
 vw_favorites_publications.register(r'favorites',vwFavoritesPublicationsViewSet,base_name='favorites')
-vw_notifications_publications=""
+#VIEW : publications/pk/notifications/pk
+vw_notifications_publications=routers.NestedSimpleRouter(router,r'publications',lookup='publication')
+vw_notifications_publications.register(r'notifications',vwNotificationsPublicationsViewSet,base_name='notifications')
+
 vw_notifications_push_publications=""
 vw_photos_publications=""
 
@@ -357,6 +361,7 @@ urlpatterns = [
     url(r'^',include(vw_favorite_provider.urls)),
     url(r'^',include(vw_comments_publications.urls)),
     url(r'^',include(vw_favorites_publications.urls)),
+    url(r'^',include(vw_notifications_publications.urls)),
     
     url(r'^docs/', include('rest_framework_swagger.urls')),
 ]   
