@@ -764,10 +764,38 @@ class TypesReportsViewSet(viewsets.ModelViewSet):
     serializer_class = TypesReportsSerializer
     queryset = Types_Reports.objects.all()
 
+
+
+'''
+--------------- Reports ----------------------
+'''
 class ReportsViewSet(viewsets.ModelViewSet):
  
     serializer_class = ReportsSerializer
     queryset = Reports.objects.all()
+
+class vwReportsViewSet(viewsets.ViewSet):
+    def list(self, request,user_pk=None):
+        queryset = Reports.objects.filter(
+            user__pk=user_pk
+        )
+
+        serializer = ReportsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,user_pk=None, pk=None):
+        queryset =Reports.objects.filter(
+            user__pk=user_pk
+        )
+        report = get_object_or_404(queryset, pk=pk)
+        serializer = ReportsSerializer(report)
+        return Response(serializer.data)
+
+
+
+
+
+
 
 class UserUbicationViewSet(viewsets.ModelViewSet):
  

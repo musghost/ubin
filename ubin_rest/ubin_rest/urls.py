@@ -75,6 +75,7 @@ from apprest.viewsets import vwFavoritesProvidersViewSet
 from apprest.viewsets import PhotosSerializerViewSet
 from apprest.viewsets import TypesReportsViewSet
 from apprest.viewsets import ReportsViewSet
+from apprest.viewsets import vwReportsViewSet
 from apprest.viewsets import UserUbicationViewSet
 from apprest.viewsets import TypeCustomersViewSet
 from apprest.viewsets import CustomersViewSet
@@ -233,8 +234,10 @@ vw_notifications_push_users.register(r'notificationsPush',vwNotificationsPushVie
 #VIEW : /users/pk/favoritesProviders/pk
 vw_favorites_providers_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
 vw_favorites_providers_users.register(r'favoritesProviders',vwFavoritesProvidersViewSet,base_name='favoritesProviders')
+#VIEW : /users/pk/reports/pk
+vw_reports_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
+vw_reports_users.register(r'reports',vwReportsViewSet,base_name='reports')
 
-vw_reports_users=""
 vw_user_ubication_users=""
 vw_favorites_customers_users=""
 vw_tasks_users=""
@@ -296,6 +299,8 @@ urlpatterns = [
     url(r'^',include(vw_notifications_users.urls)),    
     url(r'^',include(vw_notifications_push_users.urls)),
     url(r'^',include(vw_favorites_providers_users.urls)),
+    url(r'^',include(vw_reports_users.urls)),
+    
     
     url(r'^docs/', include('rest_framework_swagger.urls')),
 ]   
