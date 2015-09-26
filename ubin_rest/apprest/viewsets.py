@@ -579,6 +579,22 @@ class vwContactsTypeViewSet(viewsets.ViewSet):
         contact = get_object_or_404(queryset, pk=pk)
         serializer = ContactsSerializer(contact)
 
+class vwContactsViewSet(viewsets.ViewSet):
+    def list(self, request,user_pk=None):
+        queryset = Contacts.objects.filter(
+            user__pk=user_pk
+        )
+
+        serializer = ContactsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,user_pk=None, pk=None):
+        queryset = Contacts.bjects.filter(
+            user__pk=typeContact_pk
+        )
+        contact = get_object_or_404(queryset, pk=pk)
+        serializer = ContactsSerializer(contact)
+
 
 
 '''
