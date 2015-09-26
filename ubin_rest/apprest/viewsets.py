@@ -792,15 +792,31 @@ class vwReportsViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 
-
-
-
-
-
+'''
+-------------- User Ubication ------------------------
+'''
 class UserUbicationViewSet(viewsets.ModelViewSet):
  
     serializer_class = UserUbicationSerializer
     queryset = User_Ubication.objects.all()
+
+class vwUserUbicationViewSet(viewsets.ViewSet):
+    def list(self, request,user_pk=None):
+        queryset = User_Ubication.objects.filter(
+            user__pk=user_pk
+        )
+
+        serializer = UserUbicationSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,user_pk=None, pk=None):
+        queryset =User_Ubication.objects.filter(
+            user__pk=user_pk
+        )
+        user_u = get_object_or_404(queryset, pk=pk)
+        serializer = UserUbicationSerializer(user_u)
+        return Response(serializer.data)
+
 
 class TypeCustomersViewSet(viewsets.ModelViewSet):
  
