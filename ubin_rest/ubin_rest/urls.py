@@ -96,7 +96,7 @@ from apprest.viewsets import vwTasksViewSet
 from apprest.viewsets import TermsViewSet
 
 from rest_framework.routers import DefaultRouter
-
+from rest_framework_nested import routers
 
 router = DefaultRouter()
 
