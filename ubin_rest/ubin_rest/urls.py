@@ -95,11 +95,11 @@ from apprest.viewsets import TasksViewSet
 from apprest.viewsets import vwTasksViewSet
 from apprest.viewsets import TermsViewSet
 
-#from rest_framework.routers import DefaultRouter
-from rest_framework_nested import routers
+from rest_framework.routers import DefaultRouter
 
-#router = DefaultRouter()
-router = routers.SimpleRouter()
+
+router = DefaultRouter()
+
 '''
 Countries
 '''
