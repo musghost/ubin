@@ -95,6 +95,7 @@ from apprest.viewsets import FavoritesCustomersViewSet
 from apprest.viewsets import vwFavoritesCustomersViewSet
 from apprest.viewsets import TasksViewSet
 from apprest.viewsets import vwTasksViewSet
+from apprest.viewsets import vwTaskViewSet
 from apprest.viewsets import TermsViewSet
 
 from rest_framework.routers import DefaultRouter
@@ -315,6 +316,9 @@ router.register(r'contact',ContactsViewSet)
 router.register(r'contacts',vwAllContactsViewSet,base_name='contacts')
 vw_contacts_customer=routers.NestedSimpleRouter(router,r'contacts',lookup='contact')
 vw_contacts_customer.register(r'customer',vwCustomerViewSet,base_name='customer')
+#VIEW : contacts/pk/task
+vw_contacts_task=routers.NestedSimpleRouter(router,r'contacts',lookup='contact')
+vw_contacts_task.register(r'task',vwTaskViewSet,base_name='task')
 
 router.register(r'document',DocumentsViewSet)
 
@@ -383,6 +387,7 @@ urlpatterns = [
     url(r'^api/v1/',include(vw_push_notifications_publications.urls)),
     url(r'^api/v1/',include(vw_photos_publications.urls)),
     url(r'^api/v1/',include(vw_contacts_customer.urls)),
+    url(r'^api/v1/',include(vw_contacts_task.urls)),
     
     url(r'^api/v1/docs/', include('rest_framework_swagger.urls')),
 ]   

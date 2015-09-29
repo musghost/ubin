@@ -1059,6 +1059,15 @@ class vwTasksViewSet(viewsets.ViewSet):
         serializer = TasksSerializer(task)
         return Response(serializer.data)   
 
+class vwTaskViewSet(viewsets.ViewSet):
+    def list(self, request,contact_pk=None):
+        queryset = Tasks.objects.filter(
+            contact__pk=contact_pk
+        )
+
+        serializer = TasksSerializer(queryset, many=True)
+        return Response(serializer.data)
+  
 class TermsViewSet(viewsets.ModelViewSet):
  
     serializer_class = TermsSerializer
