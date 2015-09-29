@@ -1,0 +1,24 @@
+<div>
+	<form ng-submit="auth.login()">
+    <fieldset class="text-center">
+      <legend>Login to your account</legend>
+      <div class="form-group">
+        <input class="form-control" placeholder="Email address" type="email" ng-model="auth.email">
+      </div>
+      <div class="form-group">
+        <input class="form-control" placeholder="Password" type="password" ng-model="auth.password">
+      </div>
+      <div class="text-center">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox">
+            Remember me on this computer
+          </label>
+        </div>
+        <button class="submit">Login</button>
+        <br>
+        <a href="/forgot_password.html">Forgot password?</a>
+      </div>
+    </fieldset>
+  </form>
+</div>
