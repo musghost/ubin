@@ -984,12 +984,25 @@ class vwUserUbicationViewSet(viewsets.ViewSet):
         serializer = UserUbicationSerializer(user_u)
         return Response(serializer.data)
 
-
+''''
+----------------- Type Customers --------------------
+'''
 class TypeCustomersViewSet(viewsets.ModelViewSet):
  
     serializer_class = TypeCustomersSerializer
     queryset = Types_Customers.objects.all()
 
+class vwAllTypesCustomersViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Types_Customers.objects.all()
+        serializer = TypeCustomersSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,pk=None):
+        queryset =Types_Customers.objects.all()
+        type_customer = get_object_or_404(queryset, pk=pk)
+        serializer = TypeCustomersSerializer(type_customer)
+        return Response(serializer.data)
 
 '''
 --------------  Customers ----------------------
@@ -1007,6 +1020,23 @@ class vwCustomerViewSet(viewsets.ViewSet):
 
         serializer = CustomersSerializer(queryset, many=True)
         return Response(serializer.data)
+
+class vwCustomersForTypeViewSet(viewsets.ViewSet):
+    def list(self, request,typeCustomer_pk=None):
+        queryset =Customers.objects.filter(
+            type_customer__pk=typeCustomer_pk
+        )
+
+        serializer = CustomersSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,typeCustomer_pk=None, pk=None):
+        queryset =Customers.objects.filter(
+            type_customer__pk=typeCustomer_pk
+        )
+        customer = get_object_or_404(queryset, pk=pk)
+        serializer = CustomersSerializer(customer)
+        return Response(serializer.data)    
 
 
 '''

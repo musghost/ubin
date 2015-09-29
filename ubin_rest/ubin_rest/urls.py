@@ -89,8 +89,10 @@ from apprest.viewsets import vwReportsViewSet
 from apprest.viewsets import UserUbicationViewSet
 from apprest.viewsets import vwUserUbicationViewSet
 from apprest.viewsets import TypeCustomersViewSet
+from apprest.viewsets import vwAllTypesCustomersViewSet
 from apprest.viewsets import CustomersViewSet
 from apprest.viewsets import vwCustomerViewSet
+from apprest.viewsets import vwCustomersForTypeViewSet
 from apprest.viewsets import FavoritesCustomersViewSet
 from apprest.viewsets import vwFavoritesCustomersViewSet
 from apprest.viewsets import TasksViewSet
@@ -320,21 +322,51 @@ vw_contacts_customer.register(r'customer',vwCustomerViewSet,base_name='customer'
 vw_contacts_task=routers.NestedSimpleRouter(router,r'contacts',lookup='contact')
 vw_contacts_task.register(r'task',vwTaskViewSet,base_name='task')
 
+'''
+Documents
+'''
 router.register(r'document',DocumentsViewSet)
 
+'''
+Events
+'''
 router.register(r'event',EventsViewSet)
 
+'''
+Favorites
+'''
 router.register(r'favorite',FavoritesViewSet)
 
+'''
+Notifications
+'''
 router.register(r'notification',NotificationsViewSet)
 
+'''
+Push Notifications
+'''
 router.register(r'pushNotification',PushNotificationsViewSet)
 
+'''
+Favorites providers
+'''
 router.register(r'favoriteProvider',FavoritesProvidersViewSet)
 
+'''
+Photos
+'''
 router.register(r'photo',PhotosViewSet)
 
+'''
+Types Customers
+'''
+#CRUD
 router.register(r'typeCustomer',TypeCustomersViewSet)
+#VIEW : typesCustomers/pk/customers/pk
+router.register(r'typesCustomers',vwAllTypesCustomersViewSet,base_name='typesCustomers')
+vw_types_customers=routers.NestedSimpleRouter(router,r'typesCustomers',lookup='typeCustomer')
+vw_types_customers.register(r'customers',vwCustomersForTypeViewSet,base_name='customers')
+
 
 router.register(r'typeReport',TypesReportsViewSet)
 
@@ -388,6 +420,8 @@ urlpatterns = [
     url(r'^api/v1/',include(vw_photos_publications.urls)),
     url(r'^api/v1/',include(vw_contacts_customer.urls)),
     url(r'^api/v1/',include(vw_contacts_task.urls)),
+    url(r'^api/v1/',include(vw_types_customers.urls)),
     
+
     url(r'^api/v1/docs/', include('rest_framework_swagger.urls')),
 ]   
