@@ -27,8 +27,8 @@ from apprest.viewsets import vwStatesTownsViewSet
 from apprest.viewsets import TownsViewSet
 from apprest.viewsets import vwTownsViewSet
 from apprest.viewsets import vwTownsStatesViewSet
-from apprest.viewsets import CoinsViewSet
-from apprest.viewsets import vwCoinsViewSet
+from apprest.viewsets import CurrenciesViewSet
+from apprest.viewsets import vwCurrenciesViewSet
 from apprest.viewsets import TypesImmovablesViewSet
 from apprest.viewsets import vwTypesImmovablesViewSet
 from apprest.viewsets import TypesPublicationsViewSet
@@ -57,7 +57,7 @@ from apprest.viewsets import vwPublicationsInTypeImmovableViewSet
 from apprest.viewsets import vwPublicationsInTypePublicationViewSet
 from apprest.viewsets import vwPublicationsViewSet
 from apprest.viewsets import vwAllPublicationsViewSet
-from apprest.viewsets import vwPublicationsCoinsViewSet
+from apprest.viewsets import vwPublicationsCurrenciesViewSet
 from apprest.viewsets import CommentsViewSet
 from apprest.viewsets import vwCommentsPublicationsViewSet
 from apprest.viewsets import vwCommentsViewSet
@@ -130,14 +130,14 @@ Towns
 router.register(r'town', TownsViewSet)
 
 '''
-Coins
+Currencies
 '''
 #CRUD
-router.register(r'coin',CoinsViewSet)
+router.register(r'currency',CurrenciesViewSet)
 #VIEW 
-router.register(r'coins',vwCoinsViewSet,base_name='coins')
-vw_coins_publications=routers.NestedSimpleRouter(router, r'coins',lookup='coin')
-vw_coins_publications.register(r'publications',vwPublicationsCoinsViewSet,base_name="publications")
+router.register(r'currencies',vwCurrenciesViewSet,base_name='currencies')
+vw_currencies_publications=routers.NestedSimpleRouter(router, r'currencies',lookup='currency')
+vw_currencies_publications.register(r'publications',vwPublicationsCurrenciesViewSet,base_name="publications")
 
 
 '''
@@ -344,7 +344,7 @@ urlpatterns = [
     url(r'^api/v1/',include(vw_state_tows.urls)),
     url(r'^api/v1/',include(vw_immovable_publications.urls)),
     url(r'^api/v1/',include(vw_type_publications.urls)),
-    url(r'^api/v1/',include(vw_coins_publications.urls)),
+    url(r'^api/v1/',include(vw_currencies_publications.urls)),
     url(r'^api/v1/',include(vw_advisors_users.urls)),
     url(r'^api/v1/',include(vw_providers_type.urls)),
     url(r'^api/v1/',include(vw_contacts_type.urls)),

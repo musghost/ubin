@@ -120,7 +120,7 @@ class Towns(models.Model):
     name = models.TextField(max_length=100)
     state = models.ForeignKey(States)
 
-class Coins(models.Model):
+class Currencies(models.Model):
     name = models.TextField(max_length=100)
     status = models.BooleanField(default=True)
 
@@ -176,7 +176,7 @@ class Publications(models.Model):
     description=models.TextField(max_length=500,null=False)
     price_first=models.DecimalField(decimal_places=2,max_digits=10,null=False)
     price_second=models.DecimalField(decimal_places=2,max_digits=10,null=True)
-    coin=models.ForeignKey(Coins,null=False)
+    currency=models.ForeignKey(Currencies,null=False)
     old=models.IntegerField(null=True)
     bathrooms=models.IntegerField(null=True)
     ground_surface=models.TextField(max_length=50,null=True)

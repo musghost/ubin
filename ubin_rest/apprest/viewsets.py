@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import Countries
 from .models import States
 from .models import Towns
-from .models import Coins
+from .models import Currencies
 from .models import Types_Immovables
 from .models import Types_Publications
 from .models import Types_Advisors
@@ -40,7 +40,7 @@ from .models import Terms
 from .serializers import CountriesSerializer
 from .serializers import StatesSerializer
 from .serializers import TownsSerializer
-from .serializers import CoinsSerializer
+from .serializers import CurrenciesSerializer
 from .serializers import TypesImmovablesSerializer
 from .serializers import TypesPublicationsSerializer
 from .serializers import TypesAdvisorsSerializer
@@ -178,23 +178,23 @@ class vwTownsStatesViewSet(viewsets.ViewSet):
 
 
 '''
------------  Coins --------------------------
+-----------  Currencies --------------------------
 '''
-class CoinsViewSet(viewsets.ModelViewSet):
+class CurrenciesViewSet(viewsets.ModelViewSet):
  
-    serializer_class = CoinsSerializer
-    queryset = Coins.objects.all()
+    serializer_class = CurrenciesSerializer
+    queryset = Currencies.objects.all()
 
-class vwCoinsViewSet(viewsets.ViewSet):
+class vwCurrenciesViewSet(viewsets.ViewSet):
     def list(self, request):
-        queryset = Coins.objects.all()
-        serializer = CoinsSerializer(queryset, many=True)
+        queryset = Currencies.objects.all()
+        serializer = CurrenciesSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        queryset = Coins.objects.all()
-        state = get_object_or_404(queryset, pk=pk)
-        serializer = CoinsSerializer(state)
+        queryset = Currencies.objects.all()
+        currency = get_object_or_404(queryset, pk=pk)
+        serializer = CurrenciesSerializer(currency)
 
         return Response(serializer.data)
 
@@ -522,18 +522,18 @@ class vwPublicationsInTypePublicationViewSet(viewsets.ViewSet):
         serializer = PublicationsSerializer(publication)
         return Response(serializer.data)
 
-class vwPublicationsCoinsViewSet(viewsets.ViewSet):
-    def list(self, request,coin_pk=None):
+class vwPublicationsCurrenciesViewSet(viewsets.ViewSet):
+    def list(self, request,currency_pk=None):
         queryset = Publications.objects.filter(
-            coin__pk=coin_pk
+            currency__pk=currency_pk
         )
 
         serializer = PublicationsSerializer(queryset, many=True)
         return Response(serializer.data)
 
-    def retrieve(self, request,coin_pk=None,pk=None):
+    def retrieve(self, request,currency_pk=None,pk=None):
         queryset = Publications.objects.filter(
-            coin__pk=coin_pk
+            currency__pk=currency_pk
         )
         publication = get_object_or_404(queryset, pk=pk)
         serializer = PublicationsSerializer(publication)

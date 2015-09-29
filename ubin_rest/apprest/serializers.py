@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import Countries
 from .models import States
 from .models import Towns
-from .models import Coins
+from .models import Currencies
 from .models import Types_Immovables
 from .models import Types_Publications
 from .models import Types_Advisors
@@ -53,9 +53,9 @@ class TownsSerializer(serializers.ModelSerializer):
         model = Towns
         fields = ('id','name','state')
 
-class CoinsSerializer(serializers.ModelSerializer):
+class CurrenciesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Coins
+        model = Currencies
         fields = ('id','name', 'status')
 
 class TypesImmovablesSerializer(serializers.ModelSerializer):
@@ -160,7 +160,7 @@ class PublicationsSerializer(serializers.ModelSerializer):
         	'description',
         	'price_first',
         	'price_second',
-        	'coin',
+        	'currency',
         	'bathrooms',
         	'old',
         	'ground_surface',
