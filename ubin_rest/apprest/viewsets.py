@@ -625,6 +625,18 @@ class ContactsViewSet(viewsets.ModelViewSet):
     serializer_class = ContactsSerializer
     queryset = Contacts.objects.all()
 
+class vwAllContactsViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Contacts.objects.all()
+        serializer = ContactsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,pk=None):
+        queryset = Contacts.objects.all()
+        contact = get_object_or_404(queryset, pk=pk)
+        serializer = ContactsSerializer(contact)
+        return Response(serializer.data)
+
 class vwContactsTypeViewSet(viewsets.ViewSet):
     def list(self, request,typeContact_pk=None):
         queryset = Contacts.objects.filter(
@@ -656,7 +668,7 @@ class vwContactsViewSet(viewsets.ViewSet):
         )
         contact = get_object_or_404(queryset, pk=pk)
         serializer = ContactsSerializer(contact)
-
+        return Response(serializer.data)
 
 
 '''
@@ -978,10 +990,24 @@ class TypeCustomersViewSet(viewsets.ModelViewSet):
     serializer_class = TypeCustomersSerializer
     queryset = Types_Customers.objects.all()
 
+
+'''
+--------------  Customers ----------------------
+'''
 class CustomersViewSet(viewsets.ModelViewSet):
  
     serializer_class = CustomersSerializer
     queryset = Customers.objects.all() 
+
+class vwCustomerViewSet(viewsets.ViewSet):
+    def list(self, request,contact_pk=None):
+        queryset = Customers.objects.filter(
+            contact__pk=contact_pk
+        )
+
+        serializer = CustomersSerializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 '''
 --------------- Favorites Customers -----------------------

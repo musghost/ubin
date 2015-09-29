@@ -64,6 +64,7 @@ from apprest.viewsets import vwCommentsViewSet
 from apprest.viewsets import ContactsViewSet
 from apprest.viewsets import vwContactsViewSet
 from apprest.viewsets import vwContactsTypeViewSet
+from apprest.viewsets import vwAllContactsViewSet
 from apprest.viewsets import DocumentsViewSet
 from apprest.viewsets import DocumentsTypeViewSet
 from apprest.viewsets import vwDocumentsViewSet
@@ -89,6 +90,7 @@ from apprest.viewsets import UserUbicationViewSet
 from apprest.viewsets import vwUserUbicationViewSet
 from apprest.viewsets import TypeCustomersViewSet
 from apprest.viewsets import CustomersViewSet
+from apprest.viewsets import vwCustomerViewSet
 from apprest.viewsets import FavoritesCustomersViewSet
 from apprest.viewsets import vwFavoritesCustomersViewSet
 from apprest.viewsets import TasksViewSet
@@ -299,9 +301,20 @@ vw_push_notifications_publications.register(r'pushNotifications',vwPushNotificat
 vw_photos_publications=routers.NestedSimpleRouter(router,r'publications',lookup='publication')
 vw_photos_publications.register(r'photos',vwPhotosPublicationsViewSet,base_name='photos')
 
+'''
+Comments
+'''
 router.register(r'comment',CommentsViewSet)
 
+'''
+Contacts
+'''
+#CRUD
 router.register(r'contact',ContactsViewSet)
+#VIEW : contacts/pk/customer
+router.register(r'contacts',vwAllContactsViewSet,base_name='contacts')
+vw_contacts_customer=routers.NestedSimpleRouter(router,r'contacts',lookup='contact')
+vw_contacts_customer.register(r'customer',vwCustomerViewSet,base_name='customer')
 
 router.register(r'document',DocumentsViewSet)
 
@@ -369,6 +382,7 @@ urlpatterns = [
     url(r'^api/v1/',include(vw_notifications_publications.urls)),
     url(r'^api/v1/',include(vw_push_notifications_publications.urls)),
     url(r'^api/v1/',include(vw_photos_publications.urls)),
+    url(r'^api/v1/',include(vw_contacts_customer.urls)),
     
     url(r'^api/v1/docs/', include('rest_framework_swagger.urls')),
 ]   
