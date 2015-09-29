@@ -379,13 +379,26 @@ router.register(r'typesReports',vwAllTypesReportsViewSet,base_name='typesReports
 vw_types_reports=routers.NestedSimpleRouter(router,r'typesReports',lookup='typeReport')
 vw_types_reports.register(r'reports',vwTypeReportsViewSet,base_name='reports')
 
+'''
+Reports
+'''
 router.register(r'report',ReportsViewSet)
 
+'''
+Users Location
+'''
 router.register(r'userLocation',UserUbicationViewSet)
 
+'''
+Customers
+'''
 router.register(r'customer',CustomersViewSet)
 
+'''
+Favorites Customers
+'''
 router.register(r'favoriteCustomer',FavoritesCustomersViewSet)
+
 
 router.register(r'task',TasksViewSet)
 
