@@ -84,8 +84,10 @@ from apprest.viewsets import vwFavoritesProvidersViewSet
 from apprest.viewsets import PhotosViewSet
 from apprest.viewsets import vwPhotosPublicationsViewSet
 from apprest.viewsets import TypesReportsViewSet
+from apprest.viewsets import vwAllTypesReportsViewSet
 from apprest.viewsets import ReportsViewSet
 from apprest.viewsets import vwReportsViewSet
+from apprest.viewsets import vwTypeReportsViewSet
 from apprest.viewsets import UserUbicationViewSet
 from apprest.viewsets import vwUserUbicationViewSet
 from apprest.viewsets import TypeCustomersViewSet
@@ -367,8 +369,15 @@ router.register(r'typesCustomers',vwAllTypesCustomersViewSet,base_name='typesCus
 vw_types_customers=routers.NestedSimpleRouter(router,r'typesCustomers',lookup='typeCustomer')
 vw_types_customers.register(r'customers',vwCustomersForTypeViewSet,base_name='customers')
 
-
+'''
+Types Reports
+'''
+#CRUD
 router.register(r'typeReport',TypesReportsViewSet)
+#VIEW : /typesReports/pk/reports/pk
+router.register(r'typesReports',vwAllTypesReportsViewSet,base_name='typesReports')
+vw_types_reports=routers.NestedSimpleRouter(router,r'typesReports',lookup='typeReport')
+vw_types_reports.register(r'reports',vwTypeReportsViewSet,base_name='reports')
 
 router.register(r'report',ReportsViewSet)
 
@@ -421,7 +430,7 @@ urlpatterns = [
     url(r'^api/v1/',include(vw_contacts_customer.urls)),
     url(r'^api/v1/',include(vw_contacts_task.urls)),
     url(r'^api/v1/',include(vw_types_customers.urls)),
-    
+    url(r'^api/v1/',include(vw_types_reports.urls)),
 
     url(r'^api/v1/docs/', include('rest_framework_swagger.urls')),
 ]   

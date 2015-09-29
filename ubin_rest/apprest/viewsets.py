@@ -925,11 +925,25 @@ class vwPhotosPublicationsViewSet(viewsets.ViewSet):
         serializer = PhotosSerializer(photo)
         return Response(serializer.data)
 
-
+'''
+----------------- Types Reports --------------------
+'''
 class TypesReportsViewSet(viewsets.ModelViewSet):
  
     serializer_class = TypesReportsSerializer
     queryset = Types_Reports.objects.all()
+
+class vwAllTypesReportsViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Reports.objects.all()
+        serializer =ReportsSerializer(queryset,many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,pk=None):
+        queryset =Reports.objects.all()
+        report = get_object_or_404(queryset, pk=pk)
+        serializer = ReportsSerializer(report)
+        return Response(serializer.data)
 
 
 
@@ -953,6 +967,23 @@ class vwReportsViewSet(viewsets.ViewSet):
     def retrieve(self, request,user_pk=None, pk=None):
         queryset =Reports.objects.filter(
             user__pk=user_pk
+        )
+        report = get_object_or_404(queryset, pk=pk)
+        serializer = ReportsSerializer(report)
+        return Response(serializer.data)
+
+class vwTypeReportsViewSet(viewsets.ViewSet):
+    def list(self, request,typeReport_pk=None):
+        queryset = Reports.objects.filter(
+            type_report__pk=typeReport_pk
+        )
+
+        serializer = ReportsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,typeReport_pk=None, pk=None):
+        queryset =Reports.objects.filter(
+            type_report__pk=typeReport_pk
         )
         report = get_object_or_404(queryset, pk=pk)
         serializer = ReportsSerializer(report)
