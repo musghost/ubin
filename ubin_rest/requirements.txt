@@ -1,7 +1,6 @@
 virtualenv
 drf-nested-routers
 psycopg2
-django gunicorn psycopg2
 djangorestframework-jwt
 django-rest-swagger
 django
