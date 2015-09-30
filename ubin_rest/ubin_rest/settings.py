@@ -92,9 +92,9 @@ WSGI_APPLICATION = 'ubin_rest.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ubin',
-        'USER': 'root',
-        'PASSWORD': 'root',
+        'NAME': 'ubinrest',
+        'USER': 'ubinrest',
+        'PASSWORD': 'cruzade',
         'HOST': 'localhost',
         'PORT': '',
     }
@@ -152,18 +152,11 @@ SWAGGER_SETTINGS = {
     'resource_access_handler': None,
     'info': {
         'contact': 'gp@manoderecha.mx',
-        'description': 'This is a sample server Petstore server. '
-                       'You can find out more about Swagger at '
-                       '<a href="http://swagger.wordnik.com">'
-                       'http://swagger.wordnik.com</a> '
-                       'or on irc.freenode.net, #swagger. '
-                       'For this sample, you can use the api key '
-                       '"special-key" to test '
-                       'the authorization filters',
+        'description': 'Documentation of api rest Ubin',
         'license': 'Apache 2.0',
         'licenseUrl': 'http://www.apache.org/licenses/LICENSE-2.0.html',
         'termsOfServiceUrl': 'http://helloreverb.com/terms/',
-        'title': 'Swagger Sample App',
+        'title': 'Documentation : APi REST Ubin',
     },
     'doc_expansion': 'none',
 }
