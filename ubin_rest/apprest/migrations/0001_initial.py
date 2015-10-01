@@ -23,21 +23,22 @@ class Migration(migrations.Migration):
                 ('last_name', models.TextField(max_length=100)),
                 ('mother_last_name', models.TextField(max_length=50, null=True, blank=True)),
                 ('email', models.EmailField(unique=True, max_length=100)),
-                ('birthday', models.DateField(null=True)),
-                ('gender', models.TextField(max_length=50, blank=True)),
+                ('birthday', models.DateField()),
+                ('gender', models.TextField(max_length=50)),
                 ('phone', models.TextField(max_length=20)),
                 ('immovable_name', models.TextField(max_length=250, blank=True)),
                 ('immovable_phone', models.TextField(max_length=20, blank=True)),
                 ('photo', models.TextField(max_length=100, blank=True)),
                 ('register_date', models.DateField(auto_now_add=True)),
-                ('permit_handbag', models.BooleanField(default=False)),
-                ('permit_diary', models.BooleanField(default=False)),
-                ('permit_notary', models.BooleanField(default=False)),
-                ('permit_broker', models.BooleanField(default=False)),
-                ('permit_proficient', models.BooleanField(default=False)),
-                ('permit_events', models.BooleanField(default=False)),
-                ('permit_documents', models.BooleanField(default=False)),
-                ('is_admin', models.BooleanField(default=False, verbose_name='is_admin')),
+                ('allow_providers', models.BooleanField(default=False)),
+                ('allow_notary', models.BooleanField(default=False)),
+                ('allow_appraisers', models.BooleanField(default=False)),
+                ('allow_customer_base', models.BooleanField(default=False)),
+                ('allow_events', models.BooleanField(default=False)),
+                ('allow_documents', models.BooleanField(default=False)),
+                ('allow_diary', models.BooleanField(default=False)),
+                ('allow_mortgage_broker', models.BooleanField(default=False)),
+                ('is_staff', models.BooleanField(default=False, verbose_name='is_staff')),
                 ('is_active', models.BooleanField(default=True, verbose_name='is_active')),
                 ('groups', models.ManyToManyField(related_query_name='user', related_name='user_set', to='auth.Group', blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', verbose_name='groups')),
             ],
@@ -50,14 +51,6 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('score', models.IntegerField()),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Coins',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.TextField(max_length=100)),
-                ('status', models.BooleanField(default=True)),
             ],
         ),
         migrations.CreateModel(
@@ -84,6 +77,14 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.TextField(max_length=100)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Currencies',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.TextField(max_length=100)),
+                ('status', models.BooleanField(default=True)),
             ],
         ),
         migrations.CreateModel(
@@ -150,16 +151,6 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='Notifications_Push',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('device_token', models.TextField(max_length=200)),
-                ('device', models.TextField(max_length=20)),
-                ('status', models.BooleanField(default=True)),
-                ('date', models.DateField(auto_now_add=True)),
-            ],
-        ),
-        migrations.CreateModel(
             name='Photos',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -197,8 +188,20 @@ class Migration(migrations.Migration):
                 ('construction_area', models.TextField(max_length=50, null=True)),
                 ('date', models.DateField(auto_now_add=True)),
                 ('status', models.BooleanField(default=True)),
-                ('coin', models.ForeignKey(to='apprest.Coins')),
                 ('country', models.ForeignKey(to='apprest.Countries')),
+                ('currency', models.ForeignKey(to='apprest.Currencies')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Push_Notifications',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('device_token', models.TextField(max_length=200)),
+                ('device', models.TextField(max_length=20)),
+                ('status', models.BooleanField(default=True)),
+                ('date', models.DateField(auto_now_add=True)),
+                ('publication', models.ForeignKey(to='apprest.Publications')),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
@@ -214,7 +217,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.TextField(max_length=100)),
-                ('country', models.ForeignKey(related_name='states', to='apprest.Countries')),
+                ('country', models.ForeignKey(to='apprest.Countries')),
             ],
         ),
         migrations.CreateModel(
@@ -287,14 +290,6 @@ class Migration(migrations.Migration):
         ),
         migrations.CreateModel(
             name='Types_Immovables',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.TextField(max_length=100)),
-                ('status', models.BooleanField(default=True)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Types_Photos',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.TextField(max_length=100)),
@@ -382,28 +377,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='photos',
-            name='provider',
-            field=models.ForeignKey(to='apprest.Providers'),
-        ),
-        migrations.AddField(
-            model_name='photos',
             name='publication',
             field=models.ForeignKey(to='apprest.Publications'),
-        ),
-        migrations.AddField(
-            model_name='photos',
-            name='type_photo',
-            field=models.ForeignKey(to='apprest.Types_Photos'),
-        ),
-        migrations.AddField(
-            model_name='notifications_push',
-            name='publication',
-            field=models.ForeignKey(to='apprest.Publications'),
-        ),
-        migrations.AddField(
-            model_name='notifications_push',
-            name='user',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='notifications',
@@ -452,16 +427,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='documents',
-            name='state',
-            field=models.ForeignKey(to='apprest.States'),
-        ),
-        migrations.AddField(
-            model_name='documents',
-            name='town',
-            field=models.ForeignKey(to='apprest.Towns'),
-        ),
-        migrations.AddField(
-            model_name='documents',
             name='type_document',
             field=models.ForeignKey(to='apprest.Types_Documents'),
         ),
@@ -479,11 +444,6 @@ class Migration(migrations.Migration):
             model_name='contacts',
             name='user',
             field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
-        ),
-        migrations.AddField(
-            model_name='comments',
-            name='provider',
-            field=models.ForeignKey(to='apprest.Providers'),
         ),
         migrations.AddField(
             model_name='comments',

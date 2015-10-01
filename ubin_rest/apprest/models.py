@@ -17,7 +17,7 @@ class UsuarioManager(BaseUserManager):
     """
     Manager personalizado para el modelo usuario.
     """
-    def _create_user(self, email, password,is_admin=False,is_active=False,
+    def _create_user(self, email, password,is_superuser=False,is_staff=False,is_active=False,
                      **extra_fields):
         """
         Método base para la creación de nuevos usuarios.
@@ -28,7 +28,8 @@ class UsuarioManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(
             email=email,
-            is_admin=is_admin,
+            is_superuser=is_superuser,
+            is_staff=is_staff,
             is_active=is_active,
             **extra_fields
         )
@@ -41,13 +42,13 @@ class UsuarioManager(BaseUserManager):
         """
         Crea un nuevo usuario.
         """
-        return self._create_user(email, password,False, **extra_fields)
+        return self._create_user(email, password,False,False,**extra_fields)
 
     def create_superuser(self, email, password=None, **extra_fields):
         """
         Crea un nuevo usuario marcándolo como super usuario.
         """
-        return self._create_user(email, password,**extra_fields)
+        return self._create_user(email, password,True,True,**extra_fields)
 
 
 class Users(AbstractBaseUser, PermissionsMixin):
@@ -71,8 +72,11 @@ class Users(AbstractBaseUser, PermissionsMixin):
         unique=True,
         null=False
         )
-    birthday = models.DateField(null=True)
-    gender = models.TextField(max_length=50,blank=True)
+    birthday = models.DateField(null=False)
+    gender = models.TextField(
+        max_length=50,
+        blank=False,
+        null=False)
     phone = models.TextField(
         max_length=20,
         blank=False,
@@ -82,17 +86,18 @@ class Users(AbstractBaseUser, PermissionsMixin):
     immovable_name = models.TextField(max_length=250,blank=True)
     immovable_phone = models.TextField(max_length=20,blank=True)
     photo = models.TextField(max_length=100,blank=True)
-    register_date= models.DateField(auto_now_add=True)   
-    permit_handbag = models.BooleanField(default=False)
-    permit_diary = models.BooleanField(default=False)
-    permit_notary = models.BooleanField(default=False)
-    permit_broker = models.BooleanField(default=False)
-    permit_proficient = models.BooleanField(default=False)
-    permit_events = models.BooleanField(default=False)
-    permit_documents = models.BooleanField(default=False)
-    is_admin = models.BooleanField(
+    register_date= models.DateField(auto_now_add=True) 
+    allow_providers = models.BooleanField(default=False) 
+    allow_notary = models.BooleanField(default=False) 
+    allow_appraisers = models.BooleanField(default=False)
+    allow_customer_base = models.BooleanField(default=False)
+    allow_events = models.BooleanField(default=False)
+    allow_documents = models.BooleanField(default=False)
+    allow_diary = models.BooleanField(default=False)
+    allow_mortgage_broker = models.BooleanField(default=False)
+    is_staff= models.BooleanField(
         default=False,
-        verbose_name=_('is_admin')
+        verbose_name=_('is_staff')
     )
     is_active = models.BooleanField(
         default=True,
@@ -103,8 +108,9 @@ class Users(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = [
     'name',
     'last_name',
-    'is_admin',
     'is_active',
+    'birthday',
+    'gender',
     'phone'
     ]
 
