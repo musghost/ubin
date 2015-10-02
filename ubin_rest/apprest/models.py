@@ -106,12 +106,7 @@ class Users(AbstractBaseUser, PermissionsMixin):
     objects = UsuarioManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = [
-    'name',
-    'last_name',
-    'is_active',
-    'birthday',
-    'gender',
-    'phone'
+    'is_active'
     ]
 
 class Countries(models.Model):
