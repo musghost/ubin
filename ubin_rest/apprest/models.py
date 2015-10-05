@@ -90,7 +90,7 @@ class Users(AbstractBaseUser, PermissionsMixin):
     allow_providers = models.BooleanField(default=False) 
     allow_notary = models.BooleanField(default=False) 
     allow_appraisers = models.BooleanField(default=False)
-    allow_customer_base = models.BooleanField(default=False)
+    allow_past_due_portfolio = models.BooleanField(default=False)
     allow_events = models.BooleanField(default=False)
     allow_documents = models.BooleanField(default=False)
     allow_diary = models.BooleanField(default=False)

@@ -114,7 +114,7 @@ class UsersSerializer(serializers.ModelSerializer):
             'allow_providers',
             'allow_notary',
             'allow_appraisers',
-            'allow_customer_base',
+            'allow_past_due_portfolio',
             'allow_events',
             'allow_documents',
             'allow_diary',
