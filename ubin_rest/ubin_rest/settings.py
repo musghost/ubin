@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'apprest',
     'rest_framework_swagger',
+    'corsheaders',
 )
 
 REST_FRAMEWORK = {
@@ -64,6 +65,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 )
 
 ROOT_URLCONF = 'ubin_rest.urls'
@@ -160,3 +163,5 @@ SWAGGER_SETTINGS = {
     },
     'doc_expansion': 'none',
 }
+
+CORS_ORIGIN_ALLOW_ALL = True
