@@ -106,20 +106,33 @@ class Users(AbstractBaseUser, PermissionsMixin):
     objects = UsuarioManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = [
+    'name',
+    'last_name',
+    'birthday',
+    'gender',
+    'phone',
     'is_active'
     ]
 
 class Countries(models.Model):
     name = models.TextField(max_length=100)
+    status = models.BooleanField(default=True)
   
 
 class States(models.Model):
     name = models.TextField(max_length=100)
     country = models.ForeignKey(Countries)
+    status = models.BooleanField(default=True)
 
 class Towns(models.Model):
     name = models.TextField(max_length=100)
     state = models.ForeignKey(States)
+    status = models.BooleanField(default=True)
+
+class Neighborhood(models.Model):
+    name = models.TextField(max_length=100)
+    town = models.ForeignKey(Towns)
+    status = models.BooleanField(default=True)
 
 class Currencies(models.Model):
     name = models.TextField(max_length=100)
@@ -154,7 +167,7 @@ class Providers(models.Model):
     type_provider= models.ForeignKey(Types_Providers)
     town= models.ForeignKey(Towns)
     register_date= models.DateField(auto_now_add=True)
-    location= models.TextField(max_length=100)
+    neighborhood=models.ForeignKey(Neighborhood)
     address= models.TextField(max_length=250)
     phone = models.TextField(max_length=20)
     email = models.EmailField(max_length=50)
@@ -165,6 +178,7 @@ class Classification_Providers(models.Model):
     score = models.IntegerField()
     user= models.ForeignKey(Users)
     provider=models.ForeignKey(Providers)
+    status = models.BooleanField(default=True)
 
 class Publications(models.Model):
     canvas_number = models.IntegerField(null=True)
@@ -172,7 +186,7 @@ class Publications(models.Model):
     type_publications= models.ForeignKey(Types_Publications,null=False)
     type_immovable= models.ForeignKey(Types_Immovables,null=True)
     town= models.ForeignKey(Towns,null=False)
-    location=models.TextField(max_length=200,null=False)
+    neighborhood=models.ForeignKey(Neighborhood)
     title=models.TextField(max_length=100,null=False)
     description=models.TextField(max_length=500,null=False)
     price_first=models.DecimalField(decimal_places=2,max_digits=10,null=False)
@@ -193,6 +207,7 @@ class Comments(models.Model):
     user= models.ForeignKey(Users)
     comment= models.TextField(max_length=1000)
     date= models.DateField(auto_now_add=True)
+    status = models.BooleanField(default=True)
 
 class Contacts(models.Model):
     name= models.TextField(max_length=100)
@@ -202,12 +217,14 @@ class Contacts(models.Model):
     user= models.ForeignKey(Users)
     type_contact= models.ForeignKey(Types_Contacts)
     note = models.TextField(max_length=200)
+    status = models.BooleanField(default=True)
 
 class Documents(models.Model):
     name= models.TextField(max_length=100)
     administrator=models.ForeignKey(Users)
     type_document= models.ForeignKey(Types_Documents)
     path=models.TextField(max_length=100)
+    status = models.BooleanField(default=True)
 
 class Events(models.Model):
     name= models.TextField(max_length=200)
@@ -217,11 +234,13 @@ class Events(models.Model):
     state=models.ForeignKey(States)
     town=models.ForeignKey(Towns)
     path=models.TextField(max_length=100)
+    status = models.BooleanField(default=True)
 
 class Favorites(models.Model):
     publication=models.ForeignKey(Publications)
     user= models.ForeignKey(Users)
     status = models.BooleanField(default=False)
+
 
 class Notifications(models.Model):
     publication=models.ForeignKey(Publications)
@@ -231,6 +250,7 @@ class Notifications(models.Model):
     read = models.BooleanField(default=False)
     viewed = models.BooleanField(default=False)
     expired = models.BooleanField(default=False)
+    status = models.BooleanField(default=True)
 
 class Push_Notifications(models.Model):
     publication=models.ForeignKey(Publications)
@@ -243,11 +263,13 @@ class Push_Notifications(models.Model):
 class Favorites_Providers(models.Model):
     user=models.ForeignKey(Users)
     provider=models.ForeignKey(Providers)
+    status = models.BooleanField(default=True)
 
 class Photos(models.Model):
     name=models.TextField(max_length=60)
     path=models.TextField(max_length=100)
     publication=models.ForeignKey(Publications)
+    status = models.BooleanField(default=True)
 
 class Types_Reports(models.Model):
     name=models.TextField(max_length=60)
@@ -258,12 +280,14 @@ class Reports(models.Model):
     type_report=models.ForeignKey(Types_Reports)
     message=models.TextField(max_length=500)
     date= models.DateField(auto_now_add=True)
+    status = models.BooleanField(default=True)
     
 class User_Ubication(models.Model):
     user=models.ForeignKey(Users)
     country=models.ForeignKey(Countries)
     state=models.ForeignKey(States)
     date= models.DateField(auto_now_add=True)
+    status = models.BooleanField(default=True)
 
 class Types_Customers(models.Model):
     name = models.TextField(max_length=100)
@@ -277,10 +301,12 @@ class Customers(models.Model):
     email= models.EmailField(max_length=100)
     contact=models.ForeignKey(Contacts)
     type_customer=models.ForeignKey(Types_Customers)
+    status = models.BooleanField(default=True)
 
 class Favorites_Customers(models.Model):
     customer=models.ForeignKey(Customers)
     user= models.ForeignKey(Users)
+    status = models.BooleanField(default=True)
 
 class Tasks(models.Model):
     description= models.TextField(max_length=300)
@@ -288,11 +314,13 @@ class Tasks(models.Model):
     hour= models.TimeField(auto_now=False, auto_now_add=False)
     contact=models.ForeignKey(Contacts)
     user= models.ForeignKey(Users)
+    status = models.BooleanField(default=True)
 
 class Terms(models.Model):
     text= models.TextField(max_length=800)
     date= models.DateField(auto_now_add=True)
     status = models.BooleanField(default=True)
+
     
 
 

@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import Countries
 from .models import States
 from .models import Towns
+from .models import Neighborhood
 from .models import Currencies
 from .models import Types_Immovables
 from .models import Types_Publications
@@ -41,17 +42,40 @@ from .models import Terms
 class CountriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Countries
-        fields = ('id','name')
+        fields = ('id','name','status')
 
 class StatesSerializer(serializers.ModelSerializer):
     class Meta:
         model = States
-        fields = ('id','name', 'country')
+        fields = ('id','name', 'country','status')
+
+class StatesFullSerializer(serializers.ModelSerializer):
+    country=CountriesSerializer()
+    class Meta:
+        model = States
+        fields = ('id','name', 'country','status')
 
 class TownsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Towns
-        fields = ('id','name','state')
+        fields = ('id','name','state','status')
+
+class TownsFullSerializer(serializers.ModelSerializer):
+    state=StatesFullSerializer()
+    class Meta:
+        model = Towns
+        fields = ('id','name','state','status')
+
+class NeighborhoodSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Neighborhood
+        fields = ('id','name','town','status')
+
+class NeighborhoodFullSerializer(serializers.ModelSerializer):
+    town=TownsFullSerializer()
+    class Meta:
+        model = Neighborhood
+        fields = ('id','name','town','status')
 
 class CurrenciesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -132,6 +156,7 @@ class ProvidersSerializer(serializers.ModelSerializer):
         	'id',
         	'name',
         	'type_provider',
+            'neighborhood',
         	'town',
         	'register_date',
         	'location',
@@ -144,7 +169,7 @@ class ProvidersSerializer(serializers.ModelSerializer):
 class ClassificationProvidersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Classification_Providers
-        fields = ('id','score','user','provider')
+        fields = ('id','score','user','provider','status')
 
 class PublicationsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -155,6 +180,7 @@ class PublicationsSerializer(serializers.ModelSerializer):
         	'user', 
         	'type_publications',
         	'type_immovable',
+            'neighborhood',
         	'town',
         	'location',
         	'title',
@@ -180,7 +206,8 @@ class CommentsSerializer(serializers.ModelSerializer):
         	'publication',
         	'user', 
         	'comment',
-        	'date'
+        	'date',
+            'status'
         	)
 
 
@@ -195,7 +222,8 @@ class ContactsSerializer(serializers.ModelSerializer):
         	'email',
         	'user',
         	'type_contact',
-        	'note'
+        	'note',
+            'status'
         	)
 
 class DocumentsSerializer(serializers.ModelSerializer):
@@ -206,7 +234,8 @@ class DocumentsSerializer(serializers.ModelSerializer):
         	'name',
         	'administrator', 
         	'type_document',
-        	'path'
+        	'path',
+            'status'
         	)
 
 class EventsSerializer(serializers.ModelSerializer):
@@ -220,7 +249,8 @@ class EventsSerializer(serializers.ModelSerializer):
         	'type_event',
         	'state',
         	'town',
-        	'path'
+        	'path',
+            'status'
         	)
 
 class FavoritesSerializer(serializers.ModelSerializer):
@@ -239,7 +269,8 @@ class NotificationsSerializer(serializers.ModelSerializer):
         	'date',
         	'read',
         	'viewed',
-        	'expired'
+        	'expired',
+            'status'
         	)
 
 class PushNotificationsSerializer(serializers.ModelSerializer):
@@ -258,7 +289,7 @@ class PushNotificationsSerializer(serializers.ModelSerializer):
 class FavoritesProvidersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorites_Providers
-        fields = ('id','user','provider')
+        fields = ('id','user','provider','status')
 
 class PhotosSerializer(serializers.ModelSerializer):
     class Meta:
@@ -267,7 +298,8 @@ class PhotosSerializer(serializers.ModelSerializer):
         	'id',
         	'name',
         	'path',
-        	'publication'
+        	'publication',
+            'status'
         	)
 class TypesReportsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -286,7 +318,8 @@ class ReportsSerializer(serializers.ModelSerializer):
         	'user',
         	'type_report',
         	'message',
-        	'date'
+        	'date',
+            'status'
         	)
 
 class UserUbicationSerializer(serializers.ModelSerializer):
@@ -297,13 +330,14 @@ class UserUbicationSerializer(serializers.ModelSerializer):
         	'user',
         	'country',
         	'state',
-        	'date'
+        	'date',
+            'status'
         	)
 
 class TypeCustomersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Types_Customers
-        fields = ('id','name')
+        fields = ('id','name','status')
 
 class CustomersSerializer(serializers.ModelSerializer):
     class Meta:
@@ -316,13 +350,14 @@ class CustomersSerializer(serializers.ModelSerializer):
             'phone',
             'email',
             'contact',
-            'type_customer'
+            'type_customer',
+            'status'
             )
 
 class FavoritesCustomersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorites_Customers
-        fields = ('id','customer','user')
+        fields = ('id','customer','user','status')
 
 
 class TasksSerializer(serializers.ModelSerializer):
@@ -334,7 +369,8 @@ class TasksSerializer(serializers.ModelSerializer):
             'date',
             'hour',
             'contact',
-            'user'
+            'user',
+            'status'
             )
 
 class TermsSerializer(serializers.ModelSerializer):

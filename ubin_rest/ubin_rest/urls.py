@@ -25,8 +25,11 @@ from apprest.viewsets import StatesViewSet
 from apprest.viewsets import vwStatesViewSet
 from apprest.viewsets import vwStatesTownsViewSet
 from apprest.viewsets import TownsViewSet
+from apprest.viewsets import TownsFullViewSet
 from apprest.viewsets import vwTownsViewSet
 from apprest.viewsets import vwTownsStatesViewSet
+from apprest.viewsets import NeighborhoodViewSet
+from apprest.viewsets import NeighborhoodFullViewSet
 from apprest.viewsets import CurrenciesViewSet
 from apprest.viewsets import vwCurrenciesViewSet
 from apprest.viewsets import TypesImmovablesViewSet
@@ -134,7 +137,18 @@ vw_state_tows.register(r'towns',vwTownsStatesViewSet,base_name="towns")
 '''
 Towns
 '''
+#CRUD
 router.register(r'town', TownsViewSet)
+# VIEW : /towns/pk
+router.register(r'towns', TownsFullViewSet, base_name='towns')
+
+'''
+Neighborhood
+'''
+#CRUD
+router.register(r'neighborhood', NeighborhoodViewSet)
+#VIEW : /neighborhoods/pk
+router.register(r'neighborhoods', NeighborhoodFullViewSet, base_name='neighborhoods')
 
 '''
 Currencies
@@ -401,6 +415,7 @@ router.register(r'favoriteCustomer',FavoritesCustomersViewSet)
 
 
 router.register(r'task',TasksViewSet)
+
 
 
 urlpatterns = [

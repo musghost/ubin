@@ -1,8 +1,13 @@
 from rest_framework import serializers
+from rest_framework import viewsets
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+#from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from .models import Countries
 from .models import States
 from .models import Towns
+from .models import Neighborhood
 from .models import Currencies
 from .models import Types_Immovables
 from .models import Types_Publications
@@ -40,6 +45,9 @@ from .models import Terms
 from .serializers import CountriesSerializer
 from .serializers import StatesSerializer
 from .serializers import TownsSerializer
+from .serializers import TownsFullSerializer
+from .serializers import NeighborhoodFullSerializer
+from .serializers import NeighborhoodSerializer
 from .serializers import CurrenciesSerializer
 from .serializers import TypesImmovablesSerializer
 from .serializers import TypesPublicationsSerializer
@@ -70,11 +78,6 @@ from .serializers import FavoritesCustomersSerializer
 from .serializers import TasksSerializer
 from .serializers import TermsSerializer
 
-from rest_framework import viewsets
-from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-from django.db import connection
-#from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 '''
 -----------  Countries --------------------------
 '''
@@ -158,6 +161,19 @@ class vwTownsViewSet(viewsets.ViewSet):
         serializer = TownsSerializer(town)
         return Response(serializer.data)
 
+class TownsFullViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Towns.objects.all()
+
+        serializer = TownsFullSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,pk=None):
+        queryset = Towns.objects.all()
+        town = get_object_or_404(queryset, pk=pk)
+        serializer = TownsFullSerializer(town)
+        return Response(serializer.data)
+
 class vwTownsStatesViewSet(viewsets.ViewSet):
     def list(self, request,state_pk=None):
         queryset = Towns.objects.filter(
@@ -176,6 +192,27 @@ class vwTownsStatesViewSet(viewsets.ViewSet):
 
         return Response(serializer.data)
 
+'''
+----------------- Neighborhood --------------------
+'''
+class NeighborhoodViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = NeighborhoodSerializer
+    queryset = Neighborhood.objects.all()
+
+class NeighborhoodFullViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Neighborhood.objects.all()
+
+        serializer = NeighborhoodFullSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request,pk=None):
+        queryset = Neighborhood.objects.all()
+        neighborhood = get_object_or_404(queryset, pk=pk)
+        serializer = NeighborhoodFullSerializer(neighborhood)
+
+        return Response(serializer.data)
 
 '''
 -----------  Currencies --------------------------
@@ -1134,4 +1171,3 @@ class TermsViewSet(viewsets.ModelViewSet):
     serializer_class = TermsSerializer
     queryset = Terms.objects.all()   
  
-
