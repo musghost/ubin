@@ -1,9 +1,3 @@
-from rest_framework import serializers
-from rest_framework import viewsets
-from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-#from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-
 from .models import Countries
 from .models import States
 from .models import Towns
@@ -60,7 +54,9 @@ from .serializers import UsersSerializer
 from .serializers import ProvidersSerializer
 from .serializers import ClassificationProvidersSerializer
 from .serializers import PublicationsSerializer
+from .serializers import PublicationsFullSerializer
 from .serializers import CommentsSerializer
+from .serializers import CommentsFullerializer
 from .serializers import ContactsSerializer
 from .serializers import DocumentsSerializer
 from .serializers import EventsSerializer
@@ -77,6 +73,14 @@ from .serializers import CustomersSerializer
 from .serializers import FavoritesCustomersSerializer
 from .serializers import TasksSerializer
 from .serializers import TermsSerializer
+
+from rest_framework import serializers
+from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework import generics
+from django.shortcuts import get_object_or_404
+from rest_framework import filters
+#from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 '''
 -----------  Countries --------------------------
@@ -98,7 +102,7 @@ class vwCountriesViewSet(viewsets.ViewSet):
 
         return Response(serializer.data)
 '''
------------  Sates --------------------------
+-----------  States --------------------------
 ''' 
 class StatesViewSet(viewsets.ModelViewSet):
 
@@ -440,6 +444,7 @@ class ProvidersViewSet(viewsets.ModelViewSet):
     serializer_class = ProvidersSerializer
     queryset = Providers.objects.all()
 
+
 class vwProvidersTypeViewSet(viewsets.ViewSet):
     def list(self, request,typeProvider_pk=None):
         queryset = Providers.objects.filter(
@@ -597,13 +602,13 @@ class vwAllPublicationsViewSet(viewsets.ViewSet):
     def list(self, request):
         queryset = Publications.objects.all()
 
-        serializer = PublicationsSerializer(queryset, many=True)
+        serializer = PublicationsFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
         queryset = Publications.objects.all()
         publication = get_object_or_404(queryset, pk=pk)
-        serializer = PublicationsSerializer(publication)
+        serializer = PublicationsFullSerializer(publication)
         return Response(serializer.data)
 
 
@@ -641,7 +646,7 @@ class vwCommentsPublicationsViewSet(viewsets.ViewSet):
             publication__pk=publication_pk
         )
 
-        serializer = CommentsSerializer(queryset, many=True)
+        serializer = CommentsFullerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self,request,publication_pk=None,pk=None):
@@ -649,7 +654,7 @@ class vwCommentsPublicationsViewSet(viewsets.ViewSet):
             publication__pk=user_pk
         )
         comment = get_object_or_404(queryset, pk=pk)
-        serializer = CommentsSerializer(comment)
+        serializer = CommentsFullerializer(comment)
         return Response(serializer.data)
 
 

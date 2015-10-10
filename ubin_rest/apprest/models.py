@@ -217,6 +217,7 @@ class Contacts(models.Model):
     user= models.ForeignKey(Users)
     type_contact= models.ForeignKey(Types_Contacts)
     note = models.TextField(max_length=200)
+    is_favorite=models.BooleanField(default=False)
     status = models.BooleanField(default=True)
 
 class Documents(models.Model):
@@ -229,11 +230,9 @@ class Documents(models.Model):
 class Events(models.Model):
     name= models.TextField(max_length=200)
     description= models.TextField(max_length=1000)
-    administrator=models.ForeignKey(Users)
     type_event=models.ForeignKey(Types_Events)
-    state=models.ForeignKey(States)
-    town=models.ForeignKey(Towns)
-    path=models.TextField(max_length=100)
+    date_event=models.DateField(auto_now_add=True)
+    administrator=models.ForeignKey(Users)
     status = models.BooleanField(default=True)
 
 class Favorites(models.Model):

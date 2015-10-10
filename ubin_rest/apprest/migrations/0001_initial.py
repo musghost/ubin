@@ -120,7 +120,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.TextField(max_length=200)),
                 ('description', models.TextField(max_length=1000)),
-                ('path', models.TextField(max_length=100)),
+                ('date_event', models.DateField(auto_now_add=True)),
                 ('status', models.BooleanField(default=True)),
                 ('administrator', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
@@ -438,16 +438,6 @@ class Migration(migrations.Migration):
             model_name='favorites',
             name='user',
             field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
-        ),
-        migrations.AddField(
-            model_name='events',
-            name='state',
-            field=models.ForeignKey(to='apprest.States'),
-        ),
-        migrations.AddField(
-            model_name='events',
-            name='town',
-            field=models.ForeignKey(to='apprest.Towns'),
         ),
         migrations.AddField(
             model_name='events',

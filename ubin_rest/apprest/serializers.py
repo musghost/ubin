@@ -159,7 +159,6 @@ class ProvidersSerializer(serializers.ModelSerializer):
             'neighborhood',
         	'town',
         	'register_date',
-        	'location',
         	'address',
         	'email',
         	'web_page',
@@ -182,7 +181,6 @@ class PublicationsSerializer(serializers.ModelSerializer):
         	'type_immovable',
             'neighborhood',
         	'town',
-        	'location',
         	'title',
         	'description',
         	'price_first',
@@ -197,6 +195,36 @@ class PublicationsSerializer(serializers.ModelSerializer):
         	'date',
         	'status'
         	)
+class PublicationsFullSerializer(serializers.ModelSerializer):
+    type_publications=TypesPublicationsSerializer()
+    type_immovable=TypesImmovablesSerializer()
+    neighborhood=NeighborhoodFullSerializer()
+    currency=CurrenciesSerializer()
+    user=UsersSerializer()
+    class Meta:
+        model = Publications
+        fields = (
+            'id',
+            'canvas_number',
+            'user', 
+            'type_publications',
+            'type_immovable',
+            'neighborhood',
+            'town',
+            'title',
+            'description',
+            'price_first',
+            'price_second',
+            'currency',
+            'bathrooms',
+            'old',
+            'ground_surface',
+            'construction_area',
+            'country',
+            'state',
+            'date',
+            'status'
+            )
 
 class CommentsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -209,6 +237,19 @@ class CommentsSerializer(serializers.ModelSerializer):
         	'date',
             'status'
         	)
+
+class CommentsFullerializer(serializers.ModelSerializer):
+    user=UsersSerializer()
+    class Meta:
+        model = Comments
+        fields = (
+            'id',
+            'publication',
+            'user', 
+            'comment',
+            'date',
+            'status'
+            )
 
 
 class ContactsSerializer(serializers.ModelSerializer):
@@ -223,6 +264,7 @@ class ContactsSerializer(serializers.ModelSerializer):
         	'user',
         	'type_contact',
         	'note',
+            'is_favorite'
             'status'
         	)
 
@@ -245,11 +287,9 @@ class EventsSerializer(serializers.ModelSerializer):
         	'id',
         	'name',
         	'description', 
-        	'administrator',
         	'type_event',
-        	'state',
-        	'town',
-        	'path',
+            'date_event',
+            'administrator',
             'status'
         	)
 
