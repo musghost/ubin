@@ -62,7 +62,7 @@ class Users(AbstractBaseUser, PermissionsMixin):
         blank=False,
         null=False,
         )
-    mother_last_name=models.TextField(
+    mothers_maiden_name=models.TextField(
         max_length=50,
         blank=True,
         null=True
@@ -83,8 +83,8 @@ class Users(AbstractBaseUser, PermissionsMixin):
         null=False
         )
     type_advisor= models.ForeignKey(Types_Advisors,blank=True, null=True)
-    immovable_name = models.TextField(max_length=250,blank=True)
-    immovable_phone = models.TextField(max_length=20,blank=True)
+    property_company_name = models.TextField(max_length=250,blank=True)
+    property_company_phone = models.TextField(max_length=20,blank=True)
     photo = models.TextField(max_length=100,blank=True)
     register_date= models.DateField(auto_now_add=True) 
     allow_providers = models.BooleanField(default=False) 
@@ -114,31 +114,11 @@ class Users(AbstractBaseUser, PermissionsMixin):
     'is_active'
     ]
 
-class Countries(models.Model):
-    name = models.TextField(max_length=100)
-    status = models.BooleanField(default=True)
-  
-
-class States(models.Model):
-    name = models.TextField(max_length=100)
-    country = models.ForeignKey(Countries)
-    status = models.BooleanField(default=True)
-
-class Towns(models.Model):
-    name = models.TextField(max_length=100)
-    state = models.ForeignKey(States)
-    status = models.BooleanField(default=True)
-
-class Neighborhood(models.Model):
-    name = models.TextField(max_length=100)
-    town = models.ForeignKey(Towns)
-    status = models.BooleanField(default=True)
-
 class Currencies(models.Model):
     name = models.TextField(max_length=100)
     status = models.BooleanField(default=True)
 
-class Types_Immovables(models.Model):
+class Types_Property(models.Model):
     name = models.TextField(max_length=100)
     status = models.BooleanField(default=True)
 
@@ -165,9 +145,10 @@ class Types_Documents(models.Model):
 class Providers(models.Model):
     name = models.TextField(max_length=100)
     type_provider= models.ForeignKey(Types_Providers)
-    town= models.ForeignKey(Towns)
+    state=models.IntegerField()
+    town=models.IntegerField()
+    neighborhood=models.IntegerField()
     register_date= models.DateField(auto_now_add=True)
-    neighborhood=models.ForeignKey(Neighborhood)
     address= models.TextField(max_length=250)
     phone = models.TextField(max_length=20)
     email = models.EmailField(max_length=50)
@@ -184,20 +165,20 @@ class Publications(models.Model):
     canvas_number = models.IntegerField(null=True)
     user= models.ForeignKey(Users,null=False)
     type_publications= models.ForeignKey(Types_Publications,null=False)
-    type_immovable= models.ForeignKey(Types_Immovables,null=True)
-    town= models.ForeignKey(Towns,null=False)
-    neighborhood=models.ForeignKey(Neighborhood)
+    type_property= models.ForeignKey(Types_Property,null=True)
     title=models.TextField(max_length=100,null=False)
     description=models.TextField(max_length=500,null=False)
     price_first=models.DecimalField(decimal_places=2,max_digits=10,null=False)
     price_second=models.DecimalField(decimal_places=2,max_digits=10,null=True)
     currency=models.ForeignKey(Currencies,null=False)
-    old=models.IntegerField(null=True)
     bathrooms=models.IntegerField(null=True)
-    ground_surface=models.TextField(max_length=50,null=True)
+    antiquity=models.TextField(max_length=50,null=True)
+    area=models.TextField(max_length=50,null=True)
     construction_area=models.TextField(max_length=50,null=True)
-    country=models.ForeignKey(Countries,null=False)
-    state=models.ForeignKey(States,null=False)
+    country=models.IntegerField()
+    state=models.IntegerField()
+    town=models.IntegerField()
+    neighborhood=models.IntegerField()
     date= models.DateField(auto_now_add=True)
     status = models.BooleanField(default=True)
 
@@ -281,10 +262,12 @@ class Reports(models.Model):
     date= models.DateField(auto_now_add=True)
     status = models.BooleanField(default=True)
     
-class User_Ubication(models.Model):
+class User_Location(models.Model):
     user=models.ForeignKey(Users)
-    country=models.ForeignKey(Countries)
-    state=models.ForeignKey(States)
+    country=models.IntegerField()
+    state=models.IntegerField()
+    town=models.IntegerField()
+    neighborhood=models.IntegerField()
     date= models.DateField(auto_now_add=True)
     status = models.BooleanField(default=True)
 

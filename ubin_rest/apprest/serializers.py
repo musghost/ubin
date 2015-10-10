@@ -1,15 +1,10 @@
 from rest_framework import serializers
 
-from .models import Countries
-from .models import States
-from .models import Towns
-from .models import Neighborhood
 from .models import Currencies
-from .models import Types_Immovables
+from .models import Types_Property
 from .models import Types_Publications
 from .models import Types_Advisors
 from .models import Types_Providers
-from .models import Types_Immovables
 from .models import Types_Advisors
 from .models import Types_Providers
 from .models import Types_Contacts
@@ -31,7 +26,7 @@ from .models import Favorites_Providers
 from .models import Photos
 from .models import Types_Reports
 from .models import Reports
-from .models import User_Ubication
+from .models import User_Location
 from .models import Types_Customers
 from .models import Customers
 from .models import Favorites_Customers
@@ -39,52 +34,14 @@ from .models import Tasks
 from .models import Terms
 
 
-class CountriesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Countries
-        fields = ('id','name','status')
-
-class StatesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = States
-        fields = ('id','name', 'country','status')
-
-class StatesFullSerializer(serializers.ModelSerializer):
-    country=CountriesSerializer()
-    class Meta:
-        model = States
-        fields = ('id','name', 'country','status')
-
-class TownsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Towns
-        fields = ('id','name','state','status')
-
-class TownsFullSerializer(serializers.ModelSerializer):
-    state=StatesFullSerializer()
-    class Meta:
-        model = Towns
-        fields = ('id','name','state','status')
-
-class NeighborhoodSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Neighborhood
-        fields = ('id','name','town','status')
-
-class NeighborhoodFullSerializer(serializers.ModelSerializer):
-    town=TownsFullSerializer()
-    class Meta:
-        model = Neighborhood
-        fields = ('id','name','town','status')
-
 class CurrenciesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Currencies
         fields = ('id','name', 'status')
 
-class TypesImmovablesSerializer(serializers.ModelSerializer):
+class TypesPropertySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Types_Immovables
+        model = Types_Property
         fields = ('id','name', 'status')
 
 class TypesPublicationsSerializer(serializers.ModelSerializer):
@@ -127,13 +84,13 @@ class UsersSerializer(serializers.ModelSerializer):
             'password',
             'name',
             'last_name',
-            'mother_last_name',
+            'mothers_maiden_name',
             'birthday',
             'gender',
             'phone',
             'type_advisor',
-            'immovable_name',
-            'immovable_phone',
+            'property_company_name',
+            'property_company_phone',
             'photo',
             'allow_providers',
             'allow_notary',
@@ -156,12 +113,13 @@ class ProvidersSerializer(serializers.ModelSerializer):
         	'id',
         	'name',
         	'type_provider',
-            'neighborhood',
-        	'town',
         	'register_date',
         	'address',
         	'email',
         	'web_page',
+            'state',
+            'neighborhood',
+            'town',
         	'status'
         	)
 
@@ -178,27 +136,26 @@ class PublicationsSerializer(serializers.ModelSerializer):
         	'canvas_number',
         	'user', 
         	'type_publications',
-        	'type_immovable',
-            'neighborhood',
-        	'town',
+        	'type_property',
         	'title',
         	'description',
         	'price_first',
         	'price_second',
         	'currency',
         	'bathrooms',
-        	'old',
-        	'ground_surface',
+        	'antiquity',
+        	'area',
         	'construction_area',
         	'country',
         	'state',
+            'town',
+            'neighborhood',
         	'date',
         	'status'
         	)
 class PublicationsFullSerializer(serializers.ModelSerializer):
     type_publications=TypesPublicationsSerializer()
-    type_immovable=TypesImmovablesSerializer()
-    neighborhood=NeighborhoodFullSerializer()
+    type_property=TypesPropertySerializer()
     currency=CurrenciesSerializer()
     user=UsersSerializer()
     class Meta:
@@ -208,20 +165,20 @@ class PublicationsFullSerializer(serializers.ModelSerializer):
             'canvas_number',
             'user', 
             'type_publications',
-            'type_immovable',
-            'neighborhood',
-            'town',
+            'type_property',
             'title',
             'description',
             'price_first',
             'price_second',
             'currency',
             'bathrooms',
-            'old',
-            'ground_surface',
+            'antiquity',
+            'area',
             'construction_area',
             'country',
             'state',
+            'town',
+            'neighborhood',
             'date',
             'status'
             )
@@ -240,6 +197,7 @@ class CommentsSerializer(serializers.ModelSerializer):
 
 class CommentsFullerializer(serializers.ModelSerializer):
     user=UsersSerializer()
+    publication=PublicationsSerializer()
     class Meta:
         model = Comments
         fields = (
@@ -264,7 +222,7 @@ class ContactsSerializer(serializers.ModelSerializer):
         	'user',
         	'type_contact',
         	'note',
-            'is_favorite'
+            'is_favorite',
             'status'
         	)
 
@@ -362,14 +320,16 @@ class ReportsSerializer(serializers.ModelSerializer):
             'status'
         	)
 
-class UserUbicationSerializer(serializers.ModelSerializer):
+class UserLocationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User_Ubication
+        model = User_Location
         fields = (
         	'id',
         	'user',
         	'country',
         	'state',
+            'town',
+            'neighborhood',
         	'date',
             'status'
         	)

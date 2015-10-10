@@ -1,13 +1,8 @@
-from .models import Countries
-from .models import States
-from .models import Towns
-from .models import Neighborhood
 from .models import Currencies
-from .models import Types_Immovables
+from .models import Types_Property
 from .models import Types_Publications
 from .models import Types_Advisors
 from .models import Types_Providers
-from .models import Types_Immovables
 from .models import Types_Advisors
 from .models import Types_Providers
 from .models import Types_Contacts
@@ -29,21 +24,15 @@ from .models import Favorites_Providers
 from .models import Photos
 from .models import Types_Reports
 from .models import Reports
-from .models import User_Ubication
+from .models import User_Location
 from .models import Types_Customers
 from .models import Customers
 from .models import Favorites_Customers
 from .models import Tasks
 from .models import Terms
 
-from .serializers import CountriesSerializer
-from .serializers import StatesSerializer
-from .serializers import TownsSerializer
-from .serializers import TownsFullSerializer
-from .serializers import NeighborhoodFullSerializer
-from .serializers import NeighborhoodSerializer
 from .serializers import CurrenciesSerializer
-from .serializers import TypesImmovablesSerializer
+from .serializers import TypesPropertySerializer
 from .serializers import TypesPublicationsSerializer
 from .serializers import TypesAdvisorsSerializer
 from .serializers import TypesProvidersSerializer
@@ -67,7 +56,7 @@ from .serializers import FavoritesProvidersSerializer
 from .serializers import PhotosSerializer
 from .serializers import TypesReportsSerializer
 from .serializers import ReportsSerializer
-from .serializers import UserUbicationSerializer
+from .serializers import UserLocationSerializer
 from .serializers import TypeCustomersSerializer
 from .serializers import CustomersSerializer
 from .serializers import FavoritesCustomersSerializer
@@ -82,141 +71,6 @@ from django.shortcuts import get_object_or_404
 from rest_framework import filters
 #from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
-'''
------------  Countries --------------------------
-'''
-class CountriesViewSet(viewsets.ModelViewSet):
-    serializer_class = CountriesSerializer
-    queryset = Countries.objects.all()
-
-class vwCountriesViewSet(viewsets.ViewSet):
-    def list(self, request):
-        queryset = Countries.objects.all()
-        serializer = CountriesSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self,request, pk=None):
-        queryset = Countries.objects.all()
-        country = get_object_or_404(queryset, pk=pk)
-        serializer = CountriesSerializer(country)
-
-        return Response(serializer.data)
-'''
------------  States --------------------------
-''' 
-class StatesViewSet(viewsets.ModelViewSet):
-
-    serializer_class = StatesSerializer
-    queryset = States.objects.all()
-
-class vwStatesViewSet(viewsets.ViewSet):
-    def list(self, request, country_pk=None):
-        queryset = States.objects.filter(
-            country__pk=country_pk
-        )
-
-        serializer = StatesSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, country_pk=None, pk=None):
-        queryset = States.objects.filter(
-            country__pk=country_pk
-        )
-        state = get_object_or_404(queryset, pk=pk)
-        serializer = StatesSerializer(state)
-
-        return Response(serializer.data)
-
-class vwStatesTownsViewSet(viewsets.ViewSet):
-    def list(self, request):
-        queryset = States.objects.all()
-        serializer = StatesSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request,pk=None):
-        queryset = States.objects.all()
-        state = get_object_or_404(queryset, pk=pk)
-        serializer = StatesSerializer(state)
-
-        return Response(serializer.data)
-
-'''
------------  Towns --------------------------
-'''
-class TownsViewSet(viewsets.ModelViewSet):
- 
-    serializer_class = TownsSerializer
-    queryset = Towns.objects.all()
-
-class vwTownsViewSet(viewsets.ViewSet):
-    def list(self, request,country_pk=None,state_pk=None):
-        queryset = Towns.objects.filter(
-            state__pk=state_pk
-        )
-
-        serializer = TownsSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request,country_pk=None,state_pk=None, pk=None):
-        queryset = Towns.objects.filter(
-            state__pk=state_pk
-        )
-        town = get_object_or_404(queryset, pk=pk)
-        serializer = TownsSerializer(town)
-        return Response(serializer.data)
-
-class TownsFullViewSet(viewsets.ViewSet):
-    def list(self, request):
-        queryset = Towns.objects.all()
-
-        serializer = TownsFullSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request,pk=None):
-        queryset = Towns.objects.all()
-        town = get_object_or_404(queryset, pk=pk)
-        serializer = TownsFullSerializer(town)
-        return Response(serializer.data)
-
-class vwTownsStatesViewSet(viewsets.ViewSet):
-    def list(self, request,state_pk=None):
-        queryset = Towns.objects.filter(
-            state__pk=state_pk
-        )
-
-        serializer = TownsSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request,state_pk=None, pk=None):
-        queryset = Towns.objects.filter(
-            state__pk=state_pk
-        )
-        town = get_object_or_404(queryset, pk=pk)
-        serializer = TownsSerializer(town)
-
-        return Response(serializer.data)
-
-'''
------------------ Neighborhood --------------------
-'''
-class NeighborhoodViewSet(viewsets.ModelViewSet):
- 
-    serializer_class = NeighborhoodSerializer
-    queryset = Neighborhood.objects.all()
-
-class NeighborhoodFullViewSet(viewsets.ViewSet):
-    def list(self, request):
-        queryset = Neighborhood.objects.all()
-
-        serializer = NeighborhoodFullSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request,pk=None):
-        queryset = Neighborhood.objects.all()
-        neighborhood = get_object_or_404(queryset, pk=pk)
-        serializer = NeighborhoodFullSerializer(neighborhood)
-
-        return Response(serializer.data)
 
 '''
 -----------  Currencies --------------------------
@@ -241,24 +95,24 @@ class vwCurrenciesViewSet(viewsets.ViewSet):
 
 
 '''
------------  Types immovable --------------------------
+-----------  Types Property --------------------------
 '''
 
-class TypesImmovablesViewSet(viewsets.ModelViewSet):
+class TypesPropertyViewSet(viewsets.ModelViewSet):
  
-    serializer_class = TypesImmovablesSerializer
-    queryset = Types_Immovables.objects.all()
+    serializer_class = TypesPropertySerializer
+    queryset = Types_Property.objects.all()
 
-class vwTypesImmovablesViewSet(viewsets.ViewSet):
+class vwTypesPropertyViewSet(viewsets.ViewSet):
     def list(self, request):
-        queryset = Types_Immovables.objects.all()
-        serializer = TypesImmovablesSerializer(queryset, many=True)
+        queryset = Types_Property.objects.all()
+        serializer = TypesPropertySerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        queryset = Types_Immovables.objects.all()
+        queryset = Types_Property.objects.all()
         type_immovable = get_object_or_404(queryset, pk=pk)
-        serializer = TypesImmovablesSerializer(type_immovable)
+        serializer = TypesPropertySerializer(type_immovable)
 
         return Response(serializer.data)
 
@@ -531,17 +385,17 @@ class PublicationsViewSet(viewsets.ModelViewSet):
     queryset = Publications.objects.all()
 
 class vwPublicationsInTypeImmovableViewSet(viewsets.ViewSet):
-    def list(self, request,typeImmovable_pk=None):
+    def list(self, request,typeProperty_pk=None):
         queryset = Publications.objects.filter(
-            type_immovable__pk=typeImmovable_pk
+            type_property__pk=typeProperty_pk
         )
 
         serializer = PublicationsSerializer(queryset, many=True)
         return Response(serializer.data)
 
-    def retrieve(self, request,typeImmovable_pk=None,pk=None):
+    def retrieve(self, request,typeProperty_pk=None,pk=None):
         queryset = Publications.objects.filter(
-            type_immovable__pk=typeImmovable_pk
+            type_property__pk=typeProperty_pk
         )
         publication = get_object_or_404(queryset, pk=pk)
         serializer = PublicationsSerializer(publication)
@@ -1033,28 +887,28 @@ class vwTypeReportsViewSet(viewsets.ViewSet):
 
 
 '''
--------------- User Ubication ------------------------
+-------------- User Location ------------------------
 '''
-class UserUbicationViewSet(viewsets.ModelViewSet):
+class UserLocationViewSet(viewsets.ModelViewSet):
  
-    serializer_class = UserUbicationSerializer
-    queryset = User_Ubication.objects.all()
+    serializer_class = UserLocationSerializer
+    queryset = User_Location.objects.all()
 
-class vwUserUbicationViewSet(viewsets.ViewSet):
+class vwUserLocationViewSet(viewsets.ViewSet):
     def list(self, request,user_pk=None):
-        queryset = User_Ubication.objects.filter(
+        queryset = User_Location.objects.filter(
             user__pk=user_pk
         )
 
-        serializer = UserUbicationSerializer(queryset, many=True)
+        serializer = UserLocationSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,user_pk=None, pk=None):
-        queryset =User_Ubication.objects.filter(
+        queryset =User_Location.objects.filter(
             user__pk=user_pk
         )
         user_u = get_object_or_404(queryset, pk=pk)
-        serializer = UserUbicationSerializer(user_u)
+        serializer = UserLocationSerializer(user_u)
         return Response(serializer.data)
 
 ''''

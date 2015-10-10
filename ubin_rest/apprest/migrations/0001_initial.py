@@ -21,13 +21,13 @@ class Migration(migrations.Migration):
                 ('is_superuser', models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')),
                 ('name', models.TextField(max_length=50)),
                 ('last_name', models.TextField(max_length=100)),
-                ('mother_last_name', models.TextField(max_length=50, null=True, blank=True)),
+                ('mothers_maiden_name', models.TextField(max_length=50, null=True, blank=True)),
                 ('email', models.EmailField(unique=True, max_length=100)),
                 ('birthday', models.DateField()),
                 ('gender', models.TextField(max_length=50)),
                 ('phone', models.TextField(max_length=20)),
-                ('immovable_name', models.TextField(max_length=250, blank=True)),
-                ('immovable_phone', models.TextField(max_length=20, blank=True)),
+                ('property_company_name', models.TextField(max_length=250, blank=True)),
+                ('property_company_phone', models.TextField(max_length=20, blank=True)),
                 ('photo', models.TextField(max_length=100, blank=True)),
                 ('register_date', models.DateField(auto_now_add=True)),
                 ('allow_providers', models.BooleanField(default=False)),
@@ -72,14 +72,7 @@ class Migration(migrations.Migration):
                 ('phone', models.TextField(max_length=20)),
                 ('email', models.EmailField(max_length=50)),
                 ('note', models.TextField(max_length=200)),
-                ('status', models.BooleanField(default=True)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Countries',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.TextField(max_length=100)),
+                ('is_favorite', models.BooleanField(default=False)),
                 ('status', models.BooleanField(default=True)),
             ],
         ),
@@ -149,14 +142,6 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='Neighborhood',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.TextField(max_length=100)),
-                ('status', models.BooleanField(default=True)),
-            ],
-        ),
-        migrations.CreateModel(
             name='Notifications',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -182,13 +167,15 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.TextField(max_length=100)),
+                ('state', models.IntegerField()),
+                ('town', models.IntegerField()),
+                ('neighborhood', models.IntegerField()),
                 ('register_date', models.DateField(auto_now_add=True)),
                 ('address', models.TextField(max_length=250)),
                 ('phone', models.TextField(max_length=20)),
                 ('email', models.EmailField(max_length=50)),
                 ('web_page', models.URLField()),
                 ('status', models.BooleanField(default=True)),
-                ('neighborhood', models.ForeignKey(to='apprest.Neighborhood')),
             ],
         ),
         migrations.CreateModel(
@@ -200,15 +187,17 @@ class Migration(migrations.Migration):
                 ('description', models.TextField(max_length=500)),
                 ('price_first', models.DecimalField(max_digits=10, decimal_places=2)),
                 ('price_second', models.DecimalField(null=True, max_digits=10, decimal_places=2)),
-                ('old', models.IntegerField(null=True)),
                 ('bathrooms', models.IntegerField(null=True)),
-                ('ground_surface', models.TextField(max_length=50, null=True)),
+                ('antiquity', models.TextField(max_length=50, null=True)),
+                ('area', models.TextField(max_length=50, null=True)),
                 ('construction_area', models.TextField(max_length=50, null=True)),
+                ('country', models.IntegerField()),
+                ('state', models.IntegerField()),
+                ('town', models.IntegerField()),
+                ('neighborhood', models.IntegerField()),
                 ('date', models.DateField(auto_now_add=True)),
                 ('status', models.BooleanField(default=True)),
-                ('country', models.ForeignKey(to='apprest.Countries')),
                 ('currency', models.ForeignKey(to='apprest.Currencies')),
-                ('neighborhood', models.ForeignKey(to='apprest.Neighborhood')),
             ],
         ),
         migrations.CreateModel(
@@ -233,15 +222,6 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='States',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.TextField(max_length=100)),
-                ('status', models.BooleanField(default=True)),
-                ('country', models.ForeignKey(to='apprest.Countries')),
-            ],
-        ),
-        migrations.CreateModel(
             name='Tasks',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -260,15 +240,6 @@ class Migration(migrations.Migration):
                 ('text', models.TextField(max_length=800)),
                 ('date', models.DateField(auto_now_add=True)),
                 ('status', models.BooleanField(default=True)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Towns',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.TextField(max_length=100)),
-                ('status', models.BooleanField(default=True)),
-                ('state', models.ForeignKey(to='apprest.States')),
             ],
         ),
         migrations.CreateModel(
@@ -312,7 +283,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='Types_Immovables',
+            name='Types_Property',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.TextField(max_length=100)),
@@ -344,13 +315,15 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='User_Ubication',
+            name='User_Location',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('country', models.IntegerField()),
+                ('state', models.IntegerField()),
+                ('town', models.IntegerField()),
+                ('neighborhood', models.IntegerField()),
                 ('date', models.DateField(auto_now_add=True)),
                 ('status', models.BooleanField(default=True)),
-                ('country', models.ForeignKey(to='apprest.Countries')),
-                ('state', models.ForeignKey(to='apprest.States')),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
         ),
@@ -366,18 +339,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='publications',
-            name='state',
-            field=models.ForeignKey(to='apprest.States'),
-        ),
-        migrations.AddField(
-            model_name='publications',
-            name='town',
-            field=models.ForeignKey(to='apprest.Towns'),
-        ),
-        migrations.AddField(
-            model_name='publications',
-            name='type_immovable',
-            field=models.ForeignKey(to='apprest.Types_Immovables', null=True),
+            name='type_property',
+            field=models.ForeignKey(to='apprest.Types_Property', null=True),
         ),
         migrations.AddField(
             model_name='publications',
@@ -388,11 +351,6 @@ class Migration(migrations.Migration):
             model_name='publications',
             name='user',
             field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
-        ),
-        migrations.AddField(
-            model_name='providers',
-            name='town',
-            field=models.ForeignKey(to='apprest.Towns'),
         ),
         migrations.AddField(
             model_name='providers',
@@ -413,11 +371,6 @@ class Migration(migrations.Migration):
             model_name='notifications',
             name='user',
             field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
-        ),
-        migrations.AddField(
-            model_name='neighborhood',
-            name='town',
-            field=models.ForeignKey(to='apprest.Towns'),
         ),
         migrations.AddField(
             model_name='favorites_providers',

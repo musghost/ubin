@@ -19,21 +19,10 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from django.contrib import admin
 admin.autodiscover()
 
-from apprest.viewsets import CountriesViewSet
-from apprest.viewsets import vwCountriesViewSet
-from apprest.viewsets import StatesViewSet
-from apprest.viewsets import vwStatesViewSet
-from apprest.viewsets import vwStatesTownsViewSet
-from apprest.viewsets import TownsViewSet
-from apprest.viewsets import TownsFullViewSet
-from apprest.viewsets import vwTownsViewSet
-from apprest.viewsets import vwTownsStatesViewSet
-from apprest.viewsets import NeighborhoodViewSet
-from apprest.viewsets import NeighborhoodFullViewSet
 from apprest.viewsets import CurrenciesViewSet
 from apprest.viewsets import vwCurrenciesViewSet
-from apprest.viewsets import TypesImmovablesViewSet
-from apprest.viewsets import vwTypesImmovablesViewSet
+from apprest.viewsets import TypesPropertyViewSet
+from apprest.viewsets import vwTypesPropertyViewSet
 from apprest.viewsets import TypesPublicationsViewSet
 from apprest.viewsets import vwTypesPublicationsViewSet
 from apprest.viewsets import TypesAdvisorsViewSet
@@ -91,8 +80,8 @@ from apprest.viewsets import vwAllTypesReportsViewSet
 from apprest.viewsets import ReportsViewSet
 from apprest.viewsets import vwReportsViewSet
 from apprest.viewsets import vwTypeReportsViewSet
-from apprest.viewsets import UserUbicationViewSet
-from apprest.viewsets import vwUserUbicationViewSet
+from apprest.viewsets import UserLocationViewSet
+from apprest.viewsets import vwUserLocationViewSet
 from apprest.viewsets import TypeCustomersViewSet
 from apprest.viewsets import vwAllTypesCustomersViewSet
 from apprest.viewsets import CustomersViewSet
@@ -110,45 +99,6 @@ from rest_framework_nested import routers
 
 router = DefaultRouter()
 #router = routers.SimpleRouter()
-'''
-Countries
-'''
-#CRUD
-router.register(r'country',CountriesViewSet)
-
-#VIEW : /countries/pk/states/pk/towns/pk
-router.register(r'countries',vwCountriesViewSet,base_name='countries')
-vw_countries=routers.NestedSimpleRouter(router, r'countries',lookup='country')
-vw_countries.register(r'states',vwStatesViewSet,base_name='states')
-vw_towns=routers.NestedSimpleRouter(vw_countries,r'states',lookup='state')
-vw_towns.register(r'towns',vwTownsViewSet,base_name='towns')
-
-'''
-States
-'''
-#CRUD
-router.register(r'state',StatesViewSet)
-
-#VIEW : /states/pk/towns/pk
-router.register(r'states',vwStatesTownsViewSet,base_name='states')
-vw_state_tows=routers.NestedSimpleRouter(router, r'states',lookup='state')
-vw_state_tows.register(r'towns',vwTownsStatesViewSet,base_name="towns")
-
-'''
-Towns
-'''
-#CRUD
-router.register(r'town', TownsViewSet)
-# VIEW : /towns/pk
-router.register(r'towns', TownsFullViewSet, base_name='towns')
-
-'''
-Neighborhood
-'''
-#CRUD
-router.register(r'neighborhood', NeighborhoodViewSet)
-#VIEW : /neighborhoods/pk
-router.register(r'neighborhoods', NeighborhoodFullViewSet, base_name='neighborhoods')
 
 '''
 Currencies
@@ -162,15 +112,15 @@ vw_currencies_publications.register(r'publications',vwPublicationsCurrenciesView
 
 
 '''
-Types Immovables
+Types Property
 '''
 #CRUD
-router.register(r'typeImmovable',TypesImmovablesViewSet)
+router.register(r'typeProperty',TypesPropertyViewSet)
 
 #VIEW : /typesImmovables/pk/publications/pk
-router.register(r'typesImmovables',vwTypesImmovablesViewSet,base_name="typesImmovables")
-vw_immovable_publications=routers.NestedSimpleRouter(router, r'typesImmovables',lookup='typeImmovable')
-vw_immovable_publications.register(r'publications',vwPublicationsInTypeImmovableViewSet,base_name='publications')
+router.register(r'typesProperty',vwTypesPropertyViewSet,base_name="typesProperty")
+vw_property_publications=routers.NestedSimpleRouter(router, r'typesProperty',lookup='typeProperty')
+vw_property_publications.register(r'publications',vwPublicationsInTypeImmovableViewSet,base_name='publications')
 
 '''
 Types Publications
@@ -270,9 +220,9 @@ vw_favorites_providers_users.register(r'favoritesProviders',vwFavoritesProviders
 #VIEW : /users/pk/reports/pk
 vw_reports_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
 vw_reports_users.register(r'reports',vwReportsViewSet,base_name='reports')
-#VIEW : /users/pk/userUbication/pk
-vw_user_ubication_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
-vw_user_ubication_users.register(r'userLocation',vwUserUbicationViewSet,base_name='userLocation')
+#VIEW : /users/pk/userLocation/pk
+vw_user_location_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
+vw_user_location_users.register(r'userLocation',vwUserLocationViewSet,base_name='userLocation')
 #VIEW : /users/pk/favoritesCustomers/pk
 vw_favorites_customers_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
 vw_favorites_customers_users.register(r'favoritesCustomers',vwFavoritesCustomersViewSet,base_name='favoritesCustomers')
@@ -401,7 +351,7 @@ router.register(r'report',ReportsViewSet)
 '''
 Users Location
 '''
-router.register(r'userLocation',UserUbicationViewSet)
+router.register(r'userLocation',UserLocationViewSet)
 
 '''
 Customers
@@ -425,10 +375,7 @@ urlpatterns = [
     url(r'^api/v1/api-token-auth/', 'rest_framework_jwt.views.obtain_jwt_token'),
     url(r'^api/v1/api-token-refresh/', 'rest_framework_jwt.views.refresh_jwt_token'),
     url(r'^api/v1/api-token-verify/', 'rest_framework_jwt.views.verify_jwt_token'),
-    url(r'^api/v1/',include(vw_countries.urls)),
-    url(r'^api/v1/',include(vw_towns.urls)),
-    url(r'^api/v1/',include(vw_state_tows.urls)),
-    url(r'^api/v1/',include(vw_immovable_publications.urls)),
+    url(r'^api/v1/',include(vw_property_publications.urls)),
     url(r'^api/v1/',include(vw_type_publications.urls)),
     url(r'^api/v1/',include(vw_currencies_publications.urls)),
     url(r'^api/v1/',include(vw_advisors_users.urls)),
@@ -445,7 +392,7 @@ urlpatterns = [
     url(r'^api/v1/',include(vw_push_notifications_users.urls)),
     url(r'^api/v1/',include(vw_favorites_providers_users.urls)),
     url(r'^api/v1/',include(vw_reports_users.urls)),
-    url(r'^api/v1/',include(vw_user_ubication_users.urls)),
+    url(r'^api/v1/',include(vw_user_location_users.urls)),
     url(r'^api/v1/',include(vw_favorites_customers_users.urls)),
     url(r'^api/v1/',include(vw_tasks_users.urls)),
     url(r'^api/v1/',include(vw_classification_providers.urls)),
