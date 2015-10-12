@@ -92,7 +92,11 @@ from apprest.viewsets import vwFavoritesCustomersViewSet
 from apprest.viewsets import TasksViewSet
 from apprest.viewsets import vwTasksViewSet
 from apprest.viewsets import vwTaskViewSet
-from apprest.viewsets import TermsViewSet
+
+'''
+Filters
+'''
+from  apprest.viewsets import ProvidersFilterListViewSet
 
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
@@ -182,10 +186,6 @@ router.register(r'typesDocuments',vwTypesDocumentsViewSet,base_name='typesDocume
 vw_type_documents=routers.NestedSimpleRouter(router,r'typesDocuments',lookup='typeDocument')
 vw_type_documents.register(r'documents',DocumentsTypeViewSet,base_name='documents')
 
-'''
-Terms
-'''
-router.register(r'terms',TermsViewSet)
 
 '''
 users
@@ -366,7 +366,7 @@ router.register(r'favoriteCustomer',FavoritesCustomersViewSet)
 
 router.register(r'task',TasksViewSet)
 
-
+router.register(r'providersFilter',ProvidersFilterListViewSet,base_name='providersFilter')
 
 urlpatterns = [
     url(r'^api/v1/admin/', include(admin.site.urls)),
@@ -406,6 +406,6 @@ urlpatterns = [
     url(r'^api/v1/',include(vw_contacts_task.urls)),
     url(r'^api/v1/',include(vw_types_customers.urls)),
     url(r'^api/v1/',include(vw_types_reports.urls)),
-
+    
     url(r'^api/v1/docs/', include('rest_framework_swagger.urls')),
 ]   

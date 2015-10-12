@@ -31,7 +31,7 @@ from .models import Types_Customers
 from .models import Customers
 from .models import Favorites_Customers
 from .models import Tasks
-from .models import Terms
+
 
 
 class CurrenciesSerializer(serializers.ModelSerializer):
@@ -107,6 +107,7 @@ class UsersSerializer(serializers.ModelSerializer):
             )
 
 class ProvidersSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Providers
         fields = (
@@ -122,6 +123,26 @@ class ProvidersSerializer(serializers.ModelSerializer):
             'town',
         	'status'
         	)
+
+class ProvidersFullSerializer(serializers.ModelSerializer):
+    type_provider=TypesProvidersSerializer()
+    class Meta:
+        model = Providers
+        fields = (
+            'id',
+            'name',
+            'type_provider',
+            'register_date',
+            'address',
+            'email',
+            'web_page',
+            'state',
+            'neighborhood',
+            'town',
+            'status'
+            )
+
+
 
 class ClassificationProvidersSerializer(serializers.ModelSerializer):
     class Meta:
@@ -370,15 +391,5 @@ class TasksSerializer(serializers.ModelSerializer):
             'hour',
             'contact',
             'user',
-            'status'
-            )
-
-class TermsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Terms
-        fields = (
-            'id',
-            'text',
-            'date',
             'status'
             )

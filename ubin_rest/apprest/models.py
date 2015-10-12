@@ -298,10 +298,6 @@ class Tasks(models.Model):
     user= models.ForeignKey(Users)
     status = models.BooleanField(default=True)
 
-class Terms(models.Model):
-    text= models.TextField(max_length=800)
-    date= models.DateField(auto_now_add=True)
-    status = models.BooleanField(default=True)
 
     
 

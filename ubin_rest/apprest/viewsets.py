@@ -29,7 +29,6 @@ from .models import Types_Customers
 from .models import Customers
 from .models import Favorites_Customers
 from .models import Tasks
-from .models import Terms
 
 from .serializers import CurrenciesSerializer
 from .serializers import TypesPropertySerializer
@@ -41,6 +40,7 @@ from .serializers import TypesEventsSerializer
 from .serializers import TypesDocumentsSerializer
 from .serializers import UsersSerializer
 from .serializers import ProvidersSerializer
+from .serializers import ProvidersFullSerializer
 from .serializers import ClassificationProvidersSerializer
 from .serializers import PublicationsSerializer
 from .serializers import PublicationsFullSerializer
@@ -61,14 +61,18 @@ from .serializers import TypeCustomersSerializer
 from .serializers import CustomersSerializer
 from .serializers import FavoritesCustomersSerializer
 from .serializers import TasksSerializer
-from .serializers import TermsSerializer
 
 from rest_framework import serializers
+
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
+import json
+from django.http import HttpResponse
 from rest_framework import filters
+from django.core.serializers.json import DjangoJSONEncoder
+from django.core import serializers
 #from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 
@@ -298,7 +302,6 @@ class ProvidersViewSet(viewsets.ModelViewSet):
     serializer_class = ProvidersSerializer
     queryset = Providers.objects.all()
 
-
 class vwProvidersTypeViewSet(viewsets.ViewSet):
     def list(self, request,typeProvider_pk=None):
         queryset = Providers.objects.filter(
@@ -329,6 +332,51 @@ class vwProvidersViewSet(viewsets.ViewSet):
         serializer = ProvidersSerializer(provider)
 
         return Response(serializer.data)
+
+class ProvidersFilterListViewSet(viewsets.ViewSet):
+    def list(self, request):
+
+        queryset=Providers.objects.all() # Get all providers
+        result_list=[] # Declare var result list empty
+        '''
+        Get vars in method GET
+        '''
+        town=request.GET.get('town',None)
+        type_provider=request.GET.get('type_provider',None)
+        user=request.GET.get('user',None)
+
+        '''
+        Validation empty vars
+        '''
+        if town is not None and type_provider is not None and user is not None:
+            fav=Favorites_Providers.objects.all()
+            cp=Classification_Providers.objects.all()
+            #Filter provider by town and type_provider
+            queryset = Providers.objects.filter(town=town,type_provider__pk=type_provider) 
+            for provider in queryset:
+                # this provider is favorite?
+                fav=fav.filter(user__pk=user,provider__pk=provider.id)
+                favorite=False
+                if fav :
+                    favorite=True
+                # Validation provider in classification for get average score
+                providerIn=cp.filter(provider__pk=provider.id)
+                average=0
+                if providerIn :
+                    average=cp.filter(provider__pk=provider.id).aggregate(Avg('score'))
+                #Serialize provider
+                provider=serializers.serialize('json',queryset.filter(id=provider.id))
+
+                provider_json={
+                'provider':provider,
+                'favorite':favorite,
+                'average':average
+                }
+
+                result_list.append(provider_json)
+
+        return HttpResponse(json.dumps(result_list))
+
 
 
 
@@ -375,6 +423,7 @@ class vwProviderClassificationProvidersViewSet(viewsets.ViewSet):
         serializer = ClassificationProvidersSerializer(classificationPro)
 
         return Response(serializer.data)
+
 
 '''
 ---------------- Publications ----------------------
@@ -1025,8 +1074,3 @@ class vwTaskViewSet(viewsets.ViewSet):
         serializer = TasksSerializer(queryset, many=True)
         return Response(serializer.data)
   
-class TermsViewSet(viewsets.ModelViewSet):
- 
-    serializer_class = TermsSerializer
-    queryset = Terms.objects.all()   
- 
