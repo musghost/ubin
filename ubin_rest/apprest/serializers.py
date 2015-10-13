@@ -238,6 +238,7 @@ class ContactsSerializer(serializers.ModelSerializer):
         	'id',
         	'name',
         	'lastname', 
+            'mothers_maiden_name',
         	'phone',
         	'email',
         	'user',
@@ -277,6 +278,34 @@ class FavoritesSerializer(serializers.ModelSerializer):
         model = Favorites
         fields = ('id','publication','user', 'status')
 
+class FavoritesPublicationsSerializer(serializers.ModelSerializer):
+    favorites__publications=FavoritesSerializer()
+    class Meta:
+        model =Publications
+        fields = (
+            'id',
+            'canvas_number',
+            'user', 
+            'type_publications',
+            'type_property',
+            'title',
+            'description',
+            'price_first',
+            'price_second',
+            'currency',
+            'bathrooms',
+            'antiquity',
+            'area',
+            'construction_area',
+            'country',
+            'state',
+            'town',
+            'neighborhood',
+            'date',
+            'status',
+            'favorites__publications'
+            )
+
 class NotificationsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notifications
@@ -309,6 +338,7 @@ class FavoritesProvidersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorites_Providers
         fields = ('id','user','provider','status')
+
 
 class PhotosSerializer(serializers.ModelSerializer):
     class Meta:
@@ -367,10 +397,9 @@ class CustomersSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'last_name',
-            'mother_last_name',
+            'mothers_maiden_name',
             'phone',
             'email',
-            'contact',
             'type_customer',
             'status'
             )

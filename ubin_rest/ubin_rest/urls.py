@@ -39,12 +39,14 @@ from apprest.viewsets import vwTypesDocumentsViewSet
 from apprest.viewsets import UsersViewSet
 from apprest.viewsets import vwUsersViewSet
 from apprest.viewsets import ProvidersViewSet
+from apprest.viewsets import PublicationsFavoritesViewSet
 from apprest.viewsets import vwProvidersViewSet
 from apprest.viewsets import vwProvidersTypeViewSet
 from apprest.viewsets import ClassificationProvidersViewSet
 from apprest.viewsets import vwClassificationProvidersViewSet
 from apprest.viewsets import vwProviderClassificationProvidersViewSet
 from apprest.viewsets import PublicationsViewSet
+from apprest.viewsets import PublicationsFilterListViewSet
 from apprest.viewsets import vwPublicationsInTypeImmovableViewSet
 from apprest.viewsets import vwPublicationsInTypePublicationViewSet
 from apprest.viewsets import vwPublicationsViewSet
@@ -235,6 +237,8 @@ Providers
 '''
 #CRUD
 router.register(r'provider',ProvidersViewSet)
+#FILTER 
+router.register(r'providersFilter',ProvidersFilterListViewSet,base_name='providersFilter')
 #VIEW : /providers/pk/clasificationProviders/pk
 router.register(r'providers',vwProvidersViewSet,base_name='providers')
 vw_classification_providers=routers.NestedSimpleRouter(router,r'providers',lookup='provider')
@@ -253,6 +257,9 @@ Publications
 '''
 #CRUD
 router.register(r'publication',PublicationsViewSet)
+router.register(r'publicationsDetailFilter',PublicationsFavoritesViewSet,base_name="publicationsDetailFilter")
+#Filter
+router.register(r'publicationsFilter',PublicationsFilterListViewSet,base_name='publicationsFilter')
 #VIEW : publications/pk/comments/pk
 router.register(r'publications',vwAllPublicationsViewSet,base_name='publications')
 vw_comments_publications=routers.NestedSimpleRouter(router,r'publications',lookup='publication')
@@ -366,7 +373,6 @@ router.register(r'favoriteCustomer',FavoritesCustomersViewSet)
 
 router.register(r'task',TasksViewSet)
 
-router.register(r'providersFilter',ProvidersFilterListViewSet,base_name='providersFilter')
 
 urlpatterns = [
     url(r'^api/v1/admin/', include(admin.site.urls)),
