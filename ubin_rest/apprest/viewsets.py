@@ -60,7 +60,6 @@ from .serializers import UserLocationSerializer
 from .serializers import TypeCustomersSerializer
 from .serializers import CustomersSerializer
 from .serializers import FavoritesCustomersSerializer
-from .serializers import FavoritesPublicationsSerializer
 from .serializers import TasksSerializer
 
 from rest_framework import serializers
@@ -434,48 +433,103 @@ class PublicationsViewSet(viewsets.ModelViewSet):
     serializer_class = PublicationsSerializer
     queryset = Publications.objects.all()
 
+class PublicationsFullViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = PublicationsFullSerializer
+    queryset = Publications.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,)
+    filter_fields = (
+            'id',
+            'canvas_number',
+            'user', 
+            'type_publications',
+            'type_property',
+            'title',
+            'description',
+            'price_first',
+            'price_second',
+            'currency',
+            'bathrooms',
+            'antiquity',
+            'area',
+            'construction_area',
+            'country',
+            'state',
+            'town',
+            'neighborhood',
+            'date',
+            'status'
+            )
+
 class PublicationsFilterListViewSet(viewsets.ViewSet):
     def list(self, request):
+
+        limit=request.GET.get('limit',None)
+        queryset=Publications.objects.filter(status=True)# Get all publications
+        if limit is not None:
+            count=queryset.count()
+            if count > limit:
+                queryset=Publications.objects.filter(status=True)[:limit]
         
-        queryset=Publications.objects.filter(status=True)# Get all providers
         result_list=[] # Declare var result list empty
         '''
         Get vars in method GET
         '''
-        limit=request.GET.get('limit',5)
         state=request.GET.get('state',None)
+        town=request.GET.get('town',None)
+        advisor=request.GET.get('advisor',None)
+        price=request.GET.get('price',None)
+        date=request.GET.get('date',None)
         user=request.GET.get('user',None)
-
+        like=request.GET.get('likeInAll',None)
+        orderDesc=request.GET.get('orderDesc',None)
+        orderAsc=request.GET.get('orderAsc',None)
         '''
         Validation empty vars
         '''
-        if state  is not None and user is not None:
-            fav=Favorites.objects.all()
-            #Filter provider by state
-            queryset = queryset.filter(state=state).order_by('-id','-date')
-            type_publication=Types_Publications.objects.all()
-            currency=Currencies.objects.all()
+        if like is not None:
+            query='SELECT * FROM apprest_publications where title LIKE %'+likeInAll+'% '
+            query+='OR description LIKE %'+like+'% '
+            queryset.raw(query)
+        if state  is not None:
+            queryset=queryset.filter(state=state)
+        if  town is not None:
+            queryset=queryset.filter(town=town)
+        if user is not None:
+            queryset=queryset.filter(user=user)
+        if advisor is not None :
+            queryset=queryset.filter(user__type_advisor=advisor)
+        if price is not None :
+            queryset=queryset.filter(price_one=price)
+        if date is not None :
+            queryset=queryset.filter(date=date)
+        if orderAsc is not None:
+            queryset.order_by(orderAsc)
+        if orderDesc is not None:
+            queryset.order_by("-"+orderDesc)
 
-            for publication in queryset:
+        fav=Favorites.objects.all()
+        user=Users.objects.all()
+        type_publication=Types_Publications.objects.all()
+        type_property=Types_Property.objects.all()
+        currency=Currencies.objects.all()
 
-                # this publication is favorite?
-                fav=fav.filter(user__pk=user,publication__pk=publication.id)
-                favorite=False
-                if fav :
-                    favorite=True
-
-                #Serialize provider
-                type_publication=publication.type_publications.name
-                currency=publication.currency.name
-                publication=serializers.serialize('json',queryset.filter(id=publication.id))
-                provider_json={
-                'publication':publication,
-                'favorite':favorite,
-                'type_publications_name':type_publication,
-                'currency_name':currency
-                }
-
-                result_list.append(provider_json)
+        for publication in queryset:
+            fav=fav.filter(publication=publication.id)
+            favorite=False
+            if fav :
+                favorite=True
+            type_publication_obj=serializers.serialize('json',type_publication.filter(id=publication.type_publications.id))
+            type_property_obj=serializers.serialize('json',type_property.filter(id=publication.type_property.id))
+            currency_obj=serializers.serialize('json',currency.filter(id=publication.currency.id))
+            publication=serializers.serialize('json',queryset.filter(id=publication.id))
+            publication_json={
+            "publication":publication,
+            "type_publication_obj":type_publication_obj,
+            "type_property_obj":type_property_obj,
+            "currency_obj":currency_obj,
+            "favorite":favorite
+            }
+            result_list.append(publication_json)
 
         return HttpResponse(json.dumps(result_list))
 
@@ -745,11 +799,55 @@ class FavoritesViewSet(viewsets.ModelViewSet):
     queryset = Favorites.objects.all()
 
 class PublicationsFavoritesViewSet(viewsets.ReadOnlyModelViewSet):
- 
-    serializer_class = FavoritesPublicationsSerializer
-    queryset = Favorites.objects.all()
-    filter_backends = (filters.DjangoFilterBackend,)
-    filter_fields = ('id','user','publication__date')
+    def list(self, request):
+        queryset=Publications.objects.filter(status=True)# Get all providers
+        result_list=[] # Declare var result list empty
+        '''
+        Get vars in method GET
+        '''
+        state=request.GET.get('state',None)
+        user=request.GET.get('user',None)
+        
+        '''
+        Validation empty vars
+        '''
+        if state  is not None and user is not None:
+            fav=Favorites.objects.filter(status=True)
+            #Filter provider by state
+            queryset = queryset.filter(state=state).order_by('-id','-date')
+            type_publication=Types_Publications.objects.all()
+            currency=Currencies.objects.all()
+
+            for publication in queryset:
+
+                # this publication is favorite?
+                fav=fav.filter(user__pk=user,publication__pk=publication.id)
+                favorite=False
+                if fav :
+                    favorite=True
+
+                #Serialize provider
+                type_publication=publication.type_publications.name
+                currency=publication.currency.name
+                publication=serializers.serialize('json',queryset.filter(id=publication.id))
+                provider_json={
+                'publication':publication,
+                'favorite':favorite,
+                'type_publications_name':type_publication,
+                'currency_name':currency
+                }
+
+                result_list.append(provider_json)
+
+        return HttpResponse(json.dumps(result_list))
+
+    def retrieve(self, request):
+        queryset = Favorites.bjects.filter(
+            publication__pk=publication_pk,status=True
+        )
+        favorite = get_object_or_404(queryset, pk=pk)
+        serializer = FavoritesSerializer(favorite)
+        return Response(serializer.data)
 
 class vwFavoritesPublicationsViewSet(viewsets.ViewSet):
     def list(self, request,publication_pk=None):

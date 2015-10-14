@@ -278,33 +278,6 @@ class FavoritesSerializer(serializers.ModelSerializer):
         model = Favorites
         fields = ('id','publication','user', 'status')
 
-class FavoritesPublicationsSerializer(serializers.ModelSerializer):
-    favorites__publications=FavoritesSerializer()
-    class Meta:
-        model =Publications
-        fields = (
-            'id',
-            'canvas_number',
-            'user', 
-            'type_publications',
-            'type_property',
-            'title',
-            'description',
-            'price_first',
-            'price_second',
-            'currency',
-            'bathrooms',
-            'antiquity',
-            'area',
-            'construction_area',
-            'country',
-            'state',
-            'town',
-            'neighborhood',
-            'date',
-            'status',
-            'favorites__publications'
-            )
 
 class NotificationsSerializer(serializers.ModelSerializer):
     class Meta:
