@@ -102,9 +102,9 @@ WSGI_APPLICATION = 'ubin_rest.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ubin',
-        'USER': 'root',
-        'PASSWORD': 'root',
+        'NAME': 'ubinrest',
+        'USER': 'ubinrest',
+        'PASSWORD': 'cruzade',
         'HOST': 'localhost',
         'PORT': '',
     }
