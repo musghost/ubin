@@ -63,7 +63,7 @@ from .serializers import FavoritesCustomersSerializer
 from .serializers import TasksSerializer
 
 from rest_framework import serializers
-
+from rest_framework.parsers import FileUploadParser
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import generics
@@ -73,6 +73,7 @@ from django.http import HttpResponse
 from rest_framework import filters
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core import serializers
+
 #from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 
@@ -1225,3 +1226,9 @@ class vwTaskViewSet(viewsets.ViewSet):
         serializer = TasksSerializer(queryset, many=True)
         return Response(serializer.data)
   
+class uploadFileViewSet(viewsets.ViewSet):
+  parser_classes = (FileUploadParser,)
+  def create(self, request,filename=None,type=None):
+    file_obj = request.FILES['file']
+    url=""
+    return Response(file_obj.name,url, status=status.HTTP_201_CREATED, headers=headers)
