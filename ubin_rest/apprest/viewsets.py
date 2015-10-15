@@ -338,6 +338,7 @@ class vwProvidersViewSet(viewsets.ViewSet):
 class ProvidersFilterListViewSet(viewsets.ViewSet):
     def list(self, request):
         queryset=Providers.objects.all() # Get all providers
+
         result_list=[] # Declare var result list empty
         if 'limit' in request.GET:
             count=queryset.count()
@@ -346,7 +347,13 @@ class ProvidersFilterListViewSet(viewsets.ViewSet):
         if 'name' in request.GET:
             queryset=queryset.filter(name=request.GET['name'])
         if 'type_provider' in request.GET:
-            queryset=queryset.filter(type_provider=request.GET['type_provider'])
+            if 'town' in request.GET:
+                queryset=queryset.filter(
+                    type_provider=request.GET['type_provider'],
+                    town=request.GET['town']
+                    )
+            else:
+                queryset=queryset.filter(type_provider=request.GET['type_provider'])
         if 'state' in request.GET:
             queryset.filter(state=request.GET['state'])
         if 'town' in request.GET:
@@ -387,7 +394,10 @@ class ProvidersFilterListViewSet(viewsets.ViewSet):
             if favorite_provider:
                 favorite=True
             # Validation provider in classification for get average score
-            classification_provider=classification_provider.filter(provider__pk=provider.id)
+            if 'user' in request.GET:
+                classification_provider=classification_provider.filter(provider__pk=provider.id,user__pk=request.GET['user'])
+            else:
+                classification_provider=classification_provider.filter(provider__pk=provider.id)
             average=0
             if classification_provider:
                 average=classification_provider.filter(provider__pk=provider.id).aggregate(Avg('score'))
@@ -405,8 +415,6 @@ class ProvidersFilterListViewSet(viewsets.ViewSet):
             result_list.append(provider_json)
 
         return HttpResponse(json.dumps(result_list))
-
-
 
 
 '''
