@@ -338,34 +338,36 @@ class vwProvidersViewSet(viewsets.ViewSet):
 class ProvidersFilterListViewSet(viewsets.ViewSet):
     def list(self, request):
         queryset=Providers.objects.all() # Get all providers
-        if 'limit' in request.GET:
-            queryset=Providers.objects.filter(status=True)[:request.GET['limit']]
         result_list=[] # Declare var result list empty
+        if 'limit' in request.GET:
+            count=queryset.count()
+            if count > request.GET['limit']:
+                queryset=Providers.objects.all()[:request.GET['limit']]
         if 'name' in request.GET:
-            queryset.filter(name=request.GET['name'])
+            queryset=queryset.filter(name=request.GET['name'])
         if 'type_provider' in request.GET:
-            queryset.filter(type_provider=request.GET['type_provider'])
+            queryset=queryset.filter(type_provider=request.GET['type_provider'])
         if 'state' in request.GET:
             queryset.filter(state=request.GET['state'])
         if 'town' in request.GET:
-            queryset.filter(state=request.GET['town'])
+            queryset=queryset.filter(town=request.GET['town'])
         if 'neighborhood' in request.GET:
-            queryset.filter(neighborhood=request.GET['neighborhood'])
+            queryset=queryset.filter(neighborhood=request.GET['neighborhood'])
         if 'register_date' in request.GET:
-            queryset.filter(register_date=request.GET['register_date'])
+            queryset=queryset.filter(register_date=request.GET['register_date'])
         if 'address' in request.GET:
-            queryset.filter(address=request.GET['address'])
+            queryset=queryset.filter(address=request.GET['address'])
         if 'phone' in request.GET:
-            queryset.filter(phone=request.GET['phone'])
+            queryset=queryset.filter(phone=request.GET['phone'])
         if 'email' in request.GET:
-            queryset.filter(email=request.GET['email'])
+            queryset=queryset.filter(email=request.GET['email'])
         if 'web_page' in request.GET:
-            queryset.filter(web_page=request.GET['web_page'])
-        if 'state' in request.GET:
-            queryset.filter(web_page=request.GET['status'])
+            queryset=queryset.filter(web_page=request.GET['web_page'])
+        if 'status' in request.GET:
+            queryset=queryset.filter(status=request.GET['status'])
         if 'like' in request.GET:
             like=request.GET['like']
-            queryset.filter(
+            queryset=queryset.filter(
                 Q(name__contains=like) 
                 | Q(address__contains=like) 
                 | Q(phone__contains=like) 
@@ -373,9 +375,9 @@ class ProvidersFilterListViewSet(viewsets.ViewSet):
                 | Q(web_page__contains=like)
             )
         if 'orderAsc' in request.GET:
-            queryset.order_by(request.GET['orderAsc'])
+            queryset=queryset.order_by(request.GET['orderAsc'])
         if 'orderDesc' in request.GET:
-            queryset.order_by('-'+request.GET['orderAsc'])
+            queryset=queryset.order_by('-'+request.GET['orderAsc'])
         favorite_provider=Favorites_Providers.objects.all()
         classification_provider=Classification_Providers.objects.all()
         for provider in queryset:
@@ -388,7 +390,7 @@ class ProvidersFilterListViewSet(viewsets.ViewSet):
             classification_provider=classification_provider.filter(provider__pk=provider.id)
             average=0
             if classification_provider:
-            average=classification_provider.filter(provider__pk=provider.id).aggregate(Avg('score'))
+                average=classification_provider.filter(provider__pk=provider.id).aggregate(Avg('score'))
             #Serialize provider
             type_provider_name=provider.type_provider.name
             provider=serializers.serialize('json',queryset.filter(id=provider.id))
@@ -468,7 +470,7 @@ class PublicationsFilterListViewSet(viewsets.ViewSet):
         if 'limit' in request.GET:
             count=queryset.count()
             if count > request.GET['limit']:
-                queryset=Publications.objects.filter(status=True)[:request.GET['limit']]
+                queryset=Publications.objects.all()[:request.GET['limit']]
         
         result_list=[] # Declare var result list empty
 
@@ -477,7 +479,7 @@ class PublicationsFilterListViewSet(viewsets.ViewSet):
         '''
         if 'like' in request.GET:
             like=request.GET['like']
-            queryset.filter(
+            queryset=queryset.filter(
                 Q(title__contains=like)
                 |Q(description__contains=like)
                 |Q(description__contains=like)
@@ -486,31 +488,31 @@ class PublicationsFilterListViewSet(viewsets.ViewSet):
                 |Q(construction_area__contains=like)
             )
         if 'canvas_number' in request.GET:
-            queryset=queryset.filter(canvas_number=request.GET['canvas_number'])
+            queryset=queryset=queryset.filter(canvas_number=request.GET['canvas_number'])
         if 'type_publication' in request.GET:
-            queryset=queryset.filter(type_publication=request.GET['type_publication'])
+            queryset=queryset=queryset.filter(type_publication=request.GET['type_publication'])
         if 'type_property' in request.GET:
-            queryset=queryset.filter(type_property=request.GET['type_property'])
+            queryset=queryset=queryset.filter(type_property=request.GET['type_property'])
         if 'title' in request.GET:
-            queryset=queryset.filter(title=request.GET['title'])
+            queryset=queryset=queryset.filter(title=request.GET['title'])
         if 'price_second' in request.GET:
-            queryset=queryset.filter(price_second=request.GET['price_second'])
+            queryset=queryset=queryset.filter(price_second=request.GET['price_second'])
         if 'currency' in request.GET:
-            queryset=queryset.filter(currency=request.GET['currency'])
+            queryset=queryset=queryset.filter(currency=request.GET['currency'])
         if 'bathrooms' in request.GET:
-            queryset=queryset.filter(bathrooms=request.GET['bathrooms'])
+            queryset=queryset=queryset.filter(bathrooms=request.GET['bathrooms'])
         if 'antiquity' in request.GET:
-            queryset=queryset.filter(antiquity=request.GET['antiquity'])
+            queryset=queryset=queryset.filter(antiquity=request.GET['antiquity'])
         if 'area' in request.GET:
-            queryset=queryset.filter(area=request.GET['area'])
+            queryset=queryset=queryset.filter(area=request.GET['area'])
         if 'construction_area' in request.GET:
-            queryset=queryset.filter(construction_area=request.GET['construction_area'])
+            queryset=queryset=queryset.filter(construction_area=request.GET['construction_area'])
         if 'country' in request.GET:
-            queryset=queryset.filter(country=request.GET['country'])
+            queryset=queryset=queryset.filter(country=request.GET['country'])
         if 'state' in request.GET:
-            queryset=queryset.filter(state=request.GET['state'])
+            queryset=queryset=queryset.filter(state=request.GET['state'])
         if  'town' in request.GET:
-            queryset=queryset.filter(town=request.GET['town'])
+            queryset=queryset=queryset.filter(town=request.GET['town'])
         if  'neighborhood' in request.GET:
             queryset=queryset.filter(neighborhood=request.GET['neighborhood'])
         if 'user' in request.GET:
@@ -524,27 +526,33 @@ class PublicationsFilterListViewSet(viewsets.ViewSet):
         if 'status' in request.GET:
             queryset=queryset.filter(status=request.GET['status'])
         if 'orderAsc' in request.GET:
-            queryset.order_by(request.GET['orderAsc'])
+            queryset=queryset.order_by(request.GET['orderAsc'])
         if 'orderDesc' in request.GET:
-            queryset.order_by("-"+request.GET['orderDesc'])
+            queryset=queryset.order_by("-"+request.GET['orderDesc'])
 
-        favorite_publication=Favorites.objects.all()
-        user=Users.objects.all()
-        type_publication=Types_Publications.objects.all()
-        type_property=Types_Property.objects.all()
-        currency=Currencies.objects.all()
+        favorite_publication_queryset=Favorites.objects.all()
+        user_queryset=Users.objects.all()
+        type_publication_queryset=Types_Publications.objects.all()
+        type_property_queryset=Types_Property.objects.all()
+        currency_queryset=Currencies.objects.all()
+        type_advisor_queryset=Types_Advisors.objects.all()
 
         for publication in queryset:
-            favorite_publication=favorite_publication.filter(publication=publication.id)
+            favorite_publication=favorite_publication_queryset.filter(publication=publication.id)
             favorite=False
             if favorite_publication :
                 favorite=True
-            type_publication=serializers.serialize('json',type_publication.filter(id=publication.type_publications.id))
-            type_property=serializers.serialize('json',type_property.filter(id=publication.type_property.id))
-            currency=serializers.serialize('json',currency.filter(id=publication.currency.id))
-            type_advisor_id=user.filter(user=publication.user.id).type_advisor.id
-            type_advisor_name=user.filter(user=publication.user.id).type_advisor.name
-            user=serializers.serialize('json',user.filter(user=publication.user.id))
+            type_publication=serializers.serialize('json',type_publication_queryset.filter(id=publication.type_publications.id))
+            type_property=serializers.serialize('json',type_property_queryset.filter(id=publication.type_property.id))
+            currency=serializers.serialize('json',currency_queryset.filter(id=publication.currency.id))
+            user_queryset=user_queryset.filter(id=publication.user.id)
+            type_advisor_id=0
+            type_advisor_name=""
+            if 'type_advisor' in user_queryset:
+                type_advisor_queryset=type_advisor_queryset.filter(id=user_queryset.type_advisor.id)
+                type_advisor_id=type_advisor_queryset.id
+                type_advisor_name=type_advisor_queryset.name
+            user=serializers.serialize('json',user_queryset)
             publication=serializers.serialize(
                 'json',
                 queryset.filter(id=publication.id),
@@ -572,8 +580,8 @@ class PublicationsFilterListViewSet(viewsets.ViewSet):
             'type_advisor_id': type_advisor_id,
             'type_advisor_name':type_advisor_name,
             'type_publication':type_publication,
-            'type_property':type_property_obj,
-            'currency':currency_obj,
+            'type_property':type_property,
+            'currency':currency,
             'isfavorite':favorite,
             'votes':favorite_publication.count()
             }
