@@ -325,13 +325,13 @@ class vwProvidersTypeViewSet(viewsets.ViewSet):
 class vwProvidersViewSet(viewsets.ViewSet):
     def list(self, request):
         queryset = Providers.objects.filter(status=True)
-        serializer = ProvidersSerializer(queryset, many=True)
+        serializer = ProvidersFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
         queryset = Providers.objects.filter(status=True)
         provider = get_object_or_404(queryset, pk=pk)
-        serializer = ProvidersSerializer(provider)
+        serializer = ProvidersFullSerializer(provider)
 
         return Response(serializer.data)
 

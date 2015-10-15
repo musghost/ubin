@@ -39,7 +39,6 @@ from apprest.viewsets import vwTypesDocumentsViewSet
 from apprest.viewsets import UsersViewSet
 from apprest.viewsets import vwUsersViewSet
 from apprest.viewsets import ProvidersViewSet
-from apprest.viewsets import PublicationsFavoritesViewSet
 from apprest.viewsets import vwProvidersViewSet
 from apprest.viewsets import vwProvidersTypeViewSet
 from apprest.viewsets import ClassificationProvidersViewSet
@@ -47,7 +46,6 @@ from apprest.viewsets import vwClassificationProvidersViewSet
 from apprest.viewsets import vwProviderClassificationProvidersViewSet
 from apprest.viewsets import PublicationsViewSet
 from apprest.viewsets import PublicationsFilterListViewSet
-from apprest.viewsets import PublicationsFullViewSet
 from apprest.viewsets import vwPublicationsInTypeImmovableViewSet
 from apprest.viewsets import vwPublicationsInTypePublicationViewSet
 from apprest.viewsets import vwPublicationsViewSet
@@ -260,7 +258,6 @@ Publications
 router.register(r'publication',PublicationsViewSet)
 #Filter
 router.register(r'publicationsFilter',PublicationsFilterListViewSet,base_name='publicationsFilter')
-router.register(r'publicationsList',PublicationsFullViewSet,base_name='publicationsList')
 #VIEW : publications/pk/comments/pk
 router.register(r'publications',vwAllPublicationsViewSet,base_name='publications')
 vw_comments_publications=routers.NestedSimpleRouter(router,r'publications',lookup='publication')
