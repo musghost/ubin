@@ -64,6 +64,7 @@ from .serializers import TasksSerializer
 
 from rest_framework import serializers
 from rest_framework.parsers import FileUploadParser
+from rest_framework.parsers import MultiPartParser, FormParser,JSONParser
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import generics
@@ -74,6 +75,13 @@ from rest_framework import filters
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core import serializers
 from django.db.models import Q
+from rest_framework import status
+from django.conf import settings
+import hashlib
+import os
+import random
+import string
+import base64
 
 #from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
@@ -1237,10 +1245,48 @@ class vwTaskViewSet(viewsets.ViewSet):
 
         serializer = TasksSerializer(queryset, many=True)
         return Response(serializer.data)
+
+ 
   
-class uploadFileViewSet(viewsets.ViewSet):
-  parser_classes = (FileUploadParser,)
-  def create(self, request,filename=None,type=None):
-    file_obj = request.FILES['file']
-    url=""
-    return Response(file_obj.name,url, status=status.HTTP_201_CREATED, headers=headers)
+class UploadFilesViewSet(viewsets.ViewSet):
+  parser_classes = (MultiPartParser,FormParser,JSONParser,)
+
+  def create(self, request, format=None):
+    list_name=[]
+    for key, file in request.FILES.items():
+        randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
+        hash_object = hashlib.sha1(randomtext)
+        file_name=hash_object.hexdigest()
+        fileExtension = os.path.splitext(file.name)[1]
+        path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
+        dest = open(path.encode('utf-8'), 'wb+')
+        obj_JSON={
+        'id':file_name,
+        'name':file_name+fileExtension,
+        'original_name':file.name,
+        'path':settings.MEDIA_ROOT
+        }
+        list_name.append(obj_JSON)
+        if file.multiple_chunks:
+            for c in file.chunks():
+                dest.write(c)
+        else:
+            dest.write(file.read())
+        dest.close()
+
+    return Response({'hash':list_name}, status=status.HTTP_200_OK)
+
+class DownloadFilesViewSet(viewsets.ViewSet):
+  def create(self, request):
+    if 'filename' in request.GET:
+        if os.path.isfile(settings.MEDIA_ROOT+request.GET['filename']) :
+            filename = settings.MEDIA_ROOT+request.GET['filename']
+            wrapper = FileWrapper(file(filename))
+            response = HttpResponse(wrapper, content_type='text/plain')
+            response['Content-Disposition'] = 'attachment; filename=%s' % os.path.basename(filename)
+            response['Content-Length'] = os.path.getsize(filename)
+            return response
+        else:
+            return Response({'error':'El archivo no existe'}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        return Response({'error':'filename es requerido'}, status=status.HTTP_400_BAD_REQUEST)

@@ -85,7 +85,8 @@ class Users(AbstractBaseUser, PermissionsMixin):
     type_advisor= models.ForeignKey(Types_Advisors,blank=True, null=True)
     property_company_name = models.TextField(max_length=250,blank=True)
     property_company_phone = models.TextField(max_length=20,blank=True)
-    photo = models.TextField(max_length=100,blank=True)
+    photo = models.TextField(max_length=250,blank=True)
+    path_photo =models.TextField(max_length=250,blank=True)
     register_date= models.DateField(auto_now_add=True) 
     allow_providers = models.BooleanField(default=False) 
     allow_notary = models.BooleanField(default=False) 
@@ -247,8 +248,8 @@ class Favorites_Providers(models.Model):
     status = models.BooleanField(default=True)
 
 class Photos(models.Model):
-    name=models.TextField(max_length=60,null=False,blank=False)
-    path=models.TextField(max_length=100,null=False,blank=False)
+    name=models.TextField(max_length=250,null=False,blank=False)
+    path=models.TextField(max_length=250,null=False,blank=False)
     publication=models.ForeignKey(Publications,null=False)
     status = models.BooleanField(default=True)
 

@@ -93,7 +93,8 @@ from apprest.viewsets import vwFavoritesCustomersViewSet
 from apprest.viewsets import TasksViewSet
 from apprest.viewsets import vwTasksViewSet
 from apprest.viewsets import vwTaskViewSet
-from apprest.viewsets import uploadFileViewSet
+from apprest.viewsets import UploadFilesViewSet
+from apprest.viewsets import DownloadFilesViewSet
 '''
 Filters
 '''
@@ -371,7 +372,8 @@ router.register(r'favoriteCustomer',FavoritesCustomersViewSet)
 
 router.register(r'task',TasksViewSet)
 
-router.register(r'upload',uploadFileViewSet,base_name="upload")
+router.register(r'upload',UploadFilesViewSet,base_name="upload")
+router.register(r'download',DownloadFilesViewSet,base_name="download")
 
 urlpatterns = [
     url(r'^api/v1/admin/', include(admin.site.urls)),
