@@ -77,11 +77,9 @@ from django.core import serializers
 from django.db.models import Q
 from rest_framework import status
 from django.conf import settings
-import hashlib
-import os
-import random
-import string
-import base64
+import hashlib,os,random,string,base64
+from django.utils.encoding import smart_str
+from django.db.models import Avg
 
 #from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
@@ -354,16 +352,10 @@ class ProvidersFilterListViewSet(viewsets.ViewSet):
                 queryset=Providers.objects.all()[:request.GET['limit']]
         if 'name' in request.GET:
             queryset=queryset.filter(name=request.GET['name'])
-        if 'type_provider' in request.GET:
-            if 'town' in request.GET:
-                queryset=queryset.filter(
-                    type_provider=request.GET['type_provider'],
-                    town=request.GET['town']
-                    )
-            else:
-                queryset=queryset.filter(type_provider=request.GET['type_provider'])
+        if 'type_provider' in request.GET :
+            queryset=queryset.filter(type_provider=request.GET['type_provider'])
         if 'state' in request.GET:
-            queryset.filter(state=request.GET['state'])
+            queryset=queryset.filter(state=request.GET['state'])
         if 'town' in request.GET:
             queryset=queryset.filter(town=request.GET['town'])
         if 'neighborhood' in request.GET:
@@ -408,7 +400,7 @@ class ProvidersFilterListViewSet(viewsets.ViewSet):
                 classification_provider=classification_provider.filter(provider__pk=provider.id)
             average=0
             if classification_provider:
-                average=classification_provider.filter(provider__pk=provider.id).aggregate(Avg('score'))
+                average=classification_provider.aggregate(Avg('score'))
             #Serialize provider
             type_provider_name=provider.type_provider.name
             provider=serializers.serialize('json',queryset.filter(id=provider.id))
@@ -531,8 +523,8 @@ class PublicationsFilterListViewSet(viewsets.ViewSet):
             queryset=queryset=queryset.filter(town=request.GET['town'])
         if  'neighborhood' in request.GET:
             queryset=queryset.filter(neighborhood=request.GET['neighborhood'])
-        if 'user' in request.GET:
-            queryset=queryset.filter(user=request.GET['user'])
+        if 'user_publication' in request.GET:
+            queryset=queryset.filter(user=request.GET['user_publication'])
         if 'advisor' in request.GET:
             queryset=queryset.filter(user__type_advisor=request.GET['advisor'])
         if 'price' in request.GET:
@@ -554,7 +546,10 @@ class PublicationsFilterListViewSet(viewsets.ViewSet):
         type_advisor_queryset=Types_Advisors.objects.all()
 
         for publication in queryset:
-            favorite_publication=favorite_publication_queryset.filter(publication=publication.id)
+            if 'user' in request.GET:
+                favorite_publication=favorite_publication_queryset.filter(publication=publication.id,user__pk=request.GET['user'])
+            else:
+                favorite_publication=favorite_publication_queryset.filter(publication=publication.id)    
             favorite=False
             if favorite_publication :
                 favorite=True
@@ -1278,13 +1273,13 @@ class UploadFilesViewSet(viewsets.ViewSet):
 
 class DownloadFilesViewSet(viewsets.ViewSet):
   def create(self, request):
-    if 'filename' in request.GET:
-        if os.path.isfile(settings.MEDIA_ROOT+request.GET['filename']) :
-            filename = settings.MEDIA_ROOT+request.GET['filename']
-            wrapper = FileWrapper(file(filename))
-            response = HttpResponse(wrapper, content_type='text/plain')
-            response['Content-Disposition'] = 'attachment; filename=%s' % os.path.basename(filename)
-            response['Content-Length'] = os.path.getsize(filename)
+    if 'filename' in request.POST:
+        if os.path.isfile(settings.MEDIA_ROOT+request.POST['filename']) :
+            path = settings.MEDIA_ROOT+request.POST['filename']
+            response = HttpResponse()
+            response['X-Sendfile'] = smart_str(path)
+            response['Content-Type'] = "audio/mpeg"
+            response['Content-Length'] = os.stat(path).st_size
             return response
         else:
             return Response({'error':'El archivo no existe'}, status=status.HTTP_404_NOT_FOUND)
