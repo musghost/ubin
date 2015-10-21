@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = ')zfta4fqg7r#ihr6+_#al5q!6fc97cq16%8q$vqpul_^j_k#ki'
-
+MEDIA_ROOT ="/home/gloria/temp/" #os.environ['UBIN_MEDIA']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -62,6 +62,9 @@ REST_FRAMEWORK = {
     ),
 }
 
+FILE_UPLOAD_HANDLERS = (
+ 'django.core.files.uploadhandler.MemoryFileUploadHandler',
+ 'django.core.files.uploadhandler.TemporaryFileUploadHandler',)
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',

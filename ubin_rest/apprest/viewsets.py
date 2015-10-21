@@ -80,6 +80,9 @@ from django.conf import settings
 import hashlib,os,random,string,base64
 from django.utils.encoding import smart_str
 from django.db.models import Avg
+import mimetypes
+from django.http import StreamingHttpResponse
+from django.core.servers.basehttp import FileWrapper
 
 #from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
@@ -1272,14 +1275,16 @@ class UploadFilesViewSet(viewsets.ViewSet):
     return Response({'hash':list_name}, status=status.HTTP_200_OK)
 
 class DownloadFilesViewSet(viewsets.ViewSet):
-  def create(self, request):
-    if 'filename' in request.POST:
-        if os.path.isfile(settings.MEDIA_ROOT+request.POST['filename']) :
-            path = settings.MEDIA_ROOT+request.POST['filename']
-            response = HttpResponse()
-            response['X-Sendfile'] = smart_str(path)
-            response['Content-Type'] = "audio/mpeg"
-            response['Content-Length'] = os.stat(path).st_size
+  def list(self, request):
+    if 'filename' in request.GET:
+        if os.path.isfile(settings.MEDIA_ROOT+request.GET['filename']) :
+            the_file = settings.MEDIA_ROOT+request.GET['filename']
+            filename = os.path.basename(the_file)
+            chunk_size = 8192
+            response = StreamingHttpResponse(FileWrapper(open(the_file), chunk_size),
+            content_type=mimetypes.guess_type(the_file)[0])
+            response['Content-Length'] = os.path.getsize(the_file)    
+            response['Content-Disposition'] = "attachment; filename=%s" % filename
             return response
         else:
             return Response({'error':'El archivo no existe'}, status=status.HTTP_404_NOT_FOUND)
