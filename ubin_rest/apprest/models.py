@@ -204,7 +204,8 @@ class Contacts(models.Model):
     status = models.BooleanField(default=True)
 
 class Documents(models.Model):
-    name= models.TextField(max_length=100,null=False,blank=False)
+    original_name= models.TextField(max_length=250,null=False,blank=False)
+    hash_name=models.TextField(max_length=250,null=False,blank=False)
     administrator=models.ForeignKey(Users,null=False)
     type_document= models.ForeignKey(Types_Documents,null=False)
     path=models.TextField(max_length=100,null=False)

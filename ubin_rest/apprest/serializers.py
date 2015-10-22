@@ -253,7 +253,8 @@ class DocumentsSerializer(serializers.ModelSerializer):
         model = Documents
         fields = (
         	'id',
-        	'name',
+        	'original_name',
+            'hash_name',
         	'administrator', 
         	'type_document',
         	'path',
