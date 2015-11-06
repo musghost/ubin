@@ -72,11 +72,11 @@ class Users(AbstractBaseUser, PermissionsMixin):
         unique=True,
         null=False
         )
-    birthday = models.DateField(null=False)
+    birthday = models.DateField(null=True)
     gender = models.TextField(
         max_length=50,
-        blank=False,
-        null=False)
+        blank=True,
+        null=True)
     phone = models.TextField(
         max_length=20,
         blank=False,
@@ -108,9 +108,6 @@ class Users(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = [
     'name',
-    'last_name',
-    'birthday',
-    'gender',
     'phone',
     'is_active'
     ]
