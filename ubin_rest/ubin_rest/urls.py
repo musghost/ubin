@@ -41,6 +41,7 @@ from apprest.viewsets import vwUsersViewSet
 from apprest.viewsets import ProvidersViewSet
 from apprest.viewsets import vwProvidersViewSet
 from apprest.viewsets import vwProvidersTypeViewSet
+from apprest.viewsets import ProvidersDefaultFilterViewSet
 from apprest.viewsets import ClassificationProvidersViewSet
 from apprest.viewsets import vwClassificationProvidersViewSet
 from apprest.viewsets import vwProviderClassificationProvidersViewSet
@@ -237,8 +238,9 @@ Providers
 '''
 #CRUD
 router.register(r'provider',ProvidersViewSet)
+router.register(r'providersFilters',ProvidersDefaultFilterViewSet)
 #FILTER 
-router.register(r'providersFilter',ProvidersFilterListViewSet,base_name='providersFilter')
+router.register(r'providersCustomFilter',ProvidersFilterListViewSet,base_name='providersFilter')
 #VIEW : /providers/pk/clasificationProviders/pk
 router.register(r'providers',vwProvidersViewSet,base_name='providers')
 vw_classification_providers=routers.NestedSimpleRouter(router,r'providers',lookup='provider')

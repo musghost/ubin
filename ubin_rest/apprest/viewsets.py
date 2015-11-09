@@ -313,6 +313,33 @@ class ProvidersViewSet(viewsets.ModelViewSet):
     serializer_class = ProvidersSerializer
     queryset = Providers.objects.all()
 
+class ProvidersDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
+ 
+    serializer_class = ProvidersFullSerializer
+    queryset = Providers.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,filters.SearchFilter,)
+    search_fields = (
+        'name', 
+        'address',
+        'phone',
+        'email',
+        'web_page'
+        )
+    ordering_fields ='__all__'
+    filter_fields = (
+        'name',
+        'type_provider',
+        'state',
+        'town',
+        'neighborhood',
+        'register_date',
+        'address',
+        'phone',
+        'email',
+        'web_page',
+        'status'
+        )
+
 class vwProvidersTypeViewSet(viewsets.ViewSet):
     def list(self, request,typeProvider_pk=None):
         queryset = Providers.objects.filter(
