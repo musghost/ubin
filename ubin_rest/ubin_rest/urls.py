@@ -52,6 +52,7 @@ from apprest.viewsets import vwPublicationsInTypePublicationViewSet
 from apprest.viewsets import vwPublicationsViewSet
 from apprest.viewsets import vwAllPublicationsViewSet
 from apprest.viewsets import vwPublicationsCurrenciesViewSet
+from apprest.viewsets import PublicationsDefaultFilterViewSet
 from apprest.viewsets import CommentsViewSet
 from apprest.viewsets import vwCommentsPublicationsViewSet
 from apprest.viewsets import vwCommentsViewSet
@@ -238,7 +239,7 @@ Providers
 '''
 #CRUD
 router.register(r'provider',ProvidersViewSet)
-router.register(r'providersFilters',ProvidersDefaultFilterViewSet)
+router.register(r'providersFilter',ProvidersDefaultFilterViewSet)
 #FILTER 
 router.register(r'providersCustomFilter',ProvidersFilterListViewSet,base_name='providersFilter')
 #VIEW : /providers/pk/clasificationProviders/pk
@@ -259,8 +260,9 @@ Publications
 '''
 #CRUD
 router.register(r'publication',PublicationsViewSet)
+router.register(r'publicationsFilter',PublicationsDefaultFilterViewSet)
 #Filter
-router.register(r'publicationsFilter',PublicationsFilterListViewSet,base_name='publicationsFilter')
+router.register(r'publicationsCustomFilter',PublicationsFilterListViewSet,base_name='publicationsFilter')
 #VIEW : publications/pk/comments/pk
 router.register(r'publications',vwAllPublicationsViewSet,base_name='publications')
 vw_comments_publications=routers.NestedSimpleRouter(router,r'publications',lookup='publication')

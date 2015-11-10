@@ -327,6 +327,7 @@ class ProvidersDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
         )
     ordering_fields ='__all__'
     filter_fields = (
+        'id',
         'name',
         'type_provider',
         'state',
@@ -500,6 +501,36 @@ class PublicationsViewSet(viewsets.ModelViewSet):
     serializer_class = PublicationsSerializer
     queryset = Publications.objects.all()
 
+class PublicationsDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = PublicationsFullSerializer
+    queryset = Publications.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,filters.SearchFilter,)
+    search_fields = (
+        'description',
+        'title'
+        )
+    ordering_fields ='__all__'
+    filter_fields = (
+        'id',
+        'canvas_number',
+        'user',
+        'type_publications',
+        'type_property',
+        'title',
+        'price_first',
+        'price_second',
+        'currency',
+        'bathrooms',
+        'antiquity',
+        'area',
+        'construction_area',
+        'country',
+        'state',
+        'town',
+        'neighborhood',
+        'date',
+        'status'
+        )
 
 class PublicationsFilterListViewSet(viewsets.ViewSet):
     def list(self, request):
