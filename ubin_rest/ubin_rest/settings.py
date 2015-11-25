@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = ')zfta4fqg7r#ihr6+_#al5q!6fc97cq16%8q$vqpul_^j_k#ki'
-MEDIA_ROOT =os.getenv('UBIN_MEDIA') #os.environ['UBIN_MEDIA']
+MEDIA_ROOT ='/home/ubinrest/media/' #os.environ['UBIN_MEDIA']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -108,9 +108,9 @@ WSGI_APPLICATION = 'ubin_rest.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME':os.getenv('DATABASE_NAME'),
-        'USER':os.getenv('DATABASE_USER'),
-        'PASSWORD':os.getenv('DATABASE_PASSWORD'),
+        'NAME':'ubinrest',
+        'USER':'ubinrest',
+        'PASSWORD':'cruzade',
         'HOST': 'localhost',
         'PORT': '',
     }
