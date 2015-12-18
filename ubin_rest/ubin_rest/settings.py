@@ -46,7 +46,7 @@ INSTALLED_APPS = (
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        #'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
@@ -108,9 +108,9 @@ WSGI_APPLICATION = 'ubin_rest.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME':'ubinrest',
-        'USER':'ubinrest',
-        'PASSWORD':'cruzade',
+        'NAME':'ubin',
+        'USER':'root',
+        'PASSWORD':'root',
         'HOST': 'localhost',
         'PORT': '',
     }

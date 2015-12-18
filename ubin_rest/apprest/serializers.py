@@ -125,6 +125,9 @@ class ProvidersSerializer(serializers.ModelSerializer):
         	)
 
 class ProvidersFullSerializer(serializers.ModelSerializer):
+    isFavorite=serializers.SerializerMethodField()
+    hasVote=serializers.SerializerMethodField()
+    totalScore=serializers.SerializerMethodField()
     type_provider=TypesProvidersSerializer()
     class Meta:
         model = Providers
@@ -139,8 +142,34 @@ class ProvidersFullSerializer(serializers.ModelSerializer):
             'state',
             'neighborhood',
             'town',
-            'status'
+            'status',
+            'isFavorite',
+            'average',
+            'hasVote',
+            'totalScore'
             )
+    def get_isFavorite(self,obj):
+        if obj.favorite.all():
+            return True
+        else:
+            return False
+    def get_hasVote(self,obj):
+        if obj.score.all():
+            return True
+        else:
+            return False
+    def get_totalScore(self,obj):
+        if obj.score.all():
+            sum_votes=0
+            for it in obj.score.all():
+                print "escore"
+                print it
+                sum_votes+=it.score
+            return sum_votes
+        else:
+            return 0
+
+
 
 
 
@@ -174,7 +203,10 @@ class PublicationsSerializer(serializers.ModelSerializer):
         	'date',
         	'status'
         	)
+
 class PublicationsFullSerializer(serializers.ModelSerializer):
+    isfavorite=serializers.SerializerMethodField()
+    votes=serializers.SerializerMethodField()
     type_publications=TypesPublicationsSerializer()
     type_property=TypesPropertySerializer()
     currency=CurrenciesSerializer()
@@ -201,8 +233,20 @@ class PublicationsFullSerializer(serializers.ModelSerializer):
             'town',
             'neighborhood',
             'date',
-            'status'
+            'status',
+            'isfavorite',
+            'votes'
             )
+    def get_isfavorite(self,obj):
+        if obj.favorite.all():
+            return True
+        else:
+            return False
+    def get_votes(self,obj):
+        if obj.favorite.all():
+            return obj.favorite.all().count()
+        else:
+            return 0
 
 class CommentsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -247,6 +291,25 @@ class ContactsSerializer(serializers.ModelSerializer):
             'is_favorite',
             'status'
         	)
+
+class ContactsFullSerializer(serializers.ModelSerializer):
+    type_contact=TypesContactsSerializer()
+    user=UsersSerializer()
+    class Meta:
+        model = Contacts
+        fields = (
+            'id',
+            'name',
+            'lastname', 
+            'mothers_maiden_name',
+            'phone',
+            'email',
+            'user',
+            'type_contact',
+            'note',
+            'is_favorite',
+            'status'
+            )
 
 class DocumentsSerializer(serializers.ModelSerializer):
     class Meta:

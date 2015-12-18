@@ -152,11 +152,19 @@ class Providers(models.Model):
     email = models.EmailField(max_length=50,null=False,blank=False)
     web_page = models.URLField(max_length=200)
     status = models.BooleanField(default=True)
+    @property
+    def average(self):
+        try:
+            from django.db.models import Avg
+            from .models import Classification_Providers
+            return Classification_Providers.objects.filter(provider__pk=self.id).aggregate(average=Avg('score'))
+        except:
+            return 0
 
 class Classification_Providers(models.Model):
     score = models.IntegerField(null=False)
     user= models.ForeignKey(Users,null=False)
-    provider=models.ForeignKey(Providers,null=False)
+    provider=models.ForeignKey(Providers,null=False,related_name="score")
     status = models.BooleanField(default=True)
 
 class Publications(models.Model):
@@ -217,7 +225,7 @@ class Events(models.Model):
     status = models.BooleanField(default=True)
 
 class Favorites(models.Model):
-    publication=models.ForeignKey(Publications,null=False)
+    publication=models.ForeignKey(Publications,null=False,related_name='favorite')
     user= models.ForeignKey(Users,null=False)
     status = models.BooleanField(default=False)
 
@@ -242,7 +250,7 @@ class Push_Notifications(models.Model):
 
 class Favorites_Providers(models.Model):
     user=models.ForeignKey(Users,null=False)
-    provider=models.ForeignKey(Providers,null=False)
+    provider=models.ForeignKey(Providers,null=False, related_name='favorite')
     status = models.BooleanField(default=True)
 
 class Photos(models.Model):

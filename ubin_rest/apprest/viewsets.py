@@ -47,6 +47,7 @@ from .serializers import PublicationsFullSerializer
 from .serializers import CommentsSerializer
 from .serializers import CommentsFullerializer
 from .serializers import ContactsSerializer
+from .serializers import ContactsFullSerializer
 from .serializers import DocumentsSerializer
 from .serializers import EventsSerializer
 from .serializers import FavoritesSerializer
@@ -276,12 +277,12 @@ class UsersViewSet(viewsets.ModelViewSet):
 
 class vwUsersViewSet(viewsets.ViewSet):
     def list(self, request):
-        queryset = Users.objects.filter(status=True)
+        queryset = Users.objects.filter(is_active=True)
         serializer = UsersSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        queryset = Users.objects.filter(status=True)
+        queryset = Users.objects.filter(is_active=True)
         user = get_object_or_404(queryset, pk=pk)
         serializer = UsersSerializer(user)
         return Response(serializer.data)
@@ -347,7 +348,7 @@ class vwProvidersTypeViewSet(viewsets.ViewSet):
             type_provider__pk=typeProvider_pk,status=True
         )
 
-        serializer = ProvidersSerializer(queryset, many=True)
+        serializer = ProvidersFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,typeProvider_pk=None, pk=None):
@@ -355,7 +356,7 @@ class vwProvidersTypeViewSet(viewsets.ViewSet):
             type_provider__pk=provider_pk,status=True
         )
         provider = get_object_or_404(queryset, pk=pk)
-        serializer = ProvidersSerializer(provider)
+        serializer = ProvidersFullSerializer(provider)
 
         return Response(serializer.data)
 
@@ -371,81 +372,6 @@ class vwProvidersViewSet(viewsets.ViewSet):
         serializer = ProvidersFullSerializer(provider)
 
         return Response(serializer.data)
-
-class ProvidersFilterListViewSet(viewsets.ViewSet):
-    def list(self, request):
-        queryset=Providers.objects.all() # Get all providers
-
-        result_list=[] # Declare var result list empty
-        if 'limit' in request.GET:
-            count=queryset.count()
-            if count > request.GET['limit']:
-                queryset=Providers.objects.all()[:request.GET['limit']]
-        if 'name' in request.GET:
-            queryset=queryset.filter(name=request.GET['name'])
-        if 'type_provider' in request.GET :
-            queryset=queryset.filter(type_provider=request.GET['type_provider'])
-        if 'state' in request.GET:
-            queryset=queryset.filter(state=request.GET['state'])
-        if 'town' in request.GET:
-            queryset=queryset.filter(town=request.GET['town'])
-        if 'neighborhood' in request.GET:
-            queryset=queryset.filter(neighborhood=request.GET['neighborhood'])
-        if 'register_date' in request.GET:
-            queryset=queryset.filter(register_date=request.GET['register_date'])
-        if 'address' in request.GET:
-            queryset=queryset.filter(address=request.GET['address'])
-        if 'phone' in request.GET:
-            queryset=queryset.filter(phone=request.GET['phone'])
-        if 'email' in request.GET:
-            queryset=queryset.filter(email=request.GET['email'])
-        if 'web_page' in request.GET:
-            queryset=queryset.filter(web_page=request.GET['web_page'])
-        if 'status' in request.GET:
-            queryset=queryset.filter(status=request.GET['status'])
-        if 'like' in request.GET:
-            like=request.GET['like']
-            queryset=queryset.filter(
-                Q(name__contains=like) 
-                | Q(address__contains=like) 
-                | Q(phone__contains=like) 
-                | Q(email__contains=like) 
-                | Q(web_page__contains=like)
-            )
-        if 'orderAsc' in request.GET:
-            queryset=queryset.order_by(request.GET['orderAsc'])
-        if 'orderDesc' in request.GET:
-            queryset=queryset.order_by('-'+request.GET['orderAsc'])
-        favorite_provider=Favorites_Providers.objects.all()
-        classification_provider=Classification_Providers.objects.all()
-        for provider in queryset:
-            # this provider is favorite?
-            favorite_provider=favorite_provider.filter(id=provider.id)
-            favorite=False
-            if favorite_provider:
-                favorite=True
-            # Validation provider in classification for get average score
-            if 'user' in request.GET:
-                classification_provider=classification_provider.filter(provider__pk=provider.id,user__pk=request.GET['user'])
-            else:
-                classification_provider=classification_provider.filter(provider__pk=provider.id)
-            average=0
-            if classification_provider:
-                average=classification_provider.aggregate(Avg('score'))
-            #Serialize provider
-            type_provider_name=provider.type_provider.name
-            provider=serializers.serialize('json',queryset.filter(id=provider.id))
-
-            provider_json={
-            'provider':provider,
-            'type_provider_name':type_provider_name,
-            'favorite':favorite,
-            'average':average
-            }
-
-            result_list.append(provider_json)
-
-        return HttpResponse(json.dumps(result_list))
 
 
 '''
@@ -532,134 +458,6 @@ class PublicationsDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
         'status'
         )
 
-class PublicationsFilterListViewSet(viewsets.ViewSet):
-    def list(self, request):
-
-        queryset=Publications.objects.all()# Get all publications
-        if 'limit' in request.GET:
-            count=queryset.count()
-            if count > request.GET['limit']:
-                queryset=Publications.objects.all()[:request.GET['limit']]
-        
-        result_list=[] # Declare var result list empty
-
-        '''
-        Apply filters
-        '''
-        if 'like' in request.GET:
-            like=request.GET['like']
-            queryset=queryset.filter(
-                Q(title__contains=like)
-                |Q(description__contains=like)
-                |Q(description__contains=like)
-                |Q(antiquity__contains=like)
-                |Q(area__contains=like)
-                |Q(construction_area__contains=like)
-            )
-        if 'canvas_number' in request.GET:
-            queryset=queryset=queryset.filter(canvas_number=request.GET['canvas_number'])
-        if 'type_publication' in request.GET:
-            queryset=queryset=queryset.filter(type_publication=request.GET['type_publication'])
-        if 'type_property' in request.GET:
-            queryset=queryset=queryset.filter(type_property=request.GET['type_property'])
-        if 'title' in request.GET:
-            queryset=queryset=queryset.filter(title=request.GET['title'])
-        if 'price_second' in request.GET:
-            queryset=queryset=queryset.filter(price_second=request.GET['price_second'])
-        if 'currency' in request.GET:
-            queryset=queryset=queryset.filter(currency=request.GET['currency'])
-        if 'bathrooms' in request.GET:
-            queryset=queryset=queryset.filter(bathrooms=request.GET['bathrooms'])
-        if 'antiquity' in request.GET:
-            queryset=queryset=queryset.filter(antiquity=request.GET['antiquity'])
-        if 'area' in request.GET:
-            queryset=queryset=queryset.filter(area=request.GET['area'])
-        if 'construction_area' in request.GET:
-            queryset=queryset=queryset.filter(construction_area=request.GET['construction_area'])
-        if 'country' in request.GET:
-            queryset=queryset=queryset.filter(country=request.GET['country'])
-        if 'state' in request.GET:
-            queryset=queryset=queryset.filter(state=request.GET['state'])
-        if  'town' in request.GET:
-            queryset=queryset=queryset.filter(town=request.GET['town'])
-        if  'neighborhood' in request.GET:
-            queryset=queryset.filter(neighborhood=request.GET['neighborhood'])
-        if 'user_publication' in request.GET:
-            queryset=queryset.filter(user=request.GET['user_publication'])
-        if 'advisor' in request.GET:
-            queryset=queryset.filter(user__type_advisor=request.GET['advisor'])
-        if 'price' in request.GET:
-            queryset=queryset.filter(price_one=request.GET['price'])
-        if 'date' in request.GET:
-            queryset=queryset.filter(date=request.GET['date'])
-        if 'status' in request.GET:
-            queryset=queryset.filter(status=request.GET['status'])
-        if 'orderAsc' in request.GET:
-            queryset=queryset.order_by(request.GET['orderAsc'])
-        if 'orderDesc' in request.GET:
-            queryset=queryset.order_by("-"+request.GET['orderDesc'])
-
-        favorite_publication_queryset=Favorites.objects.all()
-        user_queryset=Users.objects.all()
-        type_publication_queryset=Types_Publications.objects.all()
-        type_property_queryset=Types_Property.objects.all()
-        currency_queryset=Currencies.objects.all()
-        type_advisor_queryset=Types_Advisors.objects.all()
-
-        for publication in queryset:
-            if 'user' in request.GET:
-                favorite_publication=favorite_publication_queryset.filter(publication=publication.id,user__pk=request.GET['user'])
-            else:
-                favorite_publication=favorite_publication_queryset.filter(publication=publication.id)    
-            favorite=False
-            if favorite_publication :
-                favorite=True
-            type_publication=serializers.serialize('json',type_publication_queryset.filter(id=publication.type_publications.id))
-            type_property=serializers.serialize('json',type_property_queryset.filter(id=publication.type_property.id))
-            currency=serializers.serialize('json',currency_queryset.filter(id=publication.currency.id))
-            user_queryset=user_queryset.filter(id=publication.user.id)
-            type_advisor_id=0
-            type_advisor_name=""
-            if 'type_advisor' in user_queryset:
-                type_advisor_queryset=type_advisor_queryset.filter(id=user_queryset.type_advisor.id)
-                type_advisor_id=type_advisor_queryset.id
-                type_advisor_name=type_advisor_queryset.name
-            user=serializers.serialize('json',user_queryset)
-            publication=serializers.serialize(
-                'json',
-                queryset.filter(id=publication.id),
-                fields=(
-                    'id',
-                    'title',
-                    'description',
-                    'price_first',
-                    'price_second',
-                    'bathrooms',
-                    'antiquity',
-                    'area',
-                    'construction_area',
-                    'country',
-                    'state',
-                    'town',
-                    'neighborhood',
-                    'date',
-                    'status')
-                )
-
-            publication_json={
-            'publication':publication,
-            'user':user,
-            'type_advisor_id': type_advisor_id,
-            'type_advisor_name':type_advisor_name,
-            'type_publication':type_publication,
-            'type_property':type_property,
-            'currency':currency,
-            'isfavorite':favorite,
-            'votes':favorite_publication.count()
-            }
-            result_list.append(publication_json)
-
-        return HttpResponse(json.dumps(result_list))
 
 class vwPublicationsInTypeImmovableViewSet(viewsets.ViewSet):
     def list(self, request,typeProperty_pk=None):
@@ -667,7 +465,7 @@ class vwPublicationsInTypeImmovableViewSet(viewsets.ViewSet):
             type_property__pk=typeProperty_pk,status=True
         )
 
-        serializer = PublicationsSerializer(queryset, many=True)
+        serializer = PublicationsFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,typeProperty_pk=None,pk=None):
@@ -675,7 +473,7 @@ class vwPublicationsInTypeImmovableViewSet(viewsets.ViewSet):
             type_property__pk=typeProperty_pk,status=True
         )
         publication = get_object_or_404(queryset, pk=pk)
-        serializer = PublicationsSerializer(publication)
+        serializer = PublicationsFullSerializer(publication)
         return Response(serializer.data)
 
 class vwPublicationsInTypePublicationViewSet(viewsets.ViewSet):
@@ -684,7 +482,7 @@ class vwPublicationsInTypePublicationViewSet(viewsets.ViewSet):
             type_publications__pk=typePublication_pk,status=True
         )
 
-        serializer = PublicationsSerializer(queryset, many=True)
+        serializer = PublicationsFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,typePublication_pk=None,pk=None):
@@ -692,7 +490,7 @@ class vwPublicationsInTypePublicationViewSet(viewsets.ViewSet):
             type_publications__pk=typePublication_pk,status=True
         )
         publication = get_object_or_404(queryset, pk=pk)
-        serializer = PublicationsSerializer(publication)
+        serializer = PublicationsFullSerializer(publication)
         return Response(serializer.data)
 
 class vwPublicationsCurrenciesViewSet(viewsets.ViewSet):
@@ -701,7 +499,7 @@ class vwPublicationsCurrenciesViewSet(viewsets.ViewSet):
             currency__pk=currency_pk,status=True
         )
 
-        serializer = PublicationsSerializer(queryset, many=True)
+        serializer = PublicationsFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,currency_pk=None,pk=None):
@@ -709,7 +507,7 @@ class vwPublicationsCurrenciesViewSet(viewsets.ViewSet):
             currency__pk=currency_pk,status=True
         )
         publication = get_object_or_404(queryset, pk=pk)
-        serializer = PublicationsSerializer(publication)
+        serializer = PublicationsFullSerializer(publication)
         return Response(serializer.data)
 
 class vwPublicationsViewSet(viewsets.ViewSet):
@@ -718,7 +516,7 @@ class vwPublicationsViewSet(viewsets.ViewSet):
             user__pk=user_pk,status=True
         )
 
-        serializer = PublicationsSerializer(queryset, many=True)
+        serializer = PublicationsFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,user_pk=None,pk=None):
@@ -726,7 +524,7 @@ class vwPublicationsViewSet(viewsets.ViewSet):
             user__pk=user_pk,status=True
         )
         publication = get_object_or_404(queryset, pk=pk)
-        serializer = PublicationsSerializer(publication)
+        serializer = PublicationsFullSerializer(publication)
         return Response(serializer.data)
 
 class vwAllPublicationsViewSet(viewsets.ViewSet):
@@ -759,7 +557,7 @@ class vwCommentsViewSet(viewsets.ViewSet):
             user__pk=user_pk,status=True
         )
 
-        serializer = CommentsSerializer(queryset, many=True)
+        serializer = CommentsFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,user_pk=None,pk=None):
@@ -767,7 +565,7 @@ class vwCommentsViewSet(viewsets.ViewSet):
             user__pk=user_pk,status=True
         )
         comment = get_object_or_404(queryset, pk=pk)
-        serializer = CommentsSerializer(comment)
+        serializer = CommentsFullSerializer(comment)
         return Response(serializer.data)
 
 class vwCommentsPublicationsViewSet(viewsets.ViewSet):
@@ -776,7 +574,7 @@ class vwCommentsPublicationsViewSet(viewsets.ViewSet):
             publication__pk=publication_pk,status=True
         )
 
-        serializer = CommentsFullerializer(queryset, many=True)
+        serializer = CommentsSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self,request,publication_pk=None,pk=None):
@@ -784,7 +582,7 @@ class vwCommentsPublicationsViewSet(viewsets.ViewSet):
             publication__pk=user_pk,status=True
         )
         comment = get_object_or_404(queryset, pk=pk)
-        serializer = CommentsFullerializer(comment)
+        serializer = CommentsSerializer(comment)
         return Response(serializer.data)
 
 
@@ -800,13 +598,13 @@ class ContactsViewSet(viewsets.ModelViewSet):
 class vwAllContactsViewSet(viewsets.ViewSet):
     def list(self, request):
         queryset = Contacts.objects.filter(status=True)
-        serializer = ContactsSerializer(queryset, many=True)
+        serializer = ContactsFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
         queryset = Contacts.objects.filter(status=True)
         contact = get_object_or_404(queryset, pk=pk)
-        serializer = ContactsSerializer(contact)
+        serializer = ContactsFullSerializer(contact)
         return Response(serializer.data)
 
 class vwContactsTypeViewSet(viewsets.ViewSet):
@@ -815,7 +613,7 @@ class vwContactsTypeViewSet(viewsets.ViewSet):
             type_contact__pk=typeContact_pk,status=True
         )
 
-        serializer = ContactsSerializer(queryset, many=True)
+        serializer = ContactsFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,typeContact_pk=None, pk=None):
@@ -823,7 +621,7 @@ class vwContactsTypeViewSet(viewsets.ViewSet):
             type_contact__pk=typeContact_pk,status=True
         )
         contact = get_object_or_404(queryset, pk=pk)
-        serializer = ContactsSerializer(contact)
+        serializer = ContactsFullSerializer(contact)
 
 class vwContactsViewSet(viewsets.ViewSet):
     def list(self, request,user_pk=None):
@@ -831,7 +629,7 @@ class vwContactsViewSet(viewsets.ViewSet):
             user__pk=user_pk,status=True
         )
 
-        serializer = ContactsSerializer(queryset, many=True)
+        serializer = ContactsFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,user_pk=None, pk=None):
@@ -839,7 +637,7 @@ class vwContactsViewSet(viewsets.ViewSet):
             user__pk=typeContact_pk,status=True
         )
         contact = get_object_or_404(queryset, pk=pk)
-        serializer = ContactsSerializer(contact)
+        serializer = ContactsFullSerializer(contact)
         return Response(serializer.data)
 
 
