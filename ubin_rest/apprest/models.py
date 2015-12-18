@@ -217,7 +217,7 @@ class Events(models.Model):
     status = models.BooleanField(default=True)
 
 class Favorites(models.Model):
-    publication=models.ForeignKey(Publications,null=False)
+    publication=models.ForeignKey(Publications,null=False,related_name='favorite')
     user= models.ForeignKey(Users,null=False)
     status = models.BooleanField(default=False)
 

@@ -150,6 +150,7 @@ class ClassificationProvidersSerializer(serializers.ModelSerializer):
         fields = ('id','score','user','provider','status')
 
 class PublicationsSerializer(serializers.ModelSerializer):
+    fav=serializers.SerializerMethodField()
     class Meta:
         model = Publications
         fields = (
@@ -172,8 +173,17 @@ class PublicationsSerializer(serializers.ModelSerializer):
             'town',
             'neighborhood',
         	'date',
-        	'status'
+        	'status',
+            'favorite',
+            'fav',
         	)
+
+    def get_fav(self,obj):
+        if obj.favorite.all():
+            return True
+        else:
+            return False
+
 class PublicationsFullSerializer(serializers.ModelSerializer):
     type_publications=TypesPublicationsSerializer()
     type_property=TypesPropertySerializer()

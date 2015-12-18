@@ -557,31 +557,31 @@ class PublicationsFilterListViewSet(viewsets.ViewSet):
                 |Q(construction_area__contains=like)
             )
         if 'canvas_number' in request.GET:
-            queryset=queryset=queryset.filter(canvas_number=request.GET['canvas_number'])
+            queryset=queryset.filter(canvas_number=request.GET['canvas_number'])
         if 'type_publication' in request.GET:
-            queryset=queryset=queryset.filter(type_publication=request.GET['type_publication'])
+            queryset=queryset.filter(type_publication=request.GET['type_publication'])
         if 'type_property' in request.GET:
-            queryset=queryset=queryset.filter(type_property=request.GET['type_property'])
+            queryset=queryset.filter(type_property=request.GET['type_property'])
         if 'title' in request.GET:
-            queryset=queryset=queryset.filter(title=request.GET['title'])
+            queryset=queryset.filter(title=request.GET['title'])
         if 'price_second' in request.GET:
-            queryset=queryset=queryset.filter(price_second=request.GET['price_second'])
+            queryset=queryset.filter(price_second=request.GET['price_second'])
         if 'currency' in request.GET:
-            queryset=queryset=queryset.filter(currency=request.GET['currency'])
+            queryset=queryset.filter(currency=request.GET['currency'])
         if 'bathrooms' in request.GET:
-            queryset=queryset=queryset.filter(bathrooms=request.GET['bathrooms'])
+            queryset=queryset.filter(bathrooms=request.GET['bathrooms'])
         if 'antiquity' in request.GET:
-            queryset=queryset=queryset.filter(antiquity=request.GET['antiquity'])
+            queryset=queryset.filter(antiquity=request.GET['antiquity'])
         if 'area' in request.GET:
-            queryset=queryset=queryset.filter(area=request.GET['area'])
+            queryset=queryset.filter(area=request.GET['area'])
         if 'construction_area' in request.GET:
-            queryset=queryset=queryset.filter(construction_area=request.GET['construction_area'])
+            queryset=queryset.filter(construction_area=request.GET['construction_area'])
         if 'country' in request.GET:
-            queryset=queryset=queryset.filter(country=request.GET['country'])
+            queryset=queryset.filter(country=request.GET['country'])
         if 'state' in request.GET:
-            queryset=queryset=queryset.filter(state=request.GET['state'])
+            queryset=queryset.filter(state=request.GET['state'])
         if  'town' in request.GET:
-            queryset=queryset=queryset.filter(town=request.GET['town'])
+            queryset=queryset.filter(town=request.GET['town'])
         if  'neighborhood' in request.GET:
             queryset=queryset.filter(neighborhood=request.GET['neighborhood'])
         if 'user_publication' in request.GET:
