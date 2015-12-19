@@ -153,10 +153,11 @@ class Providers(models.Model):
     web_page = models.URLField(max_length=200)
     status = models.BooleanField(default=True)
 
+
 class Classification_Providers(models.Model):
     score = models.IntegerField(null=False)
     user= models.ForeignKey(Users,null=False)
-    provider=models.ForeignKey(Providers,null=False)
+    provider=models.ForeignKey(Providers,null=False,related_name="score")
     status = models.BooleanField(default=True)
 
 class Publications(models.Model):
@@ -242,7 +243,7 @@ class Push_Notifications(models.Model):
 
 class Favorites_Providers(models.Model):
     user=models.ForeignKey(Users,null=False)
-    provider=models.ForeignKey(Providers,null=False)
+    provider=models.ForeignKey(Providers,null=False, related_name='favorite')
     status = models.BooleanField(default=True)
 
 class Photos(models.Model):

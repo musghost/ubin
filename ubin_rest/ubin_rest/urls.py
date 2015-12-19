@@ -46,7 +46,6 @@ from apprest.viewsets import ClassificationProvidersViewSet
 from apprest.viewsets import vwClassificationProvidersViewSet
 from apprest.viewsets import vwProviderClassificationProvidersViewSet
 from apprest.viewsets import PublicationsViewSet
-from apprest.viewsets import PublicationsFilterListViewSet
 from apprest.viewsets import vwPublicationsInTypeImmovableViewSet
 from apprest.viewsets import vwPublicationsInTypePublicationViewSet
 from apprest.viewsets import vwPublicationsViewSet
@@ -97,10 +96,7 @@ from apprest.viewsets import vwTasksViewSet
 from apprest.viewsets import vwTaskViewSet
 from apprest.viewsets import UploadFilesViewSet
 from apprest.viewsets import DownloadFilesViewSet
-'''
-Filters
-'''
-from  apprest.viewsets import ProvidersFilterListViewSet
+
 
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested import routers
@@ -239,9 +235,8 @@ Providers
 '''
 #CRUD
 router.register(r'provider',ProvidersViewSet)
-router.register(r'providersFilter',ProvidersDefaultFilterViewSet)
 #FILTER 
-router.register(r'providersCustomFilter',ProvidersFilterListViewSet,base_name='providersFilter')
+router.register(r'providersFilter',ProvidersDefaultFilterViewSet)
 #VIEW : /providers/pk/clasificationProviders/pk
 router.register(r'providers',vwProvidersViewSet,base_name='providers')
 vw_classification_providers=routers.NestedSimpleRouter(router,r'providers',lookup='provider')
@@ -260,9 +255,8 @@ Publications
 '''
 #CRUD
 router.register(r'publication',PublicationsViewSet)
-router.register(r'publicationsFilter',PublicationsDefaultFilterViewSet)
 #Filter
-router.register(r'publicationsCustomFilter',PublicationsFilterListViewSet,base_name='publicationsFilter')
+router.register(r'publicationsFilter', PublicationsDefaultFilterViewSet)
 #VIEW : publications/pk/comments/pk
 router.register(r'publications',vwAllPublicationsViewSet,base_name='publications')
 vw_comments_publications=routers.NestedSimpleRouter(router,r'publications',lookup='publication')
