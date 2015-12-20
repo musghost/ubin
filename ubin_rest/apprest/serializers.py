@@ -145,7 +145,6 @@ class ProvidersFullSerializer(serializers.ModelSerializer):
             'town',
             'status',
             'isFavorite',
-            'average',
             'hasVote',
             'totalScore',
             'average'
@@ -172,14 +171,16 @@ class ProvidersFullSerializer(serializers.ModelSerializer):
             return 0
     def get_average(self,obj):
         try:
-            return Classification_Providers.objects.filter(
-                    provider__pk=obj.id,
-                    status=true
+            from django.db.models import Avg
+            average=Classification_Providers.objects.filter(
+                        provider__pk=obj.id,
+                        status=True
                 ).aggregate(
-                    average=Avg('score')
+                        average=Avg('score')
                 )
+            return average
         except:
-            return 1
+            return 0
 
 
 
