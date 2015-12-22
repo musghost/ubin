@@ -191,6 +191,12 @@ class ClassificationProvidersSerializer(serializers.ModelSerializer):
         model = Classification_Providers
         fields = ('id','score','user','provider','status')
 
+class ClassificationProvidersFullSerializer(serializers.ModelSerializer):
+    provider=ProvidersFullSerializer()
+    class Meta:
+        model = Classification_Providers
+        fields = ('id','score','user','provider','status')
+
 class PublicationsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Publications
@@ -385,6 +391,11 @@ class PushNotificationsSerializer(serializers.ModelSerializer):
         	)
 
 class FavoritesProvidersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Favorites_Providers
+        fields = ('id','user','provider','status')
+
+class FavoritesProvidersFullSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorites_Providers
         fields = ('id','user','provider','status')

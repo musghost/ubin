@@ -193,7 +193,7 @@ users
 #CRUD
 router.register(r'user',UsersViewSet)
 router.register(r'users',vwUsersViewSet,base_name='users')
-#VIEW : /users/pk/clasificationsProviders/pk
+#VIEW : /users/pk/clasificationProviders/pk
 vw_classifications_providers=routers.NestedSimpleRouter(router,r'users',lookup='user')
 vw_classifications_providers.register(r'clasificationProviders',vwClassificationProvidersViewSet,base_name='clasificationProviders')
 #VIEW : /users/pk/publications/pk

@@ -42,6 +42,7 @@ from .serializers import UsersSerializer
 from .serializers import ProvidersSerializer
 from .serializers import ProvidersFullSerializer
 from .serializers import ClassificationProvidersSerializer
+from .serializers import ClassificationProvidersFullSerializer
 from .serializers import PublicationsSerializer
 from .serializers import PublicationsFullSerializer
 from .serializers import CommentsSerializer
@@ -54,6 +55,7 @@ from .serializers import FavoritesSerializer
 from .serializers import NotificationsSerializer
 from .serializers import PushNotificationsSerializer
 from .serializers import FavoritesProvidersSerializer
+from .serializers import FavoritesProvidersFullSerializer
 from .serializers import PhotosSerializer
 from .serializers import TypesReportsSerializer
 from .serializers import ReportsSerializer
@@ -388,7 +390,7 @@ class vwClassificationProvidersViewSet(viewsets.ViewSet):
             user__pk=user_pk, status=True
         )
 
-        serializer = ClassificationProvidersSerializer(queryset, many=True)
+        serializer = ClassificationProvidersFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,user_pk=None, pk=None):
@@ -396,7 +398,7 @@ class vwClassificationProvidersViewSet(viewsets.ViewSet):
             user__pk=user_pk,status=True
         )
         classificationPro = get_object_or_404(queryset, pk=pk)
-        serializer = ClassificationProvidersSerializer(classificationPro)
+        serializer = ClassificationProvidersFullSerializer(classificationPro)
 
         return Response(serializer.data)
 
@@ -406,7 +408,7 @@ class vwProviderClassificationProvidersViewSet(viewsets.ViewSet):
             provider__pk=provider_pk,status=True
         )
 
-        serializer = ClassificationProvidersSerializer(queryset, many=True)
+        serializer = ClassificationProvidersFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,provider_pk=None, pk=None):
@@ -414,7 +416,7 @@ class vwProviderClassificationProvidersViewSet(viewsets.ViewSet):
             provider__pk=provider_pk,status=True
         )
         classificationPro = get_object_or_404(queryset, pk=pk)
-        serializer = ClassificationProvidersSerializer(classificationPro)
+        serializer = ClassificationProvidersFullSerializer(classificationPro)
 
         return Response(serializer.data)
 
@@ -843,7 +845,7 @@ class vwFavoritesProvidersViewSet(viewsets.ViewSet):
             user__pk=user_pk,status=True
         )
 
-        serializer = FavoritesProvidersSerializer(queryset, many=True)
+        serializer = FavoritesProvidersFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,user_pk=None, pk=None):
@@ -851,7 +853,7 @@ class vwFavoritesProvidersViewSet(viewsets.ViewSet):
             user__pk=user_pk,status=True
         )
         favorite_provider = get_object_or_404(queryset, pk=pk)
-        serializer = FavoritesProvidersSerializer(favorite_provider)
+        serializer = FavoritesProvidersFullSerializer(favorite_provider)
         return Response(serializer.data)
 
 class vwProviderFavoritesProvidersViewSet(viewsets.ViewSet):
@@ -860,7 +862,7 @@ class vwProviderFavoritesProvidersViewSet(viewsets.ViewSet):
             provider__pk=provider_pk,status=True
         )
 
-        serializer = FavoritesProvidersSerializer(queryset, many=True)
+        serializer = FavoritesProvidersFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,provider_pk=None, pk=None):
@@ -868,7 +870,7 @@ class vwProviderFavoritesProvidersViewSet(viewsets.ViewSet):
             provider__pk=provider_pk,status=True
         )
         favorite_provider = get_object_or_404(queryset, pk=pk)
-        serializer = FavoritesProvidersSerializer(favorite_provider)
+        serializer = FavoritesProvidersFullSerializer(favorite_provider)
         return Response(serializer.data)
 
 '''
