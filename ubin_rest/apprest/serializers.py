@@ -31,6 +31,7 @@ from .models import Types_Customers
 from .models import Customers
 from .models import Favorites_Customers
 from .models import Tasks
+from .models import Devices_User_Register
 
 
 
@@ -76,6 +77,38 @@ class TypesDocumentsSerializer(serializers.ModelSerializer):
 
 
 class UsersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Users
+        fields = (
+            'id',
+            'email',
+            'password',
+            'name',
+            'last_name',
+            'mothers_maiden_name',
+            'birthday',
+            'gender',
+            'phone',
+            'type_advisor',
+            'property_company_name',
+            'property_company_phone',
+            'photo',
+            'allow_providers',
+            'allow_notary',
+            'allow_appraisers',
+            'allow_past_due_portfolio',
+            'allow_events',
+            'allow_documents',
+            'allow_diary',
+            'allow_mortgage_broker',
+            'is_superuser',
+            'is_staff',
+            'register_date',
+            'is_active'
+            )
+
+class UsersFullSerializer(serializers.ModelSerializer):
+    type_advisor=TypesAdvisorsSerializer()
     class Meta:
         model = Users
         fields = (
@@ -193,6 +226,7 @@ class ClassificationProvidersSerializer(serializers.ModelSerializer):
 
 class ClassificationProvidersFullSerializer(serializers.ModelSerializer):
     provider=ProvidersFullSerializer()
+    user=UsersFullSerializer()
     class Meta:
         model = Classification_Providers
         fields = ('id','score','user','provider','status')
@@ -229,7 +263,7 @@ class PublicationsFullSerializer(serializers.ModelSerializer):
     type_publications=TypesPublicationsSerializer()
     type_property=TypesPropertySerializer()
     currency=CurrenciesSerializer()
-    user=UsersSerializer()
+    user=UsersFullSerializer()
     class Meta:
         model = Publications
         fields = (
@@ -280,7 +314,7 @@ class CommentsSerializer(serializers.ModelSerializer):
         	)
 
 class CommentsFullerializer(serializers.ModelSerializer):
-    user=UsersSerializer()
+    user=UsersFullSerializer()
     publication=PublicationsSerializer()
     class Meta:
         model = Comments
@@ -313,7 +347,7 @@ class ContactsSerializer(serializers.ModelSerializer):
 
 class ContactsFullSerializer(serializers.ModelSerializer):
     type_contact=TypesContactsSerializer()
-    user=UsersSerializer()
+    user=UsersFullSerializer()
     class Meta:
         model = Contacts
         fields = (
@@ -396,6 +430,8 @@ class FavoritesProvidersSerializer(serializers.ModelSerializer):
         fields = ('id','user','provider','status')
 
 class FavoritesProvidersFullSerializer(serializers.ModelSerializer):
+    user=UsersFullSerializer()
+    provider=ProvidersFullSerializer()
     class Meta:
         model = Favorites_Providers
         fields = ('id','user','provider','status')
@@ -482,4 +518,29 @@ class TasksSerializer(serializers.ModelSerializer):
             'contact',
             'user',
             'status'
+            )
+
+class DevicesUserRegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Devices_User_Register
+        fields = (
+            'id',
+            'device_user',
+            'device_name',
+            'device_code',
+            'device_register_date',
+            'device_status'
+            )
+
+class DevicesUserRegisterFullSerializer(serializers.ModelSerializer):
+    device_user=UsersFullSerializer()
+    class Meta:
+        model = Devices_User_Register
+        fields = (
+            'id',
+            'device_user',
+            'device_name',
+            'device_code',
+            'device_register_date',
+            'device_status'
             )

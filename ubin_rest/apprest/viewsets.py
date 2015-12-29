@@ -29,6 +29,7 @@ from .models import Types_Customers
 from .models import Customers
 from .models import Favorites_Customers
 from .models import Tasks
+from .models import Devices_User_Register
 
 from .serializers import CurrenciesSerializer
 from .serializers import TypesPropertySerializer
@@ -64,6 +65,8 @@ from .serializers import TypeCustomersSerializer
 from .serializers import CustomersSerializer
 from .serializers import FavoritesCustomersSerializer
 from .serializers import TasksSerializer
+from .serializers import DevicesUserRegisterSerializer
+from .serializers import DevicesUserRegisterFullSerializer
 
 from rest_framework import serializers
 from rest_framework.parsers import FileUploadParser
@@ -1148,3 +1151,27 @@ class DownloadFilesViewSet(viewsets.ViewSet):
             return Response({'error':'El archivo no existe'}, status=status.HTTP_404_NOT_FOUND)
     else:
         return Response({'error':'filename es requerido'}, status=status.HTTP_400_BAD_REQUEST)
+
+'''-------------------- Device User Reigister -------------------------------------'''
+
+class DevicesUserRegisterDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = DevicesUserRegisterFullSerializer
+    queryset = Devices_User_Register.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,filters.SearchFilter,)
+    search_fields = (
+        'device_name'
+        )
+    ordering_fields ='__all__'
+    filter_fields = (
+        'id',
+        'device_user',
+        'device_name',
+        'device_code',
+        'device_register_date',
+        'device_status'
+        )
+
+class DevicesUserRegisterViewSet(viewsets.ModelViewSet):
+ 
+    serializer_class = DevicesUserRegisterSerializer
+    queryset = Devices_User_Register.objects.all() 

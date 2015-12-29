@@ -96,6 +96,8 @@ from apprest.viewsets import vwTasksViewSet
 from apprest.viewsets import vwTaskViewSet
 from apprest.viewsets import UploadFilesViewSet
 from apprest.viewsets import DownloadFilesViewSet
+from apprest.viewsets import DevicesUserRegisterViewSet
+from apprest.viewsets import DevicesUserRegisterDefaultFilterViewSet
 
 
 from rest_framework.routers import DefaultRouter
@@ -367,11 +369,28 @@ Favorites Customers
 '''
 router.register(r'favoriteCustomer',FavoritesCustomersViewSet)
 
-
+'''
+Tasks
+'''
 router.register(r'task',TasksViewSet)
 
+'''
+Upload files to server
+'''
 router.register(r'upload',UploadFilesViewSet,base_name="upload")
+
+'''
+Donwload files from server
+'''
 router.register(r'download',DownloadFilesViewSet,base_name="download")
+
+'''
+Devices user register
+'''
+#CRUD
+router.register(r'device',DevicesUserRegisterViewSet)
+#Filter
+router.register(r'deviceFilter',DevicesUserRegisterDefaultFilterViewSet)
 
 urlpatterns = [
     url(r'^api/v1/admin/', include(admin.site.urls)),

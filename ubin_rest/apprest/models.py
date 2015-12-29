@@ -298,6 +298,13 @@ class Tasks(models.Model):
     user= models.ForeignKey(Users,null=False)
     status = models.BooleanField(default=True)
 
+class Devices_User_Register(models.Model):
+    device_user= models.ForeignKey(Users,null=False)
+    device_name= models.TextField(null=False,blank=False)
+    device_code= models.TextField(max_length=300,null=False,blank=False)
+    device_register_date= models.DateField(auto_now_add=True)
+    device_status = models.BooleanField(default=True)
+
 
     
 
