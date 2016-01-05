@@ -98,6 +98,7 @@ from apprest.viewsets import UploadFilesViewSet
 from apprest.viewsets import DownloadFilesViewSet
 from apprest.viewsets import DevicesUserRegisterViewSet
 from apprest.viewsets import DevicesUserRegisterDefaultFilterViewSet
+from apprest.viewsets import RegisterViewSet
 
 
 from rest_framework.routers import DefaultRouter
@@ -392,6 +393,14 @@ router.register(r'device',DevicesUserRegisterViewSet)
 #Filter
 router.register(r'deviceFilter',DevicesUserRegisterDefaultFilterViewSet)
 
+'''
+Register
+'''
+#CRUD
+router.register(r'register',RegisterViewSet,base_name="register")
+
+
+
 urlpatterns = [
     url(r'^api/v1/admin/', include(admin.site.urls)),
     url(r'^api/v1/',include(router.urls)),
@@ -430,6 +439,5 @@ urlpatterns = [
     url(r'^api/v1/',include(vw_contacts_task.urls)),
     url(r'^api/v1/',include(vw_types_customers.urls)),
     url(r'^api/v1/',include(vw_types_reports.urls)),
-    
     url(r'^api/v1/docs/', include('rest_framework_swagger.urls')),
 ]   

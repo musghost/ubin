@@ -67,12 +67,17 @@ from .serializers import FavoritesCustomersSerializer
 from .serializers import TasksSerializer
 from .serializers import DevicesUserRegisterSerializer
 from .serializers import DevicesUserRegisterFullSerializer
+from .serializers import RegisterSerializer
 
 from rest_framework import serializers
 from rest_framework.parsers import FileUploadParser
 from rest_framework.parsers import MultiPartParser, FormParser,JSONParser
 from rest_framework import viewsets
+from rest_framework.views import APIView
+from django.http import Http404
+from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
 import json
@@ -89,6 +94,11 @@ from django.db.models import Avg
 import mimetypes
 from django.http import StreamingHttpResponse
 from django.core.servers.basehttp import FileWrapper
+
+
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+
 
 #from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
@@ -270,7 +280,25 @@ class vwTypesDocumentsViewSet(viewsets.ViewSet):
 
         return Response(serializer.data)
 
-
+        
+'''
+----------------  Register users -------------------------
+'''
+class RegisterViewSet(viewsets.ViewSet):
+    permission_classes = (AllowAny,)
+    def create(self, request, format=None):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            if 'device_os' in request.data and 'device_token' in request.data:
+                user = Users.objects.get(pk=serializer.data['id'])
+                device=Devices_User_Register(
+                    device_os=request.data['device_os'],
+                    device_token=request.data['device_token'],
+                    device_user=user)
+                device.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 '''
 ----------------  Users -------------------------
@@ -1165,8 +1193,8 @@ class DevicesUserRegisterDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
     filter_fields = (
         'id',
         'device_user',
-        'device_name',
-        'device_code',
+        'device_token',
+        'device_os',
         'device_register_date',
         'device_status'
         )
