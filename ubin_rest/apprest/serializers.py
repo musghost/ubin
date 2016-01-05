@@ -33,6 +33,9 @@ from .models import Favorites_Customers
 from .models import Tasks
 from .models import Devices_User_Register
 from rest_framework_jwt.settings import api_settings
+from calendar import timegm
+from datetime import datetime
+
 
 
 
@@ -112,10 +115,17 @@ class RegisterSerializer(serializers.ModelSerializer):
     def get_token(self,obj):
         jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
         jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-        user = Users.objects.get(pk=obj.id)
+        user = Users.objects.get(pk=obj.id,is_active=True)
 
         payload = jwt_payload_handler(user)
+
+        if api_settings.JWT_ALLOW_REFRESH:
+            payload['orig_iat'] = timegm(
+                datetime.utcnow().utctimetuple()
+            )
+
         token = jwt_encode_handler(payload)
+
         return token
 
 class UsersSerializer(serializers.ModelSerializer):

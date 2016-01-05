@@ -302,7 +302,7 @@ class Tasks(models.Model):
 class Devices_User_Register(models.Model):
     device_user= models.ForeignKey(Users,null=False)
     device_os= models.TextField(max_length=30,null=False,blank=False)
-    device_token= models.TextField(max_length=300,null=False,blank=False,unique=True)
+    device_token= models.TextField(max_length=300,null=True,blank=True,unique=True)
     device_register_date= models.DateField(auto_now_add=True)
     device_status = models.BooleanField(default=True)
 

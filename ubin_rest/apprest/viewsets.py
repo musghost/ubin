@@ -75,8 +75,6 @@ from rest_framework.parsers import MultiPartParser, FormParser,JSONParser
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from django.http import Http404
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
@@ -95,12 +93,17 @@ import mimetypes
 from django.http import StreamingHttpResponse
 from django.core.servers.basehttp import FileWrapper
 
+from rest_framework.decorators import detail_route
+from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
+from rest_framework_jwt.serializers import (
+    JSONWebTokenSerializer, RefreshJSONWebTokenSerializer)
+from rest_framework_jwt.settings import api_settings
+from calendar import timegm
+from datetime import datetime
 
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-
-
-#from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 
 '''
@@ -290,16 +293,71 @@ class RegisterViewSet(viewsets.ViewSet):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            if 'device_os' in request.data and 'device_token' in request.data:
+            if 'device_os' in request.data:
                 user = Users.objects.get(pk=serializer.data['id'])
-                device=Devices_User_Register(
+                device_token=""
+                if 'device_token' in request.data:
+                    device=Devices_User_Register(
                     device_os=request.data['device_os'],
-                    device_token=request.data['device_token'],
+                    device_token=device_token,
+                    device_user=user)
+                else:
+                    device=Devices_User_Register(
+                    device_os=request.data['device_os'],
                     device_user=user)
                 device.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+'''
+----------------  Get Token -------------------------
+'''
+class GetTokenViewSet(viewsets.ViewSet):
+    permission_classes = (AllowAny,)
+    def create(self, request, format=None):
+        if 'email' in request.data:
+            if 'password' in request.data:
+                if 'device_os' in request.data:
+
+                    #Save device
+                    user=None
+                    try:
+                        user = Users.objects.get(email=request.data['email'],is_active=True)
+                    except Exception: 
+                        return Response({"non_field_errors":"Unable to login with provided credentials."}, status=status.HTTP_400_BAD_REQUEST)
+
+                    if 'device_token' in request.data:
+                        device=Devices_User_Register(
+                        device_os=request.data['device_os'],
+                        device_token=device_token,
+                        device_user=user)
+                    else:
+                        device=Devices_User_Register(
+                        device_os=request.data['device_os'],
+                        device_user=user)
+                    device.save()
+
+                    #Generate Token
+                    jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+                    jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+                    payload = jwt_payload_handler(user)
+
+                    if api_settings.JWT_ALLOW_REFRESH:
+                        payload['orig_iat'] = timegm(
+                            datetime.utcnow().utctimetuple()
+                        )
+
+                    token = jwt_encode_handler(payload)
+
+                    return Response({"token":token}, status=status.HTTP_201_CREATED)
+                else:
+                    return Response({"device_os":"This field is mandatory"}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({"password":"This field is mandatory"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+           return Response({"email":"This field is mandatory"}, status=status.HTTP_400_BAD_REQUEST)
 '''
 ----------------  Users -------------------------
 '''
