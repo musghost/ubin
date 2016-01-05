@@ -404,7 +404,7 @@ router.register(r'register',RegisterViewSet,base_name="register")
 urlpatterns = [
     url(r'^api/v1/admin/', include(admin.site.urls)),
     url(r'^api/v1/',include(router.urls)),
-    url(r'^api-token-auth/', 'rest_framework_jwt.views.obtain_jwt_token'),
+    url(r'^api/v1/api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api/v1/api-token-auth/', 'rest_framework_jwt.views.obtain_jwt_token'),
     url(r'^api/v1/api-token-refresh/', 'rest_framework_jwt.views.refresh_jwt_token'),
     url(r'^api/v1/api-token-verify/', 'rest_framework_jwt.views.verify_jwt_token'),
