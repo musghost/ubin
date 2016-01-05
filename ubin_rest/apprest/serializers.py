@@ -32,6 +32,7 @@ from .models import Customers
 from .models import Favorites_Customers
 from .models import Tasks
 from .models import Devices_User_Register
+from rest_framework_jwt.settings import api_settings
 
 
 
@@ -76,6 +77,47 @@ class TypesDocumentsSerializer(serializers.ModelSerializer):
         fields = ('id','name', 'status')
 
 
+class RegisterSerializer(serializers.ModelSerializer):
+    token=serializers.SerializerMethodField()
+    class Meta:
+        model = Users
+        fields = (
+            'id',
+            'email',
+            'password',
+            'name',
+            'last_name',
+            'mothers_maiden_name',
+            'birthday',
+            'gender',
+            'phone',
+            'type_advisor',
+            'property_company_name',
+            'property_company_phone',
+            'photo',
+            'allow_providers',
+            'allow_notary',
+            'allow_appraisers',
+            'allow_past_due_portfolio',
+            'allow_events',
+            'allow_documents',
+            'allow_diary',
+            'allow_mortgage_broker',
+            'is_superuser',
+            'is_staff',
+            'register_date',
+            'is_active',
+            'token'
+            )
+    def get_token(self,obj):
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+        user = Users.objects.get(pk=obj.id)
+
+        payload = jwt_payload_handler(user)
+        token = jwt_encode_handler(payload)
+        return token
+
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
@@ -108,7 +150,6 @@ class UsersSerializer(serializers.ModelSerializer):
             )
 
 class UsersFullSerializer(serializers.ModelSerializer):
-    type_advisor=TypesAdvisorsSerializer()
     class Meta:
         model = Users
         fields = (
@@ -524,12 +565,12 @@ class DevicesUserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Devices_User_Register
         fields = (
-            'id',
-            'device_user',
-            'device_name',
-            'device_code',
-            'device_register_date',
-            'device_status'
+                'id',
+                'device_user',
+                'device_os',
+                'device_token',
+                'device_register_date',
+                'device_status'
             )
 
 class DevicesUserRegisterFullSerializer(serializers.ModelSerializer):
@@ -537,10 +578,10 @@ class DevicesUserRegisterFullSerializer(serializers.ModelSerializer):
     class Meta:
         model = Devices_User_Register
         fields = (
-            'id',
-            'device_user',
-            'device_name',
-            'device_code',
-            'device_register_date',
-            'device_status'
+                'id',
+                'device_user',
+                'device_os',
+                'device_token',
+                'device_register_date',
+                'device_status'
             )

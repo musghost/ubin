@@ -108,6 +108,7 @@ class Users(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = [
     'name',
+    'last_name',
     'phone',
     'is_active'
     ]
@@ -300,8 +301,8 @@ class Tasks(models.Model):
 
 class Devices_User_Register(models.Model):
     device_user= models.ForeignKey(Users,null=False)
-    device_name= models.TextField(null=False,blank=False)
-    device_code= models.TextField(max_length=300,null=False,blank=False)
+    device_os= models.TextField(max_length=30,null=False,blank=False)
+    device_token= models.TextField(max_length=300,null=False,blank=False)
     device_register_date= models.DateField(auto_now_add=True)
     device_status = models.BooleanField(default=True)
 

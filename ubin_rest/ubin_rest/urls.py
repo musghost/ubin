@@ -98,6 +98,7 @@ from apprest.viewsets import UploadFilesViewSet
 from apprest.viewsets import DownloadFilesViewSet
 from apprest.viewsets import DevicesUserRegisterViewSet
 from apprest.viewsets import DevicesUserRegisterDefaultFilterViewSet
+from apprest.viewsets import RegisterViewSet
 
 
 from rest_framework.routers import DefaultRouter
@@ -392,10 +393,18 @@ router.register(r'device',DevicesUserRegisterViewSet)
 #Filter
 router.register(r'deviceFilter',DevicesUserRegisterDefaultFilterViewSet)
 
+'''
+Register
+'''
+#CRUD
+router.register(r'register',RegisterViewSet,base_name="register")
+
+
+
 urlpatterns = [
     url(r'^api/v1/admin/', include(admin.site.urls)),
     url(r'^api/v1/',include(router.urls)),
-    url(r'^api/v1/api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api-token-auth/', 'rest_framework_jwt.views.obtain_jwt_token'),
     url(r'^api/v1/api-token-auth/', 'rest_framework_jwt.views.obtain_jwt_token'),
     url(r'^api/v1/api-token-refresh/', 'rest_framework_jwt.views.refresh_jwt_token'),
     url(r'^api/v1/api-token-verify/', 'rest_framework_jwt.views.verify_jwt_token'),
@@ -430,6 +439,5 @@ urlpatterns = [
     url(r'^api/v1/',include(vw_contacts_task.urls)),
     url(r'^api/v1/',include(vw_types_customers.urls)),
     url(r'^api/v1/',include(vw_types_reports.urls)),
-    
     url(r'^api/v1/docs/', include('rest_framework_swagger.urls')),
 ]   
