@@ -159,7 +159,9 @@ class UsersSerializer(serializers.ModelSerializer):
             'is_active'
             )
 
+
 class UsersFullSerializer(serializers.ModelSerializer):
+    number_of_publications=serializers.SerializerMethodField()
     class Meta:
         model = Users
         fields = (
@@ -187,8 +189,12 @@ class UsersFullSerializer(serializers.ModelSerializer):
             'is_superuser',
             'is_staff',
             'register_date',
+            'number_of_publications',
             'is_active'
             )
+    def get_number_of_publications(self,obj):
+        number_of_publications=Publications.objects.filter(id=obj.id,status=True).count()
+        return number_of_publications
 
 class ProvidersSerializer(serializers.ModelSerializer):
     

@@ -40,6 +40,7 @@ from .serializers import TypesContactsSerializer
 from .serializers import TypesEventsSerializer
 from .serializers import TypesDocumentsSerializer
 from .serializers import UsersSerializer
+from .serializers import UsersFullSerializer
 from .serializers import ProvidersSerializer
 from .serializers import ProvidersFullSerializer
 from .serializers import ClassificationProvidersSerializer
@@ -369,13 +370,13 @@ class UsersViewSet(viewsets.ModelViewSet):
 class vwUsersViewSet(viewsets.ViewSet):
     def list(self, request):
         queryset = Users.objects.filter(is_active=True)
-        serializer = UsersSerializer(queryset, many=True)
+        serializer = UsersFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
         queryset = Users.objects.filter(is_active=True)
         user = get_object_or_404(queryset, pk=pk)
-        serializer = UsersSerializer(user)
+        serializer = UsersFullSerializer(user)
         return Response(serializer.data)
 
 class AdvisorUsersViewSet(viewsets.ViewSet):
@@ -384,7 +385,7 @@ class AdvisorUsersViewSet(viewsets.ViewSet):
             type_advisor__pk=typeAdvisor_pk, status=True
         )
 
-        serializer = UsersSerializer(queryset, many=True)
+        serializer = UsersFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,typeAdvisor_pk=None,pk=None):
@@ -392,7 +393,7 @@ class AdvisorUsersViewSet(viewsets.ViewSet):
             type_advisor__pk=typeAdvisor_pk, status=True
         )
         user = get_object_or_404(queryset, pk=pk)
-        serializer = UsersSerializer(user)
+        serializer = UsersFullSerializer(user)
         return Response(serializer.data)
 
 
