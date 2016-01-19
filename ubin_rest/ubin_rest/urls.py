@@ -85,6 +85,7 @@ from apprest.viewsets import DevicesUserRegisterViewSet
 from apprest.viewsets import DevicesUserRegisterDefaultFilterViewSet
 from apprest.viewsets import RegisterViewSet
 from apprest.viewsets import GetTokenViewSet
+from apprest.viewsets import RecoverPasswordViewSet
 
 
 from rest_framework.routers import DefaultRouter
@@ -391,14 +392,16 @@ Create token
 #CRUD
 router.register(r'api-token-auth',GetTokenViewSet,base_name="api-token-auth")
 
-
-
+'''
+Recover password
+'''
+#CRUD
+router.register(r'recoverPassword',RecoverPasswordViewSet,base_name="recoverPassword")
 
 urlpatterns = [
     url(r'^api/v1/admin/', include(admin.site.urls)),
     url(r'^api/v1/',include(router.urls)),
     url(r'^api/v1/api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    #url(r'^api/v1/api-token-auth/', 'rest_framework_jwt.views.obtain_jwt_token'),
     url(r'^api/v1/api-token-refresh/', 'rest_framework_jwt.views.refresh_jwt_token'),
     url(r'^api/v1/api-token-verify/', 'rest_framework_jwt.views.verify_jwt_token'),
     url(r'^api/v1/',include(vw_property_publications.urls)),

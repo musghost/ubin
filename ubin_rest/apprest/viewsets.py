@@ -93,7 +93,7 @@ from django.db.models import Avg
 import mimetypes
 from django.http import StreamingHttpResponse
 from django.core.servers.basehttp import FileWrapper
-
+from django.core.mail import send_mail
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
@@ -1262,3 +1262,24 @@ class DevicesUserRegisterViewSet(viewsets.ModelViewSet):
  
     serializer_class = DevicesUserRegisterSerializer
     queryset = Devices_User_Register.objects.all() 
+
+'''-------------------- Recover password -------------------------------------'''
+class RecoverPasswordViewSet(viewsets.ViewSet):
+  def create(self, request, format=None):
+    if 'email' in request.data:
+        email=request.data['email']
+        queryset = Users.objects.filter(email=email,is_active=True)
+        user = get_object_or_404(queryset)
+        serializer = UsersFullSerializer(user)
+        try:
+            content="Hola " + serializer.data['name'] + ","
+            content+="tu contraseña es :"+ serializer.data['password']
+            send_mail('Ubin : Recuperar contraseña',content, 'web@administrator.com',[email], fail_silently=False)
+        except Exception as e:
+            print "Eror sending mail RecoverPassword"
+            print e
+            return Response({'message':'The email could not be sent.','error':e},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        return Response({'email':'email is mandatory field.'}, status=status.HTTP_404_NOT_FOUND)  
+
+    return Response({'message':'Se ha enviado la contraseña.','email':serializer.data['email']}, status=status.HTTP_200_OK)
