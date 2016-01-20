@@ -1268,6 +1268,7 @@ class DevicesUserRegisterViewSet(viewsets.ModelViewSet):
 
 '''-------------------- Recover password -------------------------------------'''
 class RecoverPasswordViewSet(viewsets.ViewSet):
+  permission_classes = (AllowAny,)
   def create(self, request, format=None):
     if 'email' in request.data:
         email=request.data['email']
