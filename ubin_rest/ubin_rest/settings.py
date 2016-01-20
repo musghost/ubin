@@ -27,8 +27,8 @@ MEDIA_ROOT ='/home/ubinrest/media/' #os.environ['UBIN_MEDIA']
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'zatoryprivate@gmail.com'
-EMAIL_HOST_PASSWORD = 'r3st0*1clubpr3m13r'
+EMAIL_HOST_USER = 'ubintest2016@gmail.com'
+EMAIL_HOST_PASSWORD = 'clubpr3m13r'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
