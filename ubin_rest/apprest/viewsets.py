@@ -1226,10 +1226,10 @@ class UploadFilesViewSet(viewsets.ViewSet):
     return Response({'hash':list_name}, status=status.HTTP_200_OK)
 
 class DownloadFilesViewSet(viewsets.ViewSet):
-  def list(self, request):
-    if 'filename' in request.GET:
-        if os.path.isfile(settings.MEDIA_ROOT+request.GET['filename']) :
-            the_file = settings.MEDIA_ROOT+request.GET['filename']
+  def create(self, request):
+    if 'filename' in request.POST:
+        if os.path.isfile(settings.MEDIA_ROOT+request.POST['filename']) :
+            the_file = settings.MEDIA_ROOT+request.POST['filename']
             filename = os.path.basename(the_file)
             chunk_size = 8192
             response = StreamingHttpResponse(FileWrapper(open(the_file), chunk_size),

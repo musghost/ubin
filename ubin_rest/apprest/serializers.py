@@ -42,7 +42,7 @@ from datetime import datetime
 class CurrenciesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Currencies
-        fields = ('id','name', 'status')
+        fields = ('id','name','smybol','code','value','status')
 
 class TypesPropertySerializer(serializers.ModelSerializer):
     class Meta:

@@ -115,7 +115,10 @@ class Users(AbstractBaseUser, PermissionsMixin):
 
 class Currencies(models.Model):
     name = models.TextField(max_length=100,null=False,blank=False)
-    status = models.BooleanField(default=True)
+    symbol = models.TextField(max_length=2,null=False,blank=False)
+    code = models.TextField(max_length=3,null=False,blank=False)
+    value = models.DecimalField(max_digits=2,decimal_places=2,null=False) 
+    status = models.BooleanField(default=True,null=False,blank=False)
 
 class Types_Property(models.Model):
     name = models.TextField(max_length=100,null=False,blank=False)
