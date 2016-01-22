@@ -251,7 +251,8 @@ class Favorites_Providers(models.Model):
     status = models.BooleanField(default=True)
 
 class Photos(models.Model):
-    name=models.TextField(max_length=250,null=False,blank=False)
+    hash_name=models.TextField(max_length=250,null=False,blank=False)
+    original_name=models.TextField(max_length=250,null=False,blank=False)
     path=models.TextField(max_length=250,null=False,blank=False)
     publication=models.ForeignKey(Publications,null=False)
     status = models.BooleanField(default=True)

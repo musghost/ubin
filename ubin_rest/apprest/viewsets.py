@@ -1,75 +1,6 @@
 # -*- encoding: utf-8 -*-
-from .models import Currencies
-from .models import Types_Property
-from .models import Types_Publications
-from .models import Types_Advisors
-from .models import Types_Providers
-from .models import Types_Advisors
-from .models import Types_Providers
-from .models import Types_Contacts
-from .models import Types_Events
-from .models import Types_Documents
-from .models import Users
-from .models import Providers
-from .models import Classification_Providers
-from .models import Publications
-from .models import Comments
-from .models import Contacts 
-from .models import Documents
-from .models import Events 
-from .models import Favorites
-from .models import Notifications
-from .models import Push_Notifications
-from .models import Favorites_Providers
-from .models import Favorites_Providers
-from .models import Photos
-from .models import Types_Reports
-from .models import Reports
-from .models import User_Location
-from .models import Types_Customers
-from .models import Customers
-from .models import Favorites_Customers
-from .models import Tasks
-from .models import Devices_User_Register
-
-from .serializers import CurrenciesSerializer
-from .serializers import TypesPropertySerializer
-from .serializers import TypesPublicationsSerializer
-from .serializers import TypesAdvisorsSerializer
-from .serializers import TypesProvidersSerializer
-from .serializers import TypesContactsSerializer
-from .serializers import TypesEventsSerializer
-from .serializers import TypesDocumentsSerializer
-from .serializers import UsersSerializer
-from .serializers import UsersFullSerializer
-from .serializers import ProvidersSerializer
-from .serializers import ProvidersFullSerializer
-from .serializers import ClassificationProvidersSerializer
-from .serializers import ClassificationProvidersFullSerializer
-from .serializers import PublicationsSerializer
-from .serializers import PublicationsFullSerializer
-from .serializers import CommentsSerializer
-from .serializers import CommentsFullerializer
-from .serializers import ContactsSerializer
-from .serializers import ContactsFullSerializer
-from .serializers import DocumentsSerializer
-from .serializers import EventsSerializer
-from .serializers import FavoritesSerializer
-from .serializers import NotificationsSerializer
-from .serializers import PushNotificationsSerializer
-from .serializers import FavoritesProvidersSerializer
-from .serializers import FavoritesProvidersFullSerializer
-from .serializers import PhotosSerializer
-from .serializers import TypesReportsSerializer
-from .serializers import ReportsSerializer
-from .serializers import UserLocationSerializer
-from .serializers import TypeCustomersSerializer
-from .serializers import CustomersSerializer
-from .serializers import FavoritesCustomersSerializer
-from .serializers import TasksSerializer
-from .serializers import DevicesUserRegisterSerializer
-from .serializers import DevicesUserRegisterFullSerializer
-from .serializers import RegisterSerializer
+from .models import *
+from .serializers import *
 
 from rest_framework import serializers
 from rest_framework.parsers import FileUploadParser
@@ -974,13 +905,32 @@ class PhotosViewSet(viewsets.ModelViewSet):
     serializer_class = PhotosSerializer
     queryset = Photos.objects.all()
 
+class PhotosDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
+ 
+    serializer_class = PhotosFullSerializer
+    queryset = Photos.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,filters.SearchFilter,)
+    search_fields = (
+        'hash_name', 
+        'original_name',
+        'path',
+        )
+    ordering_fields ='__all__'
+    filter_fields = (
+        'id',
+        'hash_name',
+        'original_name',
+        'path',
+        'status'
+        )
+
 class vwPhotosPublicationsViewSet(viewsets.ViewSet):
     def list(self, request,publication_pk=None):
         queryset = Photos.objects.filter(
             publication__pk=publication_pk,status=True
         )
 
-        serializer =PhotosSerializer(queryset,many=True)
+        serializer =PhotosFullSerializer(queryset,many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,publication_pk=None, pk=None):
@@ -988,7 +938,7 @@ class vwPhotosPublicationsViewSet(viewsets.ViewSet):
             publication__pk=publication_pk,status=True
         )
         photo = get_object_or_404(queryset, pk=pk)
-        serializer = PhotosSerializer(photo)
+        serializer = PhotosFullSerializer(photo)
         return Response(serializer.data)
 
 '''

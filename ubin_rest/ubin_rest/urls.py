@@ -4,88 +4,7 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from django.contrib import admin
 admin.autodiscover()
 
-from apprest.viewsets import CurrenciesViewSet
-from apprest.viewsets import vwCurrenciesViewSet
-from apprest.viewsets import TypesPropertyViewSet
-from apprest.viewsets import vwTypesPropertyViewSet
-from apprest.viewsets import TypesPublicationsViewSet
-from apprest.viewsets import vwTypesPublicationsViewSet
-from apprest.viewsets import TypesAdvisorsViewSet
-from apprest.viewsets import vwTypesAdvisorsViewSet
-from apprest.viewsets import AdvisorUsersViewSet
-from apprest.viewsets import TypesProvidersViewSet
-from apprest.viewsets import vwTypesProvidersViewSet
-from apprest.viewsets import TypesContactsViewSet
-from apprest.viewsets import vwTypesContactsViewSet
-from apprest.viewsets import TypesEventsViewSet
-from apprest.viewsets import vwTypesEventsViewSet
-from apprest.viewsets import TypesDocumentsViewSet
-from apprest.viewsets import vwTypesDocumentsViewSet
-from apprest.viewsets import UsersViewSet
-from apprest.viewsets import vwUsersViewSet
-from apprest.viewsets import ProvidersViewSet
-from apprest.viewsets import vwProvidersViewSet
-from apprest.viewsets import vwProvidersTypeViewSet
-from apprest.viewsets import ProvidersDefaultFilterViewSet
-from apprest.viewsets import ClassificationProvidersViewSet
-from apprest.viewsets import vwClassificationProvidersViewSet
-from apprest.viewsets import vwProviderClassificationProvidersViewSet
-from apprest.viewsets import PublicationsViewSet
-from apprest.viewsets import vwPublicationsInTypeImmovableViewSet
-from apprest.viewsets import vwPublicationsInTypePublicationViewSet
-from apprest.viewsets import vwPublicationsViewSet
-from apprest.viewsets import vwAllPublicationsViewSet
-from apprest.viewsets import vwPublicationsCurrenciesViewSet
-from apprest.viewsets import PublicationsDefaultFilterViewSet
-from apprest.viewsets import CommentsViewSet
-from apprest.viewsets import vwCommentsPublicationsViewSet
-from apprest.viewsets import vwCommentsViewSet
-from apprest.viewsets import ContactsViewSet
-from apprest.viewsets import vwContactsViewSet
-from apprest.viewsets import vwContactsTypeViewSet
-from apprest.viewsets import vwAllContactsViewSet
-from apprest.viewsets import DocumentsViewSet
-from apprest.viewsets import DocumentsTypeViewSet
-from apprest.viewsets import vwDocumentsViewSet
-from apprest.viewsets import EventsViewSet
-from apprest.viewsets import EventsTypeViewSet
-from apprest.viewsets import FavoritesViewSet
-from apprest.viewsets import vwFavoritesPublicationsViewSet
-from apprest.viewsets import NotificationsViewSet
-from apprest.viewsets import vwNotificationsPublicationsViewSet
-from apprest.viewsets import vwNotificationsViewSet
-from apprest.viewsets import PushNotificationsViewSet
-from apprest.viewsets import vwPushNotificationsViewSet
-from apprest.viewsets import vwPushNotificationsPubViewSet
-from apprest.viewsets import FavoritesProvidersViewSet
-from apprest.viewsets import vwProviderFavoritesProvidersViewSet
-from apprest.viewsets import vwFavoritesProvidersViewSet
-from apprest.viewsets import PhotosViewSet
-from apprest.viewsets import vwPhotosPublicationsViewSet
-from apprest.viewsets import TypesReportsViewSet
-from apprest.viewsets import vwAllTypesReportsViewSet
-from apprest.viewsets import ReportsViewSet
-from apprest.viewsets import vwReportsViewSet
-from apprest.viewsets import vwTypeReportsViewSet
-from apprest.viewsets import UserLocationViewSet
-from apprest.viewsets import vwUserLocationViewSet
-from apprest.viewsets import TypeCustomersViewSet
-from apprest.viewsets import vwAllTypesCustomersViewSet
-from apprest.viewsets import CustomersViewSet
-from apprest.viewsets import vwCustomerViewSet
-from apprest.viewsets import vwCustomersForTypeViewSet
-from apprest.viewsets import FavoritesCustomersViewSet
-from apprest.viewsets import vwFavoritesCustomersViewSet
-from apprest.viewsets import TasksViewSet
-from apprest.viewsets import vwTasksViewSet
-from apprest.viewsets import vwTaskViewSet
-from apprest.viewsets import UploadFilesViewSet
-from apprest.viewsets import DownloadFilesViewSet
-from apprest.viewsets import DevicesUserRegisterViewSet
-from apprest.viewsets import DevicesUserRegisterDefaultFilterViewSet
-from apprest.viewsets import RegisterViewSet
-from apprest.viewsets import GetTokenViewSet
-from apprest.viewsets import RecoverPasswordViewSet
+from apprest.viewsets import *
 
 
 from rest_framework.routers import DefaultRouter
@@ -315,7 +234,11 @@ router.register(r'favoriteProvider',FavoritesProvidersViewSet)
 '''
 Photos
 '''
+#CRUD
 router.register(r'photo',PhotosViewSet)
+#Filter
+router.register('photosFilter',PhotosDefaultFilterViewSet)
+
 
 '''
 Types Customers

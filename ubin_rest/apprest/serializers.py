@@ -1,37 +1,6 @@
 from rest_framework import serializers
 
-from .models import Currencies
-from .models import Types_Property
-from .models import Types_Publications
-from .models import Types_Advisors
-from .models import Types_Providers
-from .models import Types_Advisors
-from .models import Types_Providers
-from .models import Types_Contacts
-from .models import Types_Events
-from .models import Types_Documents
-from .models import Users
-from .models import Providers
-from .models import Classification_Providers
-from .models import Publications
-from .models import Comments
-from .models import Contacts 
-from .models import Documents
-from .models import Events 
-from .models import Favorites
-from .models import Notifications
-from .models import Push_Notifications
-from .models import Favorites_Providers
-from .models import Favorites_Providers
-from .models import Photos
-from .models import Types_Reports
-from .models import Reports
-from .models import User_Location
-from .models import Types_Customers
-from .models import Customers
-from .models import Favorites_Customers
-from .models import Tasks
-from .models import Devices_User_Register
+from .models import *
 from rest_framework_jwt.settings import api_settings
 from calendar import timegm
 from datetime import datetime
@@ -499,11 +468,26 @@ class PhotosSerializer(serializers.ModelSerializer):
         model = Photos
         fields = (
         	'id',
-        	'name',
+            'hash_name',
+        	'original_name',
         	'path',
         	'publication',
             'status'
         	)
+
+class PhotosFullSerializer(serializers.ModelSerializer):
+    publication=PublicationsFullSerializer()
+    class Meta:
+        model = Photos
+        fields = (
+            'id',
+            'hash_name',
+            'original_name',
+            'path',
+            'publication',
+            'status'
+            )
+
 class TypesReportsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Types_Reports
