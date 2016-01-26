@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'rest_framework',
     'apprest',
     'rest_framework_swagger',
@@ -122,6 +123,9 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '',
     }
+}
+
+GRAPH_MODELS = {
 }
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
