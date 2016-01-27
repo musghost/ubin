@@ -191,13 +191,13 @@ SWAGGER_SETTINGS = {
         'patch',
         'delete'
     ],
-    'api_key': '',
+    'api_key':'',
     'is_authenticated': False,
     'is_superuser': False,
     'permission_denied_handler': None,
     'resource_access_handler': None,
     'info': {
-        'contact': 'gp@manoderecha.mx',
+        'contact': 'gp@vincoorbis.com',
         'description': '',
         'license': 'Apache 2.0',
         'licenseUrl': 'http://www.apache.org/licenses/LICENSE-2.0.html',

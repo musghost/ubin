@@ -225,6 +225,23 @@ class vwTypesDocumentsViewSet(viewsets.ViewSet):
 class RegisterViewSet(viewsets.ViewSet):
     permission_classes = (AllowAny,)
     def create(self, request, format=None):
+        """
+            Register user.
+            ---
+            serializer: RegisterSerializer
+            omit_serializer: false
+            responseMessages:
+                - code: 400
+                  message: BAD REQUEST
+                - code: 200
+                  message: OK
+                - code: 500
+                  message: INTERNAL SERVER ERROR
+            consumes:
+                - application/json
+            produces:
+                - application/json
+        """
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -251,6 +268,55 @@ class RegisterViewSet(viewsets.ViewSet):
 class GetTokenViewSet(viewsets.ViewSet):
     permission_classes = (AllowAny,)
     def create(self, request, format=None):
+        """
+            Get Token (Or login).
+            ---
+            type:
+              email:
+                required: true
+                type: string
+              password:
+                required: true
+                type: string
+              device_os:
+                required: true
+                type: string
+              device_token:
+                required: false
+                type: string
+            parameters:
+                - name: email
+                  description: Email user.
+                  required: true
+                  type: string
+                  paramType: form
+                - name: password
+                  description: password.
+                  required: true
+                  type: string
+                  paramType: form
+                - name: device_os
+                  description: Operating system mobile.
+                  required: true
+                  type: string
+                  paramType: form
+                - name: device_token
+                  description: Mobile token.
+                  required: false
+                  type: string
+                  paramType: form
+            responseMessages:
+                - code: 400
+                  message: BAD REQUEST
+                - code: 200
+                  message: OK
+                - code: 500
+                  message: INTERNAL SERVER ERROR
+            consumes:
+                - application/json
+            produces:
+                - application/json
+        """
         if 'email' in request.data:
             if 'password' in request.data:
                 if 'device_os' in request.data:
@@ -265,7 +331,7 @@ class GetTokenViewSet(viewsets.ViewSet):
                     if 'device_token' in request.data:
                         device=Devices_User_Register(
                         device_os=request.data['device_os'],
-                        device_token=device_token,
+                        device_token=request.data['device_token'],
                         device_user=user)
                     else:
                         device=Devices_User_Register(
@@ -341,7 +407,6 @@ class ProvidersViewSet(viewsets.ModelViewSet):
     queryset = Providers.objects.all()
 
 class ProvidersDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
- 
     serializer_class = ProvidersFullSerializer
     queryset = Providers.objects.all()
     filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,filters.SearchFilter,)
@@ -1151,6 +1216,31 @@ class UploadFilesViewSet(viewsets.ViewSet):
   parser_classes = (MultiPartParser,FormParser,JSONParser,)
 
   def create(self, request, format=None):
+    """
+        Upload Files to server
+        ---
+        type:
+          file:
+            required: true
+            type: file
+        parameters:
+            - name: file
+              description: File to transfer server.
+              required: true
+              type: file
+              paramType: file
+        responseMessages:
+            - code: 400
+              message: BAD REQUEST
+            - code: 200
+              message: OK
+            - code: 500
+              message: INTERNAL SERVER ERROR
+        consumes:
+            - application/json
+        produces:
+            - application/json
+    """
     list_name=[]
     for key, file in request.FILES.items():
         randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
@@ -1173,13 +1263,38 @@ class UploadFilesViewSet(viewsets.ViewSet):
             dest.write(file.read())
         dest.close()
 
-    return Response({'hash':list_name}, status=status.HTTP_200_OK)
+    return Response(list_name, status=status.HTTP_200_OK)
 
 class DownloadFilesViewSet(viewsets.ViewSet):
-  def create(self, request):
-    if 'filename' in request.POST:
-        if os.path.isfile(settings.MEDIA_ROOT+request.POST['filename']) :
-            the_file = settings.MEDIA_ROOT+request.POST['filename']
+  def list(self, request):
+    """
+        Dowload Files in server.
+        ---
+        type:
+          filename:
+            required: true
+            type: string
+        parameters:
+            - name: filename
+              description: Name file in server, example:79fc437deb6bb4790e51d603ad11c2e2cf6b5eea.jpg
+              required: true
+              type: string
+              paramType: query
+        responseMessages:
+            - code: 400
+              message: BAD REQUEST
+            - code: 200
+              message: OK
+            - code: 500
+              message: INTERNAL SERVER ERROR
+        consumes:
+            - application/json
+        produces:
+            - application/json
+    """
+    if 'filename' in request.GET:
+        if os.path.isfile(settings.MEDIA_ROOT+request.GET['filename']) :
+            the_file = settings.MEDIA_ROOT+request.GET['filename']
             filename = os.path.basename(the_file)
             chunk_size = 8192
             response = StreamingHttpResponse(FileWrapper(open(the_file), chunk_size),
@@ -1220,6 +1335,31 @@ class DevicesUserRegisterViewSet(viewsets.ModelViewSet):
 class RecoverPasswordViewSet(viewsets.ViewSet):
   permission_classes = (AllowAny,)
   def create(self, request, format=None):
+    """
+        Recover password.
+        ---
+        type:
+          email:
+            required: true
+            type: string
+        parameters:
+            - name: email
+              description: Email user which try recover password.
+              required: true
+              type: string
+              paramType: form
+        responseMessages:
+            - code: 400
+              message: BAD REQUEST
+            - code: 200
+              message: OK
+            - code: 500
+              message: INTERNAL SERVER ERROR
+        consumes:
+            - application/json
+        produces:
+            - application/json
+    """
     if 'email' in request.data:
         email=request.data['email']
         queryset = Users.objects.filter(email=email,is_active=True)
