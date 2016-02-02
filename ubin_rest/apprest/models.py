@@ -149,7 +149,8 @@ class Providers(models.Model):
     type_provider= models.ForeignKey(Types_Providers,null=False)
     state=models.IntegerField(null=False)
     town=models.IntegerField(null=False)
-    neighborhood=models.IntegerField(null=False)
+    neighborhood=models.IntegerField(null=True)
+    references=models.TextField(max_length=100)
     register_date= models.DateField(auto_now_add=True)
     address= models.TextField(max_length=250)
     phone = models.TextField(max_length=20,null=False,blank=False)
@@ -190,7 +191,7 @@ class Comments(models.Model):
     publication= models.ForeignKey(Publications,null=False)
     user= models.ForeignKey(Users,null=False)
     comment= models.TextField(max_length=1000,null=False,blank=False)
-    date= models.DateField(auto_now_add=True)
+    date= models.DateTimeField(auto_now=False, auto_now_add=False,null=False)
     status = models.BooleanField(default=True)
 
 class Contacts(models.Model):
@@ -201,7 +202,7 @@ class Contacts(models.Model):
     email = models.EmailField(max_length=50,null=False,blank=False)
     user= models.ForeignKey(Users,null=False)
     type_contact= models.ForeignKey(Types_Contacts,null=False)
-    note = models.TextField(max_length=200)
+    note = models.TextField(max_length=200,null=True,blank=True)
     is_favorite=models.BooleanField(default=False)
     status = models.BooleanField(default=True)
 
@@ -216,8 +217,10 @@ class Documents(models.Model):
 class Events(models.Model):
     name= models.TextField(max_length=200,null=False,blank=False)
     description= models.TextField(max_length=1000,null=False,blank=False)
+    price= models.TextField(max_length=100,null=False,blank=False)
     type_event=models.ForeignKey(Types_Events,null=False)
     date_event=models.DateField(auto_now_add=True)
+    hour=models.TextField(max_length=100,null=False,blank=False)
     administrator=models.ForeignKey(Users,null=False)
     status = models.BooleanField(default=True)
 
@@ -306,9 +309,12 @@ class Tasks(models.Model):
 class Devices_User_Register(models.Model):
     device_user= models.ForeignKey(Users,null=False)
     device_os= models.TextField(max_length=30,null=False,blank=False)
-    device_token= models.TextField(max_length=300,null=True,blank=True,unique=True)
+    device_token= models.TextField(max_length=300,null=True,blank=True)
     device_register_date= models.DateField(auto_now_add=True)
     device_status = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ("device_user", "device_token")
 
 
     

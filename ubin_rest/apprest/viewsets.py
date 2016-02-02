@@ -16,12 +16,14 @@ from django.http import HttpResponse
 from rest_framework import filters
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core import serializers
+from django.contrib.auth import login as auth_login
 from django.db.models import Q
 from rest_framework import status
 from django.conf import settings
 import hashlib,os,random,string,base64
 from django.utils.encoding import smart_str
 from django.db.models import Avg
+
 import mimetypes
 from django.http import StreamingHttpResponse
 from django.core.servers.basehttp import FileWrapper
@@ -39,6 +41,7 @@ from datetime import datetime
 
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.renderers import JSONRenderer
 
 
 '''
@@ -112,6 +115,7 @@ class vwTypesPublicationsViewSet(viewsets.ViewSet):
 ----------- Types Advisor --------------------------
 '''
 class TypesAdvisorsViewSet(viewsets.ModelViewSet):
+    permission_classes = (AllowAny,)
  
     serializer_class = TypesAdvisorsSerializer
     queryset = Types_Advisors.objects.all()
@@ -327,17 +331,26 @@ class GetTokenViewSet(viewsets.ViewSet):
                         user = Users.objects.get(email=request.data['email'],is_active=True)
                     except Exception: 
                         return Response({"non_field_errors":"Unable to login with provided credentials."}, status=status.HTTP_400_BAD_REQUEST)
-
+                    deviceToken=""
                     if 'device_token' in request.data:
                         device=Devices_User_Register(
                         device_os=request.data['device_os'],
                         device_token=request.data['device_token'],
                         device_user=user)
+                        deviceToken=request.data['device_token']
                     else:
                         device=Devices_User_Register(
                         device_os=request.data['device_os'],
+                        device_token="",
                         device_user=user)
-                    device.save()
+                        deviceToken=""
+
+                    deviceTokenExist=Devices_User_Register.objects.filter(
+                          device_token=deviceToken,
+                          device_user_id=user.id 
+                        )
+                    if deviceTokenExist is None:
+                        device.save()
 
                     #Generate Token
                     jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
@@ -351,8 +364,8 @@ class GetTokenViewSet(viewsets.ViewSet):
                         )
 
                     token = jwt_encode_handler(payload)
-
-                    return Response({"token":token}, status=status.HTTP_201_CREATED)
+                    user_serializer=UsersFullSerializer(user)
+                    return Response({"token":token,"user":user_serializer.data}, status=status.HTTP_201_CREATED)
                 else:
                     return Response({"device_os":"This field is mandatory"}, status=status.HTTP_400_BAD_REQUEST)
             else:
@@ -363,7 +376,7 @@ class GetTokenViewSet(viewsets.ViewSet):
 ----------------  Users -------------------------
 '''
 class UsersViewSet(viewsets.ModelViewSet):
- 
+    permission_classes = (IsAuthenticated,)
     serializer_class = UsersSerializer
     queryset = Users.objects.all()
 
@@ -1213,8 +1226,8 @@ class vwTaskViewSet(viewsets.ViewSet):
  
   
 class UploadFilesViewSet(viewsets.ViewSet):
+  permission_classes = (AllowAny,)
   parser_classes = (MultiPartParser,FormParser,JSONParser,)
-
   def create(self, request, format=None):
     """
         Upload Files to server
@@ -1351,8 +1364,8 @@ class RecoverPasswordViewSet(viewsets.ViewSet):
         responseMessages:
             - code: 400
               message: BAD REQUEST
-            - code: 200
-              message: OK
+            - code: 201
+              message: CREATED
             - code: 500
               message: INTERNAL SERVER ERROR
         consumes:
@@ -1368,7 +1381,7 @@ class RecoverPasswordViewSet(viewsets.ViewSet):
         try:
             password=serializer.data['password']
             name=serializer.data['name']
-            body='Hola '+ name + u',tu contraseñaes :'+ password
+            body='Hola '+ name + u', tu contraseña es :'+ password
             subject=u'UBIN : Recuperar contraseña'
             subject=subject.encode("utf_8").decode("utf_8")
             body = body.encode("utf_8").decode("utf_8")
@@ -1379,3 +1392,37 @@ class RecoverPasswordViewSet(viewsets.ViewSet):
         return Response({'email':'email is mandatory field.'}, status=status.HTTP_404_NOT_FOUND)  
 
     return Response({'message':u'Se ha enviado la contraseña.','email':serializer.data['email']}, status=status.HTTP_200_OK)
+
+    '''-------------------- Recover password -------------------------------------'''
+class LogoutViewSet(viewsets.ViewSet):
+  permission_classes = (AllowAny,)
+  def create(self, request):
+    """
+        Logout 
+        ---
+        type:
+          user_id:
+            required: true
+            type: integer
+        parameters:
+            - name: user_id
+              description: User id.
+              required: true
+              type: integer
+              paramType: form
+        responseMessages:
+            - code: 201
+              message: CREATED
+            - code: 500
+              message: INTERNAL SERVER ERROR
+        consumes:
+            - application/json
+        produces:
+            - application/json
+    """
+    if 'user_id' in request.data :
+        user=Users.objects.get(id=request.data['user_id'])
+        user.backend='django.contrib.auth.backends.ModelBackend'
+        auth_login(request,user)
+        return Response({'message':'Logout ready!'}, status=status.HTTP_200_OK)
+

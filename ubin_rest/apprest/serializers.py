@@ -75,7 +75,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             'allow_documents',
             'allow_diary',
             'allow_mortgage_broker',
-            'is_superuser',
             'is_staff',
             'register_date',
             'is_active',
@@ -172,6 +171,7 @@ class ProvidersSerializer(serializers.ModelSerializer):
         fields = (
         	'id',
         	'name',
+            'references',
         	'type_provider',
         	'register_date',
         	'address',
@@ -194,6 +194,7 @@ class ProvidersFullSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name',
+            'references',
             'type_provider',
             'register_date',
             'address',
@@ -412,6 +413,7 @@ class EventsSerializer(serializers.ModelSerializer):
         	'description', 
         	'type_event',
             'date_event',
+            'hour',
             'administrator',
             'status'
         	)

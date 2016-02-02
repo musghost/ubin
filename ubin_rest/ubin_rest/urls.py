@@ -321,6 +321,12 @@ Recover password
 #CRUD
 router.register(r'recoverPassword',RecoverPasswordViewSet,base_name="recoverPassword")
 
+'''
+logout
+'''
+#CRUD
+router.register(r'logout',LogoutViewSet,base_name="logout")
+
 urlpatterns = [
     url(r'^api/v1/admin/', include(admin.site.urls)),
     url(r'^api/v1/',include(router.urls)),
