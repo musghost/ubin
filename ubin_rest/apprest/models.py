@@ -148,7 +148,7 @@ class Providers(models.Model):
     type_provider= models.ForeignKey(Types_Providers,null=False)
     state=models.IntegerField(null=False)
     town=models.IntegerField(null=False)
-    neighborhood=models.IntegerField(null=True)
+    neighborhood=models.TextField(max_length=200,null=True,blank=True)
     references=models.TextField(max_length=100)
     register_date= models.DateField(auto_now_add=True)
     address= models.TextField(max_length=250)
@@ -181,7 +181,7 @@ class Publications(models.Model):
     country=models.IntegerField(null=False)
     state=models.IntegerField(null=False)
     town=models.IntegerField(null=False)
-    neighborhood=models.IntegerField(null=False)
+    neighborhood=models.TextField(max_length=200,null=True,blank=True)
     date= models.DateField(auto_now_add=True)
     status = models.BooleanField(default=True)
     class Meta:
@@ -258,7 +258,7 @@ class Photos(models.Model):
     hash_name=models.TextField(max_length=250,null=False,blank=False)
     original_name=models.TextField(max_length=250,null=False,blank=False)
     path=models.TextField(max_length=250,null=False,blank=False)
-    publication=models.ForeignKey(Publications,null=False)
+    publication=models.ForeignKey(Publications,null=False, related_name="photos")
     status = models.BooleanField(default=True)
 
 class Types_Reports(models.Model):
@@ -277,7 +277,7 @@ class User_Location(models.Model):
     country=models.IntegerField(null=False)
     state=models.IntegerField(null=False)
     town=models.IntegerField(null=False)
-    neighborhood=models.IntegerField(null=False)
+    neighborhood=models.TextField(max_length=200,null=True,blank=True)
     date= models.DateField(auto_now_add=True)
     status = models.BooleanField(default=True)
 

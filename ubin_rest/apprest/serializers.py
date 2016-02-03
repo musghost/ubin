@@ -285,6 +285,18 @@ class PublicationsSerializer(serializers.ModelSerializer):
         	'status'
         	)
 
+class PhotosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Photos
+        fields = (
+            'id',
+            'hash_name',
+            'original_name',
+            'path',
+            'publication',
+            'status'
+            )
+
 class PublicationsFullSerializer(serializers.ModelSerializer):
     isfavorite=serializers.SerializerMethodField()
     votes=serializers.SerializerMethodField()
@@ -292,6 +304,7 @@ class PublicationsFullSerializer(serializers.ModelSerializer):
     type_property=TypesPropertySerializer()
     currency=CurrenciesSerializer()
     user=UsersFullSerializer()
+    photos=PhotosSerializer(many=True,read_only=True)
     class Meta:
         model = Publications
         fields = (
@@ -316,7 +329,9 @@ class PublicationsFullSerializer(serializers.ModelSerializer):
             'date',
             'status',
             'isfavorite',
-            'votes'
+            'votes',
+            'photos'
+
             )
     def get_isfavorite(self,obj):
         if obj.favorite.all():
@@ -464,19 +479,6 @@ class FavoritesProvidersFullSerializer(serializers.ModelSerializer):
     class Meta:
         model = Favorites_Providers
         fields = ('id','user','provider','status')
-
-
-class PhotosSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Photos
-        fields = (
-        	'id',
-            'hash_name',
-        	'original_name',
-        	'path',
-        	'publication',
-            'status'
-        	)
 
 class PhotosFullSerializer(serializers.ModelSerializer):
     publication=PublicationsFullSerializer()
