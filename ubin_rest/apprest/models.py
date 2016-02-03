@@ -59,8 +59,8 @@ class Users(AbstractBaseUser, PermissionsMixin):
         )
     last_name = models.TextField(
         max_length=100, 
-        blank=False,
-        null=False,
+        blank=True,
+        null=True,
         )
     mothers_maiden_name=models.TextField(
         max_length=50,
@@ -108,7 +108,6 @@ class Users(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = [
     'name',
-    'last_name',
     'phone',
     'is_active'
     ]
