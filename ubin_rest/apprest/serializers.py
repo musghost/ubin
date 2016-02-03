@@ -129,6 +129,7 @@ class UsersSerializer(serializers.ModelSerializer):
 
 
 class UsersFullSerializer(serializers.ModelSerializer):
+    type_advisor=TypesAdvisorsSerializer()
     number_of_publications=serializers.SerializerMethodField()
     class Meta:
         model = Users

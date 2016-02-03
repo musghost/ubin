@@ -115,12 +115,11 @@ class vwTypesPublicationsViewSet(viewsets.ViewSet):
 ----------- Types Advisor --------------------------
 '''
 class TypesAdvisorsViewSet(viewsets.ModelViewSet):
-    permission_classes = (AllowAny,)
- 
     serializer_class = TypesAdvisorsSerializer
     queryset = Types_Advisors.objects.all()
 
 class vwTypesAdvisorsViewSet(viewsets.ViewSet):
+    permission_classes = (AllowAny,)
     def list(self, request):
         queryset = Types_Advisors.objects.filter(status=True)
         serializer = TypesAdvisorsSerializer(queryset, many=True)
@@ -376,7 +375,6 @@ class GetTokenViewSet(viewsets.ViewSet):
 ----------------  Users -------------------------
 '''
 class UsersViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsAuthenticated,)
     serializer_class = UsersSerializer
     queryset = Users.objects.all()
 
@@ -532,8 +530,10 @@ class PublicationsViewSet(viewsets.ModelViewSet):
     queryset = Publications.objects.all()
 
 class PublicationsDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = (AllowAny,)
     serializer_class = PublicationsFullSerializer
     queryset = Publications.objects.all()
+    permission_classes = (AllowAny,)
     filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,filters.SearchFilter,)
     search_fields = (
         'description',
@@ -542,8 +542,9 @@ class PublicationsDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
     ordering_fields ='__all__'
     filter_fields = (
         'id',
-        'canvas_number',
         'user',
+        'user__type_advisor',
+        'canvas_number',
         'type_publications',
         'type_property',
         'title',
@@ -564,6 +565,7 @@ class PublicationsDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class vwPublicationsInTypeImmovableViewSet(viewsets.ViewSet):
+    permission_classes = (AllowAny,)
     def list(self, request,typeProperty_pk=None):
         queryset = Publications.objects.filter(
             type_property__pk=typeProperty_pk,status=True
@@ -581,6 +583,7 @@ class vwPublicationsInTypeImmovableViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 class vwPublicationsInTypePublicationViewSet(viewsets.ViewSet):
+    permission_classes = (AllowAny,)
     def list(self, request,typePublication_pk=None):
         queryset = Publications.objects.filter(
             type_publications__pk=typePublication_pk,status=True
@@ -598,6 +601,7 @@ class vwPublicationsInTypePublicationViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 class vwPublicationsCurrenciesViewSet(viewsets.ViewSet):
+    permission_classes = (AllowAny,)
     def list(self, request,currency_pk=None):
         queryset = Publications.objects.filter(
             currency__pk=currency_pk,status=True
@@ -615,6 +619,7 @@ class vwPublicationsCurrenciesViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 class vwPublicationsViewSet(viewsets.ViewSet):
+    permission_classes = (AllowAny,)
     def list(self, request,user_pk=None):
         queryset = Publications.objects.filter(
             user__pk=user_pk,status=True
@@ -632,6 +637,7 @@ class vwPublicationsViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 class vwAllPublicationsViewSet(viewsets.ViewSet):
+    permission_classes = (AllowAny,)
     def list(self, request):
         queryset = Publications.objects.filter(status=True)
 
@@ -984,7 +990,6 @@ class PhotosViewSet(viewsets.ModelViewSet):
     queryset = Photos.objects.all()
 
 class PhotosDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
- 
     serializer_class = PhotosFullSerializer
     queryset = Photos.objects.all()
     filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,filters.SearchFilter,)

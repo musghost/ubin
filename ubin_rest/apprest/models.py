@@ -167,13 +167,13 @@ class Classification_Providers(models.Model):
 
 class Publications(models.Model):
     canvas_number = models.IntegerField(null=True)
-    user= models.ForeignKey(Users,null=False)
+    user= models.ForeignKey(Users,null=False,related_name="user")
     type_publications= models.ForeignKey(Types_Publications,null=False)
     type_property= models.ForeignKey(Types_Property,null=True)
     title=models.TextField(max_length=100,null=False)
     description=models.TextField(max_length=500,null=False)
-    price_first=models.DecimalField(decimal_places=2,max_digits=10,null=False)
-    price_second=models.DecimalField(decimal_places=2,max_digits=10,null=True)
+    price_first=models.DecimalField(decimal_places=2,max_digits=50,null=False)
+    price_second=models.DecimalField(decimal_places=2,max_digits=50,null=True)
     currency=models.ForeignKey(Currencies,null=False)
     bathrooms=models.IntegerField(null=True)
     antiquity=models.TextField(max_length=50,null=True)
@@ -185,6 +185,8 @@ class Publications(models.Model):
     neighborhood=models.IntegerField(null=False)
     date= models.DateField(auto_now_add=True)
     status = models.BooleanField(default=True)
+    class Meta:
+        ordering = ['date','price_first']
 
 
 class Comments(models.Model):
