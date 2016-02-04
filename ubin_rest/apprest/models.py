@@ -174,7 +174,7 @@ class Publications(models.Model):
     price_first=models.DecimalField(decimal_places=2,max_digits=50,null=False)
     price_second=models.DecimalField(decimal_places=2,max_digits=50,null=True)
     currency=models.ForeignKey(Currencies,null=False)
-    bathrooms=models.IntegerField(null=True)
+    bathrooms=models.FloatField(null=True)
     antiquity=models.TextField(max_length=50,null=True)
     area=models.TextField(max_length=50,null=True)
     construction_area=models.TextField(max_length=50,null=True)
