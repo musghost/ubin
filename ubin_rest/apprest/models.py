@@ -148,7 +148,7 @@ class Providers(models.Model):
     type_provider= models.ForeignKey(Types_Providers,null=False)
     state=models.IntegerField(null=False)
     town=models.IntegerField(null=False)
-    neighborhood=models.IntegerField(null=True)
+    neighborhood=models.TextField(max_length=200,null=True,blank=True)
     references=models.TextField(max_length=100)
     register_date= models.DateField(auto_now_add=True)
     address= models.TextField(max_length=250)
@@ -174,14 +174,14 @@ class Publications(models.Model):
     price_first=models.DecimalField(decimal_places=2,max_digits=50,null=False)
     price_second=models.DecimalField(decimal_places=2,max_digits=50,null=True)
     currency=models.ForeignKey(Currencies,null=False)
-    bathrooms=models.IntegerField(null=True)
+    bathrooms=models.FloatField(null=True)
     antiquity=models.TextField(max_length=50,null=True)
     area=models.TextField(max_length=50,null=True)
     construction_area=models.TextField(max_length=50,null=True)
     country=models.IntegerField(null=False)
     state=models.IntegerField(null=False)
     town=models.IntegerField(null=False)
-    neighborhood=models.IntegerField(null=False)
+    neighborhood=models.TextField(max_length=200,null=True,blank=True)
     date= models.DateField(auto_now_add=True)
     status = models.BooleanField(default=True)
     class Meta:
@@ -258,7 +258,7 @@ class Photos(models.Model):
     hash_name=models.TextField(max_length=250,null=False,blank=False)
     original_name=models.TextField(max_length=250,null=False,blank=False)
     path=models.TextField(max_length=250,null=False,blank=False)
-    publication=models.ForeignKey(Publications,null=False)
+    publication=models.ForeignKey(Publications,null=False, related_name="photos")
     status = models.BooleanField(default=True)
 
 class Types_Reports(models.Model):
@@ -277,7 +277,7 @@ class User_Location(models.Model):
     country=models.IntegerField(null=False)
     state=models.IntegerField(null=False)
     town=models.IntegerField(null=False)
-    neighborhood=models.IntegerField(null=False)
+    neighborhood=models.TextField(max_length=200,null=True,blank=True)
     date= models.DateField(auto_now_add=True)
     status = models.BooleanField(default=True)
 
