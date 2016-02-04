@@ -227,12 +227,25 @@ class vwTypesDocumentsViewSet(viewsets.ViewSet):
 '''
 class RegisterViewSet(viewsets.ViewSet):
     permission_classes = (AllowAny,)
+    parser_classes = (MultiPartParser,FormParser,JSONParser,)
     def create(self, request, format=None):
         """
             Register user.
             ---
+            type:
+              photo:
+                required: false
+                type: file
             serializer: RegisterSerializer
             omit_serializer: false
+ 
+            parameters:
+               - name: photo
+                 description: Photo user.
+                 required: false
+                 type: file
+                 paramType: file
+
             responseMessages:
                 - code: 400
                   message: BAD REQUEST
@@ -245,7 +258,27 @@ class RegisterViewSet(viewsets.ViewSet):
             produces:
                 - application/json
         """
-        serializer = RegisterSerializer(data=request.data)
+        photo=""
+        if request.FILES.items() :
+                for key, file in request.FILES.items():
+                    randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
+                    hash_object = hashlib.sha1(randomtext)
+                    code=hash_object.hexdigest()
+                    file_name=hash_object.hexdigest()
+                    fileExtension = os.path.splitext(file.name)[1]
+                    photo=file_name+fileExtension
+                    path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
+                    dest = open(path.encode('utf-8'), 'wb+')
+                    if file.multiple_chunks:
+                        for c in file.chunks():
+                            dest.write(c)
+                    else:
+                        dest.write(file.read())
+                    dest.close()
+        request.POST = request.POST.copy()
+        request.POST['photo'] = photo
+        print request.POST
+        serializer = RegisterSerializer(data=request.POST)
         if serializer.is_valid():
             serializer.save()
             if 'device_os' in request.data:
@@ -525,9 +558,104 @@ class vwProviderClassificationProvidersViewSet(viewsets.ViewSet):
 ---------------- Publications ----------------------
 '''
 class PublicationsViewSet(viewsets.ModelViewSet):
- 
     serializer_class = PublicationsSerializer
     queryset = Publications.objects.all()
+
+class PublicationsAndPhotosViewSet(viewsets.ViewSet):
+    def create(self, request):
+        """
+            Publication.
+            ---
+            type:
+              photos_1:
+                required: false
+                type: file
+              photo_2:
+                required: false
+                type: file
+              photo_3:
+                required: false
+                type: file
+              photo_4:
+                required: false
+                type: file
+              photo_5:
+                required: false
+                type: file
+
+            request_serializer: PublicationsSerializer
+            response_serializer: PublicationsFullSerializer
+            omit_serializer: false
+
+            parameters_strategy: merge
+
+            parameters:
+               - name: photo_1
+                 description: Photo publication.
+                 required: false
+                 type: file
+                 paramType: file
+               - name: photo_2
+                 description: Photo publication.
+                 required: false
+                 type: file
+                 paramType: file
+               - name: photo_3
+                 description: Photo publication.
+                 required: false
+                 type: file
+                 paramType: file
+               - name: photo_4
+                 description: Photo publication.
+                 required: false
+                 type: file
+                 paramType: file
+               - name: photo_5
+                 description: Photo publication.
+                 required: false
+                 type: file
+                 paramType: file
+
+            responseMessages:
+                - code: 400
+                  message: BAD REQUEST
+                - code: 200
+                  message: OK
+                - code: 500
+                  message: INTERNAL SERVER ERROR
+            consumes:
+                - application/json
+            produces:
+                - application/json
+        """
+
+        serializer = PublicationsSerializer(data=request.POST)
+        if serializer.is_valid():
+            publication=serializer.save()
+            if request.FILES.items() :
+                for key, file in request.FILES.items():
+                    randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
+                    hash_object = hashlib.sha1(randomtext)
+                    code=hash_object.hexdigest()
+                    file_name=hash_object.hexdigest()
+                    fileExtension = os.path.splitext(file.name)[1]
+                    photo=file_name+fileExtension
+                    Photos(
+                        hash_name=file_name+fileExtension,
+                        original_name=file.name+fileExtension,
+                        path=settings.MEDIA_ROOT,
+                        publication=publication
+                        ).save()
+                    path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
+                    dest = open(path.encode('utf-8'), 'wb+')
+                    if file.multiple_chunks:
+                        for c in file.chunks():
+                            dest.write(c)
+                    else:
+                        dest.write(file.read())
+                    dest.close()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PublicationsDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (AllowAny,)
@@ -549,7 +677,6 @@ class PublicationsDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
         'type_property',
         'title',
         'price_first',
-        'price_second',
         'currency',
         'bathrooms',
         'antiquity',
