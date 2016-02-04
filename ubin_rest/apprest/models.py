@@ -172,7 +172,6 @@ class Publications(models.Model):
     title=models.TextField(max_length=100,null=False)
     description=models.TextField(max_length=500,null=False)
     price_first=models.DecimalField(decimal_places=2,max_digits=50,null=False)
-    price_second=models.DecimalField(decimal_places=2,max_digits=50,null=True)
     currency=models.ForeignKey(Currencies,null=False)
     bathrooms=models.FloatField(null=True)
     antiquity=models.TextField(max_length=50,null=True)

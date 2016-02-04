@@ -164,6 +164,7 @@ Publications
 '''
 #CRUD
 router.register(r'publication',PublicationsViewSet)
+router.register(r'publicationAndPhotos',PublicationsAndPhotosViewSet,base_name="publicationAndPhotos")
 #Filter
 router.register(r'publicationsFilter', PublicationsDefaultFilterViewSet)
 #VIEW : publications/pk/comments/pk
