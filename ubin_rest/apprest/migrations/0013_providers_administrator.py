@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='providers',
             name='administrator',
-            field=models.ForeignKey(related_name='providers', default=1, to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(related_name='providers', default=13, to=settings.AUTH_USER_MODEL),
             preserve_default=False,
         ),
     ]
