@@ -236,11 +236,12 @@ class ProvidersSerializer(serializers.ModelSerializer):
             'state',
             'neighborhood',
             'town',
-        	'status'
+        	'status',
+            'is_favorite',
+            'administrator'
         	)
 
 class ProvidersFullSerializer(serializers.ModelSerializer):
-    isFavorite=serializers.SerializerMethodField()
     hasVote=serializers.SerializerMethodField()
     totalScore=serializers.SerializerMethodField()
     average=serializers.SerializerMethodField()
@@ -260,16 +261,13 @@ class ProvidersFullSerializer(serializers.ModelSerializer):
             'neighborhood',
             'town',
             'status',
-            'isFavorite',
+            'is_favorite',
+            'administrator',
             'hasVote',
             'totalScore',
             'average'
             )
-    def get_isFavorite(self,obj):
-        if obj.favorite.all():
-            return True
-        else:
-            return False
+
     def get_hasVote(self,obj):
         if obj.score.all():
             return True
@@ -499,6 +497,7 @@ class EventsSerializer(serializers.ModelSerializer):
         fields = (
         	'id',
         	'name',
+            'address',
         	'description', 
         	'type_event',
             'date_event',
@@ -506,6 +505,23 @@ class EventsSerializer(serializers.ModelSerializer):
             'administrator',
             'status'
         	)
+
+class EventsFullSerializer(serializers.ModelSerializer):
+    administrator=UsersDetailSerializer()
+    type_event=TypesEventsSerializer()
+    class Meta:
+        model = Events
+        fields = (
+            'id',
+            'name',
+            'address',
+            'description', 
+            'type_event',
+            'date_event',
+            'hour',
+            'administrator',
+            'status'
+            )
 
 class FavoritesSerializer(serializers.ModelSerializer):
     class Meta:

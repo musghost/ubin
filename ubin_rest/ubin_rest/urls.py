@@ -206,6 +206,7 @@ router.register(r'documentsFilter',DocumentsFilterViewSet)
 Events
 '''
 router.register(r'event',EventsViewSet)
+router.register(r'eventsFilter',EventsFilterViewSet)
 
 '''
 Favorites

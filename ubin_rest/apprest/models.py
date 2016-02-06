@@ -156,6 +156,7 @@ class Providers(models.Model):
     email = models.EmailField(max_length=50,null=False,blank=False)
     web_page = models.URLField(max_length=200)
     is_favorite = models.BooleanField(default=False)
+    administrator= models.ForeignKey(Users,null=False,related_name="providers")
     status = models.BooleanField(default=True)
 
 
@@ -220,11 +221,12 @@ class Documents(models.Model):
 
 class Events(models.Model):
     name= models.TextField(max_length=200,null=False,blank=False)
+    address= models.TextField(max_length=300,null=False,blank=False)
     description= models.TextField(max_length=1000,null=False,blank=False)
     price= models.TextField(max_length=100,null=False,blank=False)
     type_event=models.ForeignKey(Types_Events,null=False)
-    date_event=models.DateField(auto_now_add=True)
-    hour=models.TextField(max_length=100,null=False,blank=False)
+    date_event=models.DateField(auto_now_add=False,null=False)
+    hour=models.TimeField(null=False)
     administrator=models.ForeignKey(Users,null=False)
     status = models.BooleanField(default=True)
 
