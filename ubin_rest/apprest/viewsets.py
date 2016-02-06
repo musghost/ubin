@@ -48,7 +48,6 @@ from rest_framework.renderers import JSONRenderer
 -----------  Currencies --------------------------
 '''
 class CurrenciesViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsAdminUser,)
     serializer_class = CurrenciesSerializer
     queryset = Currencies.objects.all()
 
@@ -71,7 +70,6 @@ class vwCurrenciesViewSet(viewsets.ViewSet):
 '''
 
 class TypesPropertyViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsAdminUser,)
     serializer_class = TypesPropertySerializer
     queryset = Types_Property.objects.all()
 
@@ -94,7 +92,6 @@ class vwTypesPropertyViewSet(viewsets.ViewSet):
 '''
 
 class TypesPublicationsViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsAdminUser,)
     serializer_class = TypesPublicationsSerializer
     queryset = Types_Publications.objects.all()
 
@@ -115,7 +112,6 @@ class vwTypesPublicationsViewSet(viewsets.ViewSet):
 ----------- Types Advisor --------------------------
 '''
 class TypesAdvisorsViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsAdminUser,)
     serializer_class = TypesAdvisorsSerializer
     queryset = Types_Advisors.objects.all()
 
@@ -138,7 +134,6 @@ class vwTypesAdvisorsViewSet(viewsets.ViewSet):
 ----------- Types providers --------------------------
 '''
 class TypesProvidersViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsAdminUser,)
     serializer_class = TypesProvidersSerializer
     queryset = Types_Providers.objects.all()
 
@@ -160,7 +155,6 @@ class vwTypesProvidersViewSet(viewsets.ViewSet):
 ------------- Types Contacts ----------------------
 '''
 class TypesContactsViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsAdminUser,)
     serializer_class = TypesContactsSerializer
     queryset = Types_Contacts.objects.all()
 
@@ -182,7 +176,6 @@ class vwTypesContactsViewSet(viewsets.ViewSet):
 ------------- Types Events ----------------------
 '''
 class TypesEventsViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsAdminUser,)
     serializer_class = TypesEventsSerializer
     queryset = Types_Events.objects.all()
 
@@ -205,7 +198,6 @@ class vwTypesEventsViewSet(viewsets.ViewSet):
 ------------------ Types Documents -----------------
 '''
 class TypesDocumentsViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsAdminUser,)
     serializer_class = TypesDocumentsSerializer
     queryset = Types_Documents.objects.all()
 
@@ -707,7 +699,6 @@ class PublicationsDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (AllowAny,)
     serializer_class = PublicationsFullSerializer
     queryset = Publications.objects.all()
-    permission_classes = (AllowAny,)
     filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,filters.SearchFilter,)
     search_fields = (
         'description',
@@ -928,7 +919,6 @@ class vwContactsViewSet(viewsets.ViewSet):
 --------------- Documents ---------------------
 '''
 class DocumentsViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsAdminUser,)
     serializer_class = DocumentsSerializer
     queryset = Documents.objects.all()
 
@@ -1055,7 +1045,6 @@ class vwFavoritesPublicationsViewSet(viewsets.ViewSet):
 ------------------ Notifications ----------------------
 '''
 class NotificationsViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsAdminUser,)
     serializer_class = NotificationsSerializer
     queryset = Notifications.objects.all()
 
@@ -1225,7 +1214,6 @@ class vwPhotosPublicationsViewSet(viewsets.ViewSet):
 ----------------- Types Reports --------------------
 '''
 class TypesReportsViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsAdminUser,)
     serializer_class = TypesReportsSerializer
     queryset = Types_Reports.objects.all()
 
@@ -1315,7 +1303,6 @@ class vwUserLocationViewSet(viewsets.ViewSet):
 ----------------- Type Customers --------------------
 '''
 class TypeCustomersViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsAdminUser,)
     serializer_class = TypeCustomersSerializer
     queryset = Types_Customers.objects.all()
 
