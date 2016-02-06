@@ -76,6 +76,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             'allow_diary',
             'allow_mortgage_broker',
             'is_staff',
+            'is_superuser',
             'register_date',
             'is_active',
             'token'
@@ -158,6 +159,60 @@ class UsersFullSerializer(serializers.ModelSerializer):
             'is_superuser',
             'is_staff',
             'register_date',
+            'number_of_publications',
+            'is_active'
+            )
+    def get_number_of_publications(self,obj):
+        number_of_publications=Publications.objects.filter(id=obj.id,status=True).count()
+        return number_of_publications
+
+class UsersDetailSerializer(serializers.ModelSerializer):
+    type_advisor=TypesAdvisorsSerializer()
+    number_of_publications=serializers.SerializerMethodField()
+    class Meta:
+        model = Users
+        fields = (
+            'id',
+            'email',
+            'password',
+            'name',
+            'last_name',
+            'mothers_maiden_name',
+            'birthday',
+            'gender',
+            'phone',
+            'type_advisor',
+            'property_company_name',
+            'property_company_phone',
+            'photo',
+            'register_date',
+            'number_of_publications',
+            'is_active'
+            )
+    def get_number_of_publications(self,obj):
+        number_of_publications=Publications.objects.filter(id=obj.id,status=True).count()
+        return number_of_publications
+
+class UsersDetailSerializer(serializers.ModelSerializer):
+    type_advisor=TypesAdvisorsSerializer()
+    number_of_publications=serializers.SerializerMethodField()
+    class Meta:
+        model = Users
+        fields = (
+            'id',
+            'email',
+            'name',
+            'last_name',
+            'mothers_maiden_name',
+            'birthday',
+            'gender',
+            'phone',
+            'type_advisor',
+            'property_company_name',
+            'property_company_phone',
+            'photo',
+            'is_superuser',
+            'is_staff',
             'number_of_publications',
             'is_active'
             )
@@ -254,7 +309,7 @@ class ClassificationProvidersSerializer(serializers.ModelSerializer):
 
 class ClassificationProvidersFullSerializer(serializers.ModelSerializer):
     provider=ProvidersFullSerializer()
-    user=UsersFullSerializer()
+    user=UsersDetailSerializer()
     class Meta:
         model = Classification_Providers
         fields = ('id','score','user','provider','status')
@@ -302,7 +357,7 @@ class PublicationsFullSerializer(serializers.ModelSerializer):
     type_publications=TypesPublicationsSerializer()
     type_property=TypesPropertySerializer()
     currency=CurrenciesSerializer()
-    user=UsersFullSerializer()
+    user=UsersDetailSerializer()
     photos=PhotosSerializer(many=True,read_only=True)
     class Meta:
         model = Publications
@@ -355,7 +410,7 @@ class CommentsSerializer(serializers.ModelSerializer):
         	)
 
 class CommentsFullerializer(serializers.ModelSerializer):
-    user=UsersFullSerializer()
+    user=UsersDetailSerializer()
     publication=PublicationsSerializer()
     class Meta:
         model = Comments
@@ -388,7 +443,7 @@ class ContactsSerializer(serializers.ModelSerializer):
 
 class ContactsFullSerializer(serializers.ModelSerializer):
     type_contact=TypesContactsSerializer()
-    user=UsersFullSerializer()
+    user=UsersDetailSerializer()
     class Meta:
         model = Contacts
         fields = (
@@ -415,8 +470,28 @@ class DocumentsSerializer(serializers.ModelSerializer):
         	'administrator', 
         	'type_document',
         	'path',
+            'country',
+            'state',
+            'town',
             'status'
         	)
+
+class DocumentsSerializer(serializers.ModelSerializer):
+    administrator=UsersDetailSerializer()
+    class Meta:
+        model = Documents
+        fields = (
+            'id',
+            'original_name',
+            'hash_name',
+            'administrator', 
+            'type_document',
+            'path',
+            'country',
+            'state',
+            'town',
+            'status'
+            )
 
 class EventsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -472,7 +547,7 @@ class FavoritesProvidersSerializer(serializers.ModelSerializer):
         fields = ('id','user','provider','status')
 
 class FavoritesProvidersFullSerializer(serializers.ModelSerializer):
-    user=UsersFullSerializer()
+    user=UsersDetailSerializer()
     provider=ProvidersFullSerializer()
     class Meta:
         model = Favorites_Providers
@@ -577,7 +652,7 @@ class DevicesUserRegisterSerializer(serializers.ModelSerializer):
             )
 
 class DevicesUserRegisterFullSerializer(serializers.ModelSerializer):
-    device_user=UsersFullSerializer()
+    device_user=UsersDetailSerializer()
     class Meta:
         model = Devices_User_Register
         fields = (

@@ -211,6 +211,9 @@ class Documents(models.Model):
     hash_name=models.TextField(max_length=250,null=False,blank=False)
     administrator=models.ForeignKey(Users,null=False)
     type_document= models.ForeignKey(Types_Documents,null=False)
+    country=models.IntegerField(null=False)
+    state=models.IntegerField(null=False)
+    town=models.IntegerField(null=False)
     path=models.TextField(max_length=100,null=False)
     status = models.BooleanField(default=True)
 

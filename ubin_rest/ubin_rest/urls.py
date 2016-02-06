@@ -102,6 +102,8 @@ users
 #CRUD
 router.register(r'user',UsersViewSet)
 router.register(r'users',vwUsersViewSet,base_name='users')
+# Filter 
+router.register(r'usersFilter',UsersFilterViewSet)
 #VIEW : /users/pk/clasificationProviders/pk
 vw_classifications_providers=routers.NestedSimpleRouter(router,r'users',lookup='user')
 vw_classifications_providers.register(r'clasificationProviders',vwClassificationProvidersViewSet,base_name='clasificationProviders')
@@ -206,6 +208,8 @@ vw_contacts_task.register(r'task',vwTaskViewSet,base_name='task')
 Documents
 '''
 router.register(r'document',DocumentsViewSet)
+# Filter
+router.register(r'documentsFilter',DocumentsFilterViewSet)
 
 '''
 Events
