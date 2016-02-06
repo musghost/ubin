@@ -229,6 +229,12 @@ class RegisterViewSet(viewsets.ViewSet):
               photo:
                 required: false
                 type: file
+              device_os:
+                required: true
+                type: string
+              device_token:
+                required: true
+                type: string
             serializer: RegisterSerializer
             omit_serializer: false
  
@@ -238,6 +244,15 @@ class RegisterViewSet(viewsets.ViewSet):
                  required: false
                  type: file
                  paramType: file
+               - name: device_os
+                 description: device_os.
+                 required: true
+                 paramType: form
+               - name: device_token
+                 description: device_token.
+                 required: false
+                 paramType: form
+
 
             responseMessages:
                 - code: 400
