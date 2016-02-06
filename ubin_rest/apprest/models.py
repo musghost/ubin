@@ -155,6 +155,7 @@ class Providers(models.Model):
     phone = models.TextField(max_length=20,null=False,blank=False)
     email = models.EmailField(max_length=50,null=False,blank=False)
     web_page = models.URLField(max_length=200)
+    is_favorite = models.BooleanField(default=False)
     status = models.BooleanField(default=True)
 
 
@@ -251,10 +252,6 @@ class Push_Notifications(models.Model):
     status = models.BooleanField(default=True)
     date= models.DateField(auto_now_add=True)
 
-class Favorites_Providers(models.Model):
-    user=models.ForeignKey(Users,null=False)
-    provider=models.ForeignKey(Providers,null=False, related_name='favorite')
-    status = models.BooleanField(default=True)
 
 class Photos(models.Model):
     hash_name=models.TextField(max_length=250,null=False,blank=False)
@@ -294,18 +291,17 @@ class Customers(models.Model):
     phone= models.TextField(max_length=0,blank=False,null=False)
     email= models.EmailField(max_length=100,blank=False,null=False)
     type_customer=models.ForeignKey(Types_Customers,null=False)
+    user= models.ForeignKey(Users,null=False,related_name="customers")
+    note = models.TextField(max_length=200,null=True,blank=True)
+    is_favorite = models.BooleanField(default=False)
     status = models.BooleanField(default=True)
 
-class Favorites_Customers(models.Model):
-    customer=models.ForeignKey(Customers,null=False)
-    user= models.ForeignKey(Users,null=False)
-    status = models.BooleanField(default=True)
 
 class Tasks(models.Model):
     description= models.TextField(max_length=300,null=False,blank=False)
     date= models.DateField(auto_now_add=True)
     hour= models.TimeField(auto_now=False, auto_now_add=False)
-    contact=models.ForeignKey(Contacts)
+    customer=models.ForeignKey(Customers)
     user= models.ForeignKey(Users,null=False)
     status = models.BooleanField(default=True)
 
@@ -319,13 +315,3 @@ class Devices_User_Register(models.Model):
     class Meta:
         unique_together = ("device_user", "device_token")
 
-
-    
-
-
-
-            
-            
-            
-            
-            

@@ -125,18 +125,12 @@ vw_notifications_users.register(r'notifications',vwNotificationsViewSet,base_nam
 #VIEW : /users/pk/pushNotifications/pk
 vw_push_notifications_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
 vw_push_notifications_users.register(r'pushNotifications',vwPushNotificationsViewSet,base_name='pushNotifications')
-#VIEW : /users/pk/favoritesProviders/pk
-vw_favorites_providers_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
-vw_favorites_providers_users.register(r'favoritesProviders',vwFavoritesProvidersViewSet,base_name='favoritesProviders')
 #VIEW : /users/pk/reports/pk
 vw_reports_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
 vw_reports_users.register(r'reports',vwReportsViewSet,base_name='reports')
 #VIEW : /users/pk/userLocation/pk
 vw_user_location_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
 vw_user_location_users.register(r'userLocation',vwUserLocationViewSet,base_name='userLocation')
-#VIEW : /users/pk/favoritesCustomers/pk
-vw_favorites_customers_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
-vw_favorites_customers_users.register(r'favoritesCustomers',vwFavoritesCustomersViewSet,base_name='favoritesCustomers')
 #VIEW : /users/pk/tasks/pk
 vw_tasks_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
 vw_tasks_users.register(r'tasks',vwTasksViewSet,base_name='tasks')
@@ -152,9 +146,6 @@ router.register(r'providersFilter',ProvidersDefaultFilterViewSet)
 router.register(r'providers',vwProvidersViewSet,base_name='providers')
 vw_classification_providers=routers.NestedSimpleRouter(router,r'providers',lookup='provider')
 vw_classification_providers.register(r'clasificationProviders',vwProviderClassificationProvidersViewSet,base_name='clasificationProviders')
-#VIEW : /providers/pk/favoritesProviders/pk
-vw_favorite_provider=routers.NestedSimpleRouter(router,r'providers',lookup='provider')
-vw_favorite_provider.register(r'favoriteProvider',vwProviderFavoritesProvidersViewSet,base_name='favoriteProvider')
 
 '''
 Classification Providers 
@@ -231,10 +222,6 @@ Push Notifications
 '''
 router.register(r'pushNotification',PushNotificationsViewSet)
 
-'''
-Favorites providers
-'''
-router.register(r'favoriteProvider',FavoritesProvidersViewSet)
 
 '''
 Photos
@@ -279,11 +266,9 @@ router.register(r'userLocation',UserLocationViewSet)
 Customers
 '''
 router.register(r'customer',CustomersViewSet)
+router.register(r'customersFilter',CustomersFilterViewSet)
 
-'''
-Favorites Customers
-'''
-router.register(r'favoriteCustomer',FavoritesCustomersViewSet)
+
 
 '''
 Tasks
@@ -353,13 +338,10 @@ urlpatterns = [
     url(r'^api/v1/',include(vw_documents_users.urls)),
     url(r'^api/v1/',include(vw_notifications_users.urls)),    
     url(r'^api/v1/',include(vw_push_notifications_users.urls)),
-    url(r'^api/v1/',include(vw_favorites_providers_users.urls)),
     url(r'^api/v1/',include(vw_reports_users.urls)),
     url(r'^api/v1/',include(vw_user_location_users.urls)),
-    url(r'^api/v1/',include(vw_favorites_customers_users.urls)),
     url(r'^api/v1/',include(vw_tasks_users.urls)),
     url(r'^api/v1/',include(vw_classification_providers.urls)),
-    url(r'^api/v1/',include(vw_favorite_provider.urls)),
     url(r'^api/v1/',include(vw_comments_publications.urls)),
     url(r'^api/v1/',include(vw_favorites_publications.urls)),
     url(r'^api/v1/',include(vw_notifications_publications.urls)),

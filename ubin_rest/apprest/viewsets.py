@@ -1137,48 +1137,6 @@ class vwPushNotificationsPubViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 '''
---------------- Favorites Providers ---------------------
-'''
-class FavoritesProvidersViewSet(viewsets.ModelViewSet):
- 
-    serializer_class = FavoritesProvidersSerializer
-    queryset = Favorites_Providers.objects.all()
-
-class vwFavoritesProvidersViewSet(viewsets.ViewSet):
-    def list(self, request,user_pk=None):
-        queryset = Favorites_Providers.objects.filter(
-            user__pk=user_pk,status=True
-        )
-
-        serializer = FavoritesProvidersFullSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request,user_pk=None, pk=None):
-        queryset =Favorites_Providers.objects.filter(
-            user__pk=user_pk,status=True
-        )
-        favorite_provider = get_object_or_404(queryset, pk=pk)
-        serializer = FavoritesProvidersFullSerializer(favorite_provider)
-        return Response(serializer.data)
-
-class vwProviderFavoritesProvidersViewSet(viewsets.ViewSet):
-    def list(self, request,provider_pk=None):
-        queryset = Favorites_Providers.objects.filter(
-            provider__pk=provider_pk,status=True
-        )
-
-        serializer = FavoritesProvidersFullSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request,provider_pk=None, pk=None):
-        queryset =Favorites_Providers.objects.filter(
-            provider__pk=provider_pk,status=True
-        )
-        favorite_provider = get_object_or_404(queryset, pk=pk)
-        serializer = FavoritesProvidersFullSerializer(favorite_provider)
-        return Response(serializer.data)
-
-'''
 ------------------- Photos ----------------------------
 '''
 class PhotosViewSet(viewsets.ModelViewSet):
@@ -1339,6 +1297,31 @@ class CustomersViewSet(viewsets.ModelViewSet):
     serializer_class = CustomersSerializer
     queryset = Customers.objects.all() 
 
+class CustomersFilterViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = CustomersFullSerializer
+    queryset = Customers.objects.all() 
+    filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,filters.SearchFilter,)
+    search_fields = (
+        'name', 
+        'last_name',
+        'mothers_maiden_name',
+        )
+    ordering_fields ='__all__'
+    filter_fields = (
+            'id',
+            'name',
+            'last_name',
+            'mothers_maiden_name',
+            'phone',
+            'email',
+            'user__id',
+            'note',
+            'type_customer',
+            'is_favorite',
+            'status'
+        )
+
+
 class vwCustomerViewSet(viewsets.ViewSet):
     def list(self, request,contact_pk=None):
         queryset = Customers.objects.filter(
@@ -1364,32 +1347,7 @@ class vwCustomersForTypeViewSet(viewsets.ViewSet):
         customer = get_object_or_404(queryset, pk=pk)
         serializer = CustomersSerializer(customer)
         return Response(serializer.data)    
-
-
-'''
---------------- Favorites Customers -----------------------
-'''
-class FavoritesCustomersViewSet(viewsets.ModelViewSet):
- 
-    serializer_class = FavoritesCustomersSerializer
-    queryset = Favorites_Customers.objects.all() 
-
-class vwFavoritesCustomersViewSet(viewsets.ViewSet):
-    def list(self, request,user_pk=None):
-        queryset = Favorites_Customers.objects.filter(
-            user__pk=user_pk,status=True
-        )
-
-        serializer = FavoritesCustomersSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request,user_pk=None, pk=None):
-        queryset =Favorites_Customers.objects.filter(
-            user__pk=user_pk,status=True
-        )
-        fav_custumer = get_object_or_404(queryset, pk=pk)
-        serializer = FavoritesCustomersSerializer(fav_custumer)
-        return Response(serializer.data)    
+   
 
 '''
 --------------  Tasks ----------------------

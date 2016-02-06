@@ -541,18 +541,6 @@ class PushNotificationsSerializer(serializers.ModelSerializer):
         	'date'
         	)
 
-class FavoritesProvidersSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Favorites_Providers
-        fields = ('id','user','provider','status')
-
-class FavoritesProvidersFullSerializer(serializers.ModelSerializer):
-    user=UsersDetailSerializer()
-    provider=ProvidersFullSerializer()
-    class Meta:
-        model = Favorites_Providers
-        fields = ('id','user','provider','status')
-
 class PhotosFullSerializer(serializers.ModelSerializer):
     publication=PublicationsFullSerializer()
     class Meta:
@@ -616,14 +604,32 @@ class CustomersSerializer(serializers.ModelSerializer):
             'mothers_maiden_name',
             'phone',
             'email',
+            'user',
+            'note',
             'type_customer',
+            'is_favorite',
             'status'
             )
 
-class FavoritesCustomersSerializer(serializers.ModelSerializer):
+class CustomersFullSerializer(serializers.ModelSerializer):
+    type_customer=TypeCustomersSerializer()
+    user=UsersDetailSerializer()
     class Meta:
-        model = Favorites_Customers
-        fields = ('id','customer','user','status')
+        model = Customers
+        fields = (
+            'id',
+            'name',
+            'last_name',
+            'mothers_maiden_name',
+            'phone',
+            'email',
+            'user',
+            'note',
+            'type_customer',
+            'is_favorite',
+            'status'
+            )
+
 
 
 class TasksSerializer(serializers.ModelSerializer):
@@ -634,7 +640,22 @@ class TasksSerializer(serializers.ModelSerializer):
             'description',
             'date',
             'hour',
-            'contact',
+            'customer',
+            'user',
+            'status'
+            )
+
+class TasksFullSerializer(serializers.ModelSerializer):
+    customer=CustomersFullSerializer()
+    user=UsersDetailSerializer()
+    class Meta:
+        model = Tasks
+        fields = (
+            'id',
+            'description',
+            'date',
+            'hour',
+            'customer',
             'user',
             'status'
             )
