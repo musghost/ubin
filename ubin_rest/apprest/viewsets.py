@@ -1013,7 +1013,7 @@ class EventsFilterViewSet(viewsets.ModelViewSet):
             'type_event',
             'date_event',
             'hour',
-            'administrator',
+            'administrator__id',
             'status'
         )
 
