@@ -7,13 +7,16 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('apprest', '0014_auto_20160206_1937'),
+        ('apprest', '0025_auto_20160206_2120'),
     ]
 
     operations = [
-        migrations.AlterField(
+        migrations.RemoveField(
+            model_name='events',
+            name='address',
+        ),
+        migrations.RemoveField(
             model_name='events',
             name='hour',
-            field=models.TimeField(),
         ),
     ]
