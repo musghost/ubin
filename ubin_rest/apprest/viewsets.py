@@ -39,7 +39,7 @@ from rest_framework_jwt.settings import api_settings
 from calendar import timegm
 from datetime import datetime
 
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated,IsAdminUser
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.renderers import JSONRenderer
 
@@ -48,7 +48,7 @@ from rest_framework.renderers import JSONRenderer
 -----------  Currencies --------------------------
 '''
 class CurrenciesViewSet(viewsets.ModelViewSet):
- 
+    permission_classes = (IsAdminUser,)
     serializer_class = CurrenciesSerializer
     queryset = Currencies.objects.all()
 
@@ -71,7 +71,7 @@ class vwCurrenciesViewSet(viewsets.ViewSet):
 '''
 
 class TypesPropertyViewSet(viewsets.ModelViewSet):
- 
+    permission_classes = (IsAdminUser,)
     serializer_class = TypesPropertySerializer
     queryset = Types_Property.objects.all()
 
@@ -94,7 +94,7 @@ class vwTypesPropertyViewSet(viewsets.ViewSet):
 '''
 
 class TypesPublicationsViewSet(viewsets.ModelViewSet):
- 
+    permission_classes = (IsAdminUser,)
     serializer_class = TypesPublicationsSerializer
     queryset = Types_Publications.objects.all()
 
@@ -115,6 +115,7 @@ class vwTypesPublicationsViewSet(viewsets.ViewSet):
 ----------- Types Advisor --------------------------
 '''
 class TypesAdvisorsViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAdminUser,)
     serializer_class = TypesAdvisorsSerializer
     queryset = Types_Advisors.objects.all()
 
@@ -137,7 +138,7 @@ class vwTypesAdvisorsViewSet(viewsets.ViewSet):
 ----------- Types providers --------------------------
 '''
 class TypesProvidersViewSet(viewsets.ModelViewSet):
- 
+    permission_classes = (IsAdminUser,)
     serializer_class = TypesProvidersSerializer
     queryset = Types_Providers.objects.all()
 
@@ -159,7 +160,7 @@ class vwTypesProvidersViewSet(viewsets.ViewSet):
 ------------- Types Contacts ----------------------
 '''
 class TypesContactsViewSet(viewsets.ModelViewSet):
- 
+    permission_classes = (IsAdminUser,)
     serializer_class = TypesContactsSerializer
     queryset = Types_Contacts.objects.all()
 
@@ -181,7 +182,7 @@ class vwTypesContactsViewSet(viewsets.ViewSet):
 ------------- Types Events ----------------------
 '''
 class TypesEventsViewSet(viewsets.ModelViewSet):
- 
+    permission_classes = (IsAdminUser,)
     serializer_class = TypesEventsSerializer
     queryset = Types_Events.objects.all()
 
@@ -204,7 +205,7 @@ class vwTypesEventsViewSet(viewsets.ViewSet):
 ------------------ Types Documents -----------------
 '''
 class TypesDocumentsViewSet(viewsets.ModelViewSet):
- 
+    permission_classes = (IsAdminUser,)
     serializer_class = TypesDocumentsSerializer
     queryset = Types_Documents.objects.all()
 
@@ -411,16 +412,61 @@ class UsersViewSet(viewsets.ModelViewSet):
     serializer_class = UsersSerializer
     queryset = Users.objects.all()
 
+class UsersFilterViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = UsersFullSerializer
+    queryset = Users.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,filters.SearchFilter,)
+    search_fields = (
+            'email',
+            'name',
+            'last_name',
+            'mothers_maiden_name',
+            'birthday',
+            'gender',
+            'phone',
+            'property_company_name',
+            'property_company_phone',
+            'photo'
+        )
+    ordering_fields ='__all__'
+    filter_fields = (
+            'id',
+            'email',
+            'name',
+            'last_name',
+            'mothers_maiden_name',
+            'birthday',
+            'gender',
+            'phone',
+            'type_advisor',
+            'property_company_name',
+            'property_company_phone',
+            'photo',
+            'allow_providers',
+            'allow_notary',
+            'allow_appraisers',
+            'allow_past_due_portfolio',
+            'allow_events',
+            'allow_documents',
+            'allow_diary',
+            'allow_mortgage_broker',
+            'is_superuser',
+            'is_staff',
+            'register_date',
+            'is_active'
+        )
+
+
 class vwUsersViewSet(viewsets.ViewSet):
     def list(self, request):
         queryset = Users.objects.filter(is_active=True)
-        serializer = UsersFullSerializer(queryset, many=True)
+        serializer = UsersDetailSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
         queryset = Users.objects.filter(is_active=True)
         user = get_object_or_404(queryset, pk=pk)
-        serializer = UsersFullSerializer(user)
+        serializer = UsersDetailSerializer(user)
         return Response(serializer.data)
 
 class AdvisorUsersViewSet(viewsets.ViewSet):
@@ -429,7 +475,7 @@ class AdvisorUsersViewSet(viewsets.ViewSet):
             type_advisor__pk=typeAdvisor_pk, status=True
         )
 
-        serializer = UsersFullSerializer(queryset, many=True)
+        serializer = UsersDetailSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,typeAdvisor_pk=None,pk=None):
@@ -437,7 +483,7 @@ class AdvisorUsersViewSet(viewsets.ViewSet):
             type_advisor__pk=typeAdvisor_pk, status=True
         )
         user = get_object_or_404(queryset, pk=pk)
-        serializer = UsersFullSerializer(user)
+        serializer = UsersDetailSerializer(user)
         return Response(serializer.data)
 
 
@@ -882,9 +928,33 @@ class vwContactsViewSet(viewsets.ViewSet):
 --------------- Documents ---------------------
 '''
 class DocumentsViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAdminUser,)
+    serializer_class = DocumentsSerializer
+    queryset = Documents.objects.all()
+
+class DocumentsFilterViewSet(viewsets.ReadOnlyModelViewSet):
  
     serializer_class = DocumentsSerializer
     queryset = Documents.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,filters.SearchFilter,)
+    search_fields = (
+        'hash_name', 
+        'original_name',
+        'path',
+        )
+    ordering_fields ='__all__'
+    filter_fields = (
+            'id',
+            'original_name',
+            'hash_name',
+            'administrator', 
+            'type_document',
+            'path',
+            'country',
+            'state',
+            'town',
+            'status'
+        )
 
 class DocumentsTypeViewSet(viewsets.ViewSet):
     def list(self, request,typeDocument_pk=None):
@@ -985,7 +1055,7 @@ class vwFavoritesPublicationsViewSet(viewsets.ViewSet):
 ------------------ Notifications ----------------------
 '''
 class NotificationsViewSet(viewsets.ModelViewSet):
- 
+    permission_classes = (IsAdminUser,)
     serializer_class = NotificationsSerializer
     queryset = Notifications.objects.all()
 
@@ -1155,7 +1225,7 @@ class vwPhotosPublicationsViewSet(viewsets.ViewSet):
 ----------------- Types Reports --------------------
 '''
 class TypesReportsViewSet(viewsets.ModelViewSet):
- 
+    permission_classes = (IsAdminUser,)
     serializer_class = TypesReportsSerializer
     queryset = Types_Reports.objects.all()
 
@@ -1245,7 +1315,7 @@ class vwUserLocationViewSet(viewsets.ViewSet):
 ----------------- Type Customers --------------------
 '''
 class TypeCustomersViewSet(viewsets.ModelViewSet):
- 
+    permission_classes = (IsAdminUser,)
     serializer_class = TypeCustomersSerializer
     queryset = Types_Customers.objects.all()
 
@@ -1509,7 +1579,7 @@ class RecoverPasswordViewSet(viewsets.ViewSet):
         email=request.data['email']
         queryset = Users.objects.filter(email=email,is_active=True)
         user = get_object_or_404(queryset)
-        serializer = UsersFullSerializer(user)
+        serializer = UsersDetailSerializer(user)
         try:
             password=serializer.data['password']
             name=serializer.data['name']
