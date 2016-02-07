@@ -732,7 +732,7 @@ class ProvidersDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
     filter_fields = (
         'id',
         'name',
-        'type_provider',
+        'type_provider__id',
         'state',
         'town',
         'neighborhood',
