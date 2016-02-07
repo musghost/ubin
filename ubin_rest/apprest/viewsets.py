@@ -510,21 +510,21 @@ class UsersViewSet(viewsets.ViewSet):
             file_path = settings.MEDIA_ROOT + str(photo)
             if os.path.isfile(file_path):
                 os.remove(file_path)
-                for key, file in request.FILES.items():
-                    randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
-                    hash_object = hashlib.sha1(randomtext)
-                    file_name=hash_object.hexdigest()
-                    fileExtension = os.path.splitext(file.name)[1]
-                    path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
-                    dest = open(path.encode('utf-8'), 'wb+')
-                    hash_name=file_name+fileExtension
-                    photo=hash_name
-                    if file.multiple_chunks:
-                        for c in file.chunks():
-                                dest.write(c)
-                    else:
-                        dest.write(file.read())
-                        dest.close()
+            for key, file in request.FILES.items():
+                randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
+                hash_object = hashlib.sha1(randomtext)
+                file_name=hash_object.hexdigest()
+                fileExtension = os.path.splitext(file.name)[1]
+                path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
+                dest = open(path.encode('utf-8'), 'wb+')
+                hash_name=file_name+fileExtension
+                photo=hash_name
+                if file.multiple_chunks:
+                    for c in file.chunks():
+                        dest.write(c)
+                else:
+                    dest.write(file.read())
+                    dest.close()
         request.data['photo']=photo
         serializer=UsersSerializer(user,data=request.data)
         if serializer.is_valid():
@@ -575,21 +575,21 @@ class UsersViewSet(viewsets.ViewSet):
             file_path = settings.MEDIA_ROOT + str(photo)
             if os.path.isfile(file_path):
                 os.remove(file_path)
-                for key, file in request.FILES.items():
-                    randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
-                    hash_object = hashlib.sha1(randomtext)
-                    file_name=hash_object.hexdigest()
-                    fileExtension = os.path.splitext(file.name)[1]
-                    path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
-                    dest = open(path.encode('utf-8'), 'wb+')
-                    hash_name=file_name+fileExtension
-                    photo=hash_name
-                    if file.multiple_chunks:
-                        for c in file.chunks():
-                                dest.write(c)
-                    else:
-                        dest.write(file.read())
-                        dest.close()
+            for key, file in request.FILES.items():
+                randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
+                hash_object = hashlib.sha1(randomtext)
+                file_name=hash_object.hexdigest()
+                fileExtension = os.path.splitext(file.name)[1]
+                path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
+                dest = open(path.encode('utf-8'), 'wb+')
+                hash_name=file_name+fileExtension
+                photo=hash_name
+                if file.multiple_chunks:
+                    for c in file.chunks():
+                        dest.write(c)
+                else:
+                    dest.write(file.read())
+                    dest.close()
         request.data['photo']=photo
         serializer=UsersSerializer(user,data=request.data,partial=True)
         if serializer.is_valid():
@@ -1115,7 +1115,7 @@ class vwCommentsPublicationsViewSet(viewsets.ViewSet):
 class DocumentsViewSet(viewsets.ViewSet):
     def list(self, request):
         permission_classes = (AllowAny,)
-        queryset = Documents.objects.filter(status=True)
+        queryset = Documents.objects.filter()
         serializer = DocumentsFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -1200,7 +1200,7 @@ class DocumentsViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         permission_classes = (AllowAny,)
-        queryset = Documents.objects.filter(status=True)
+        queryset = Documents.objects.filter()
         document = get_object_or_404(queryset, pk=pk)
         serializer = DocumentsFullSerializer(document)
         return Response(serializer.data)
@@ -1260,30 +1260,30 @@ class DocumentsViewSet(viewsets.ViewSet):
         document=get_object_or_404(Documents,pk=pk)
         hash_name=document.hash_name
         path=document.path
-        if "original_name" in request.data:
-            if request.data['original_name'] != document.original_name:
-                print "PASOOOOOO o NOOOO"
-                file_path = settings.MEDIA_ROOT + str(document.hash_name)
-                if os.path.isfile(file_path):
-                    os.remove(file_path)
-                    print "LO BORRÓ D:"
-                    for key, file in request.FILES.items():
-                        randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
-                        hash_object = hashlib.sha1(randomtext)
-                        file_name=hash_object.hexdigest()
-                        fileExtension = os.path.splitext(file.name)[1]
-                        path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
-                        dest = open(path.encode('utf-8'), 'wb+')
-                        hash_name=file_name+fileExtension
-                        path=settings.MEDIA_ROOT
-                        if file.multiple_chunks:
-                            for c in file.chunks():
-                                dest.write(c)
-                        else:
-                            dest.write(file.read())
-                        dest.close()
+        original_name=document.original_name
+        if len(request.FILES.items()) > 0 :
+            file_path = settings.MEDIA_ROOT + str(hash_name)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+            for key, file in request.FILES.items():
+                randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
+                hash_object = hashlib.sha1(randomtext)
+                file_name=hash_object.hexdigest()
+                fileExtension = os.path.splitext(file.name)[1]
+                path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
+                dest = open(path.encode('utf-8'), 'wb+')
+                hash_name=file_name+fileExtension
+                path=settings.MEDIA_ROOT
+                original_name=file.name
+                if file.multiple_chunks:
+                    for c in file.chunks():
+                        dest.write(c)
+                else:
+                    dest.write(file.read())
+                    dest.close()
         request.data['hash_name']=hash_name
         request.data['path']=path
+        request.data['original_name']=original_name
         serializer=DocumentsSerializer(document,data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -1347,28 +1347,30 @@ class DocumentsViewSet(viewsets.ViewSet):
         document=get_object_or_404(Documents,pk=pk)
         hash_name=document.hash_name
         path=document.path
-        if "original_name" in request.data:
-            if request.data['original_name'] != document.original_name:
-                file_path = settings.MEDIA_ROOT + str(document.hash_name)
-                if os.path.isfile(file_path):
-                    os.remove(file_path)
-                    for key, file in request.FILES.items():
-                        randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
-                        hash_object = hashlib.sha1(randomtext)
-                        file_name=hash_object.hexdigest()
-                        fileExtension = os.path.splitext(file.name)[1]
-                        path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
-                        dest = open(path.encode('utf-8'), 'wb+')
-                        hash_name=file_name+fileExtension
-                        path=settings.MEDIA_ROOT
-                        if file.multiple_chunks:
-                            for c in file.chunks():
-                                dest.write(c)
-                        else:
-                            dest.write(file.read())
-                        dest.close()
+        original_name=document.original_name
+        if len(request.FILES.items()) > 0 :
+            file_path = settings.MEDIA_ROOT + str(document.hash_name)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+            for key, file in request.FILES.items():
+                randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
+                hash_object = hashlib.sha1(randomtext)
+                file_name=hash_object.hexdigest()
+                fileExtension = os.path.splitext(file.name)[1]
+                path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
+                dest = open(path.encode('utf-8'), 'wb+')
+                hash_name=file_name+fileExtension
+                original_name=file.name
+                path=settings.MEDIA_ROOT
+                if file.multiple_chunks:
+                    for c in file.chunks():
+                        dest.write(c)
+                else:
+                    dest.write(file.read())
+                    dest.close()
         request.data['hash_name']=hash_name
         request.data['path']=path
+        request.data['original_name']=original_name
         serializer=DocumentsSerializer(document,data=request.data,partial=True)
         if serializer.is_valid():
             serializer.save()
