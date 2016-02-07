@@ -179,7 +179,7 @@ class Publications(models.Model):
     state=models.IntegerField(null=False)
     town=models.IntegerField(null=False)
     neighborhood=models.TextField(max_length=200,null=True,blank=True)
-    date= models.DateField(auto_now_add=True)
+    date= models.DateTimeField(auto_now_add=False,auto_now=False,null=False)
     status = models.BooleanField(default=True)
     class Meta:
         ordering = ['date','price_first']
@@ -288,7 +288,7 @@ class Tasks(models.Model):
     description= models.TextField(max_length=300,null=False,blank=False)
     date= models.DateField(auto_now_add=True)
     hour= models.TimeField(auto_now=False, auto_now_add=False)
-    customer=models.ForeignKey(Customers)
+    customer=models.ForeignKey(Customers,null=True)
     user= models.ForeignKey(Users,null=False)
     status = models.BooleanField(default=True)
 
