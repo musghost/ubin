@@ -227,18 +227,18 @@ class ProvidersSerializer(serializers.ModelSerializer):
         fields = (
         	'id',
         	'name',
-            'references',
+                'references',
         	'type_provider',
         	'register_date',
         	'address',
         	'email',
         	'web_page',
-            'state',
-            'neighborhood',
-            'town',
+                'state',
+                'neighborhood',
+                'town',
         	'status',
-            'is_favorite',
-            'administrator'
+                'is_favorite',
+                'administrator'
         	)
 
 class ProvidersFullSerializer(serializers.ModelSerializer):
@@ -331,8 +331,8 @@ class PublicationsSerializer(serializers.ModelSerializer):
         	'construction_area',
         	'country',
         	'state',
-            'town',
-            'neighborhood',
+                'town',
+                'neighborhood',
         	'date',
         	'status'
         	)
@@ -404,7 +404,7 @@ class CommentsSerializer(serializers.ModelSerializer):
         	'user', 
         	'comment',
         	'date',
-            'status'
+                'status'
         	)
 
 class CommentsFullerializer(serializers.ModelSerializer):
@@ -429,14 +429,14 @@ class ContactsSerializer(serializers.ModelSerializer):
         	'id',
         	'name',
         	'lastname', 
-            'mothers_maiden_name',
+                'mothers_maiden_name',
         	'phone',
         	'email',
         	'user',
         	'type_contact',
         	'note',
-            'is_favorite',
-            'status'
+                'is_favorite',
+                'status'
         	)
 
 class ContactsFullSerializer(serializers.ModelSerializer):
@@ -464,18 +464,19 @@ class DocumentsSerializer(serializers.ModelSerializer):
         fields = (
         	'id',
         	'original_name',
-            'hash_name',
+                'hash_name',
         	'administrator', 
         	'type_document',
         	'path',
-            'country',
-            'state',
-            'town',
-            'status'
+                'country',
+                'state',
+                'town',
+                'status'
         	)
 
-class DocumentsSerializer(serializers.ModelSerializer):
+class DocumentsFullSerializer(serializers.ModelSerializer):
     administrator=UsersDetailSerializer()
+    type_document=TypesDocumentsSerializer()
     class Meta:
         model = Documents
         fields = (
@@ -497,13 +498,13 @@ class EventsSerializer(serializers.ModelSerializer):
         fields = (
         	'id',
         	'name',
-            'address',
+                'address',
         	'description', 
         	'type_event',
-            'date_event',
-            'hour',
-            'administrator',
-            'status'
+                'date_event',
+                'hour',
+                'administrator',
+                'status'
         	)
 
 class EventsFullSerializer(serializers.ModelSerializer):
@@ -541,7 +542,7 @@ class NotificationsSerializer(serializers.ModelSerializer):
         	'read',
         	'viewed',
         	'expired',
-            'status'
+                'status'
         	)
 
 class PushNotificationsSerializer(serializers.ModelSerializer):
@@ -588,7 +589,7 @@ class ReportsSerializer(serializers.ModelSerializer):
         	'type_report',
         	'message',
         	'date',
-            'status'
+                'status'
         	)
 
 class UserLocationSerializer(serializers.ModelSerializer):
@@ -599,10 +600,10 @@ class UserLocationSerializer(serializers.ModelSerializer):
         	'user',
         	'country',
         	'state',
-            'town',
-            'neighborhood',
+                'town',
+                'neighborhood',
         	'date',
-            'status'
+                'status'
         	)
 
 class TypeCustomersSerializer(serializers.ModelSerializer):

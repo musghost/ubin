@@ -275,7 +275,7 @@ class RegisterViewSet(viewsets.ViewSet):
                     file_name=hash_object.hexdigest()
                     fileExtension = os.path.splitext(file.name)[1]
                     photo=file_name+fileExtension
-                    path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
+                    path = settings.MEDIA_ROOT+file_name+fileExtension
                     dest = open(path.encode('utf-8'), 'wb+')
                     if file.multiple_chunks:
                         for c in file.chunks():
@@ -285,7 +285,6 @@ class RegisterViewSet(viewsets.ViewSet):
                     dest.close()
         request.POST = request.POST.copy()
         request.POST['photo'] = photo
-        print request.POST
         serializer = RegisterSerializer(data=request.POST)
         if serializer.is_valid():
             serializer.save()
@@ -941,7 +940,7 @@ class DocumentsViewSet(viewsets.ModelViewSet):
 
 class DocumentsFilterViewSet(viewsets.ReadOnlyModelViewSet):
  
-    serializer_class = DocumentsSerializer
+    serializer_class = DocumentsFullSerializer
     queryset = Documents.objects.all()
     filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,filters.SearchFilter,)
     search_fields = (
@@ -954,7 +953,7 @@ class DocumentsFilterViewSet(viewsets.ReadOnlyModelViewSet):
             'id',
             'original_name',
             'hash_name',
-            'administrator', 
+            'administrator__id', 
             'type_document',
             'path',
             'country',
