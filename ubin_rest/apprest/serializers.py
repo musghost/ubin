@@ -33,11 +33,6 @@ class TypesProvidersSerializer(serializers.ModelSerializer):
         model = Types_Providers
         fields = ('id','name', 'status')
 
-class TypesContactsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Types_Contacts
-        fields = ('id','name', 'status')
-
 class TypesEventsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Types_Events
@@ -420,42 +415,6 @@ class CommentsFullerializer(serializers.ModelSerializer):
             'status'
             )
 
-
-class ContactsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Contacts
-        fields = (
-        	'id',
-        	'name',
-        	'lastname', 
-            'mothers_maiden_name',
-        	'phone',
-        	'email',
-        	'user',
-        	'type_contact',
-        	'note',
-            'is_favorite',
-            'status'
-        	)
-
-class ContactsFullSerializer(serializers.ModelSerializer):
-    type_contact=TypesContactsSerializer()
-    user=UsersDetailSerializer()
-    class Meta:
-        model = Contacts
-        fields = (
-            'id',
-            'name',
-            'lastname', 
-            'mothers_maiden_name',
-            'phone',
-            'email',
-            'user',
-            'type_contact',
-            'note',
-            'is_favorite',
-            'status'
-            )
 
 class DocumentsSerializer(serializers.ModelSerializer):
     class Meta:

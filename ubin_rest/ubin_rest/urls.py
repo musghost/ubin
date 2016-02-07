@@ -65,15 +65,6 @@ router.register(r'typesProviders',vwTypesProvidersViewSet,base_name='typesProvid
 vw_providers_type=routers.NestedSimpleRouter(router,r'typesProviders',lookup='typeProvider')
 vw_providers_type.register(r'providers',vwProvidersTypeViewSet,base_name='providers')
 
-'''
-Types Contacts
-'''
-#CRUD
-router.register(r'typeContact',TypesContactsViewSet)
-#VIEW : typesContacts/pk/contacts/pk
-router.register(r'typesContacts',vwTypesContactsViewSet,base_name='vwTypesContactsViewSet')
-vw_contacts_type=routers.NestedSimpleRouter(router,r'typesContacts',lookup='typeContact')
-vw_contacts_type.register(r'contacts',vwContactsTypeViewSet,base_name='contacts')
 
 '''
 Types Events
@@ -83,7 +74,6 @@ router.register(r'typeEvent',TypesEventsViewSet)
 #VIEW typesEvents/pk/events/pk
 router.register(r'typesEvents',vwTypesEventsViewSet,base_name='typesEvents')
 vw_events_type=routers.NestedSimpleRouter(router,r'typesEvents',lookup='typeEvent')
-vw_events_type.register(r'events',EventsTypeViewSet,base_name='events')
 
 '''
 Types documents
@@ -100,7 +90,7 @@ vw_type_documents.register(r'documents',DocumentsTypeViewSet,base_name='document
 users
 '''
 #CRUD
-router.register(r'user',UsersViewSet)
+router.register(r'user',UsersViewSet,base_name='user')
 router.register(r'users',vwUsersViewSet,base_name='users')
 # Filter 
 router.register(r'usersFilter',UsersFilterViewSet)
@@ -113,9 +103,6 @@ vw_publications_users.register(r'publications',vwPublicationsViewSet,base_name='
 #VIEW : /users/pk/comments/pk
 vw_comments_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
 vw_comments_users.register(r'comments',vwCommentsViewSet,base_name='comments')
-#VIEW : /users/pk/contacts/pk
-vw_contacts_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
-vw_contacts_users.register(r'contacts',vwContactsViewSet,base_name='contacts')
 #VIEW : /users/pk/documents/pk
 vw_documents_users=routers.NestedSimpleRouter(router,r'users',lookup='user')
 vw_documents_users.register(r'documents',vwDocumentsViewSet,base_name='documents')
@@ -183,23 +170,11 @@ Comments
 router.register(r'comment',CommentsViewSet)
 router.register(r'commentsFilter',CommentsFilterViewSet)
 
-'''
-Contacts
-'''
-#CRUD
-router.register(r'contact',ContactsViewSet)
-#VIEW : contacts/pk/customer
-router.register(r'contacts',vwAllContactsViewSet,base_name='contacts')
-vw_contacts_customer=routers.NestedSimpleRouter(router,r'contacts',lookup='contact')
-vw_contacts_customer.register(r'customer',vwCustomerViewSet,base_name='customer')
-#VIEW : contacts/pk/task
-vw_contacts_task=routers.NestedSimpleRouter(router,r'contacts',lookup='contact')
-vw_contacts_task.register(r'task',vwTaskViewSet,base_name='task')
 
 '''
 Documents
 '''
-router.register(r'document',DocumentsViewSet)
+router.register(r'document',DocumentsViewSet,base_name='document')
 # Filter
 router.register(r'documentsFilter',DocumentsFilterViewSet)
 
@@ -330,13 +305,11 @@ urlpatterns = [
     url(r'^api/v1/',include(vw_currencies_publications.urls)),
     url(r'^api/v1/',include(vw_advisors_users.urls)),
     url(r'^api/v1/',include(vw_providers_type.urls)),
-    url(r'^api/v1/',include(vw_contacts_type.urls)),
     url(r'^api/v1/',include(vw_events_type.urls)),
     url(r'^api/v1/',include(vw_type_documents.urls)),
     url(r'^api/v1/',include(vw_classifications_providers.urls)),
     url(r'^api/v1/',include(vw_publications_users.urls)),
     url(r'^api/v1/',include(vw_comments_users.urls)),
-    url(r'^api/v1/',include(vw_contacts_users.urls)),
     url(r'^api/v1/',include(vw_documents_users.urls)),
     url(r'^api/v1/',include(vw_notifications_users.urls)),    
     url(r'^api/v1/',include(vw_push_notifications_users.urls)),
@@ -349,8 +322,6 @@ urlpatterns = [
     url(r'^api/v1/',include(vw_notifications_publications.urls)),
     url(r'^api/v1/',include(vw_push_notifications_publications.urls)),
     url(r'^api/v1/',include(vw_photos_publications.urls)),
-    url(r'^api/v1/',include(vw_contacts_customer.urls)),
-    url(r'^api/v1/',include(vw_contacts_task.urls)),
     url(r'^api/v1/',include(vw_types_customers.urls)),
     url(r'^api/v1/',include(vw_types_reports.urls)),
     url(r'^api/v1/docs/', include('rest_framework_swagger.urls')),

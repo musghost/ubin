@@ -131,10 +131,6 @@ class Types_Providers(models.Model):
     name = models.TextField(max_length=100,null=False,blank=False)
     status = models.BooleanField(default=True)
 
-class Types_Contacts(models.Model):
-    name = models.TextField(max_length=100,null=False,blank=False)
-    status = models.BooleanField(default=True)
-
 class Types_Events(models.Model):
     name = models.TextField(max_length=100,null=False,blank=False)
     status = models.BooleanField(default=True)
@@ -196,17 +192,6 @@ class Comments(models.Model):
     date= models.DateTimeField(auto_now=False, auto_now_add=False,null=False)
     status = models.BooleanField(default=True)
 
-class Contacts(models.Model):
-    name= models.TextField(max_length=100,null=False,blank=False)
-    lastname= models.TextField(max_length=100,null=False,blank=False)
-    mothers_maiden_name=models.TextField(max_length=50,blank=True,null=True)
-    phone= models.TextField(max_length=20,null=False,blank=False)
-    email = models.EmailField(max_length=50,null=False,blank=False)
-    user= models.ForeignKey(Users,null=False)
-    type_contact= models.ForeignKey(Types_Contacts,null=False)
-    note = models.TextField(max_length=200,null=True,blank=True)
-    is_favorite=models.BooleanField(default=False)
-    status = models.BooleanField(default=True)
 
 class Documents(models.Model):
     original_name= models.TextField(max_length=250,null=False,blank=False)

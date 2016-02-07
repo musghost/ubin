@@ -23,6 +23,8 @@ from django.conf import settings
 import hashlib,os,random,string,base64
 from django.utils.encoding import smart_str
 from django.db.models import Avg
+from django.db.models.signals import pre_delete, post_delete
+from django.dispatch import receiver
 
 import mimetypes
 from django.http import StreamingHttpResponse
@@ -147,27 +149,6 @@ class vwTypesProvidersViewSet(viewsets.ViewSet):
         queryset = Types_Providers.objects.filter(status=True)
         type_provider = get_object_or_404(queryset, pk=pk)
         serializer = TypesProvidersSerializer(type_provider)
-
-        return Response(serializer.data)
-
-
-'''
-------------- Types Contacts ----------------------
-'''
-class TypesContactsViewSet(viewsets.ModelViewSet):
-    serializer_class = TypesContactsSerializer
-    queryset = Types_Contacts.objects.all()
-
-class vwTypesContactsViewSet(viewsets.ViewSet):
-    def list(self, request):
-        queryset = Types_Contacts.objects.filter(status=True)
-        serializer = TypesContactsSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request,pk=None):
-        queryset = Types_Contacts.objects.filter(status=True)
-        type_contact = get_object_or_404(queryset, pk=pk)
-        serializer = TypesContactsSerializer(type_contact)
 
         return Response(serializer.data)
 
@@ -414,7 +395,241 @@ class GetTokenViewSet(viewsets.ViewSet):
 '''
 ----------------  Users -------------------------
 '''
-class UsersViewSet(viewsets.ModelViewSet):
+class UsersViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = Users.objects.filter()
+        serializer = UsersFullSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        """
+            Register user
+            ---
+            type:
+              photo:
+                required: false
+                type: file
+
+            request_serializer: UsersSerializer
+            response_serializer: UsersSerializer
+            omit_serializer: false
+
+            parameters_strategy: merge
+
+            parameters:
+               - name: photo
+                 description: photo.
+                 required: true
+                 type: file
+                 paramType: file
+
+            responseMessages:
+                - code: 400
+                  message: BAD REQUEST
+                - code: 200
+                  message: OK
+                - code: 201
+                  message: CREATED
+                - code: 500
+                  message: INTERNAL SERVER ERROR
+            consumes:
+                - application/json
+            produces:
+                - application/json
+        """
+        photo=""
+        for key, file in request.FILES.items():
+            randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
+            hash_object = hashlib.sha1(randomtext)
+            file_name=hash_object.hexdigest()
+            fileExtension = os.path.splitext(file.name)[1]
+            path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
+            dest = open(path.encode('utf-8'), 'wb+')
+            hash_name=file_name+fileExtension
+            photo=hash_name
+            path=settings.MEDIA_ROOT
+            if file.multiple_chunks:
+                for c in file.chunks():
+                    dest.write(c)
+            else:
+                dest.write(file.read())
+            dest.close()
+        request.data['photo']=photo
+        serializer=UsersSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, pk=None):
+        permission_classes = (AllowAny,)
+        queryset = Users.objects.filter()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = UsersFullSerializer(user)
+        return Response(serializer.data)
+
+    def update(self, request, pk=None):
+        """
+            Update user
+            ---
+            type:
+              photo:
+                required: false
+                type: file
+
+            request_serializer: UsersSerializer
+            response_serializer: UsersSerializer
+            omit_serializer: false
+
+            parameters_strategy: merge
+            parameters:
+               - name: photo
+                 description: photo.
+                 required: true
+                 type: file
+                 paramType: file
+
+            responseMessages:
+                - code: 400
+                  message: BAD REQUEST
+                - code: 200
+                  message: OK
+                - code: 201
+                  message: CREATED
+                - code: 500
+                  message: INTERNAL SERVER ERROR
+            consumes:
+                - application/json
+            produces:
+                - application/json
+        """
+        user=get_object_or_404(Users,pk=pk)
+        photo=user.photo
+        if len(request.FILES.items()) > 0 :
+            file_path = settings.MEDIA_ROOT + str(photo)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+                for key, file in request.FILES.items():
+                    randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
+                    hash_object = hashlib.sha1(randomtext)
+                    file_name=hash_object.hexdigest()
+                    fileExtension = os.path.splitext(file.name)[1]
+                    path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
+                    dest = open(path.encode('utf-8'), 'wb+')
+                    hash_name=file_name+fileExtension
+                    photo=hash_name
+                    if file.multiple_chunks:
+                        for c in file.chunks():
+                                dest.write(c)
+                    else:
+                        dest.write(file.read())
+                        dest.close()
+        request.data['photo']=photo
+        serializer=UsersSerializer(user,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def partial_update(self, request, pk=None):
+        """
+            Partial update user
+            ---
+            type:
+              photo:
+                required: false
+                type: file
+
+            request_serializer: UsersSerializer
+            response_serializer: UsersSerializer
+            omit_serializer: false
+
+            parameters_strategy: merge
+            parameters:
+               - name: photo
+                 description: photo.
+                 required: true
+                 type: file
+                 paramType: file
+
+            responseMessages:
+                - code: 400
+                  message: BAD REQUEST
+                - code: 200
+                  message: OK
+                - code: 201
+                  message: CREATED
+                - code: 500
+                  message: INTERNAL SERVER ERROR
+            consumes:
+                - application/json
+            produces:
+                - application/json
+        """
+        user=get_object_or_404(Users,pk=pk)
+        photo=user.photo
+        if len(request.FILES.items()) > 0:
+            file_path = settings.MEDIA_ROOT + str(photo)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+                for key, file in request.FILES.items():
+                    randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
+                    hash_object = hashlib.sha1(randomtext)
+                    file_name=hash_object.hexdigest()
+                    fileExtension = os.path.splitext(file.name)[1]
+                    path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
+                    dest = open(path.encode('utf-8'), 'wb+')
+                    hash_name=file_name+fileExtension
+                    photo=hash_name
+                    if file.multiple_chunks:
+                        for c in file.chunks():
+                                dest.write(c)
+                    else:
+                        dest.write(file.read())
+                        dest.close()
+        request.data['photo']=photo
+        serializer=UsersSerializer(user,data=request.data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None):
+        user=get_object_or_404(Users,pk=pk)
+        file_path = settings.MEDIA_ROOT + str(user.photo)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class DocumentsFilterViewSet(viewsets.ReadOnlyModelViewSet):
+ 
+    serializer_class = DocumentsFullSerializer
+    queryset = Documents.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,filters.SearchFilter,)
+    search_fields = (
+        'hash_name', 
+        'original_name',
+        'path',
+        )
+    ordering_fields ='__all__'
+    filter_fields = (
+            'id',
+            'original_name',
+            'hash_name',
+            'administrator__id', 
+            'type_document',
+            'path',
+            'country',
+            'state',
+            'town',
+            'status'
+        )
+
     serializer_class = UsersSerializer
     queryset = Users.objects.all()
 
@@ -894,67 +1109,281 @@ class vwCommentsPublicationsViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 
-
-'''
-----------------  Contacts ---------------------
-'''
-class ContactsViewSet(viewsets.ModelViewSet):
- 
-    serializer_class = ContactsSerializer
-    queryset = Contacts.objects.all()
-
-class vwAllContactsViewSet(viewsets.ViewSet):
-    def list(self, request):
-        queryset = Contacts.objects.filter(status=True)
-        serializer = ContactsFullSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request,pk=None):
-        queryset = Contacts.objects.filter(status=True)
-        contact = get_object_or_404(queryset, pk=pk)
-        serializer = ContactsFullSerializer(contact)
-        return Response(serializer.data)
-
-class vwContactsTypeViewSet(viewsets.ViewSet):
-    def list(self, request,typeContact_pk=None):
-        queryset = Contacts.objects.filter(
-            type_contact__pk=typeContact_pk,status=True
-        )
-
-        serializer = ContactsFullSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request,typeContact_pk=None, pk=None):
-        queryset = Contacts.bjects.filter(
-            type_contact__pk=typeContact_pk,status=True
-        )
-        contact = get_object_or_404(queryset, pk=pk)
-        serializer = ContactsFullSerializer(contact)
-
-class vwContactsViewSet(viewsets.ViewSet):
-    def list(self, request,user_pk=None):
-        queryset = Contacts.objects.filter(
-            user__pk=user_pk,status=True
-        )
-
-        serializer = ContactsFullSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request,user_pk=None, pk=None):
-        queryset = Contacts.bjects.filter(
-            user__pk=typeContact_pk,status=True
-        )
-        contact = get_object_or_404(queryset, pk=pk)
-        serializer = ContactsFullSerializer(contact)
-        return Response(serializer.data)
-
-
 '''
 --------------- Documents ---------------------
 '''
-class DocumentsViewSet(viewsets.ModelViewSet):
-    serializer_class = DocumentsSerializer
-    queryset = Documents.objects.all()
+class DocumentsViewSet(viewsets.ViewSet):
+    def list(self, request):
+        permission_classes = (AllowAny,)
+        queryset = Documents.objects.filter(status=True)
+        serializer = DocumentsFullSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        """
+            Documents Insert, original_name should be input name in your form,
+            send enctype multipart.
+            ---
+            type:
+              original_name:
+                required: true
+                type: file
+              hash_name:
+                required: false
+                type: string
+              path:
+                required: false
+                type: string
+
+            request_serializer: DocumentsSerializer
+            response_serializer: DocumentsSerializer
+            omit_serializer: false
+
+            parameters_strategy: merge
+            omit_parameters:
+               - hash_name
+            parameters:
+               - name: original_name
+                 description: Document.
+                 required: true
+                 type: file
+                 paramType: file
+               - name: hash_name
+                 required: false
+                 type: string
+                 paramType: form
+               - name: path
+                 required: false
+                 type: string
+                 paramType: form
+
+            responseMessages:
+                - code: 400
+                  message: BAD REQUEST
+                - code: 200
+                  message: OK
+                - code: 201
+                  message: CREATED
+                - code: 500
+                  message: INTERNAL SERVER ERROR
+            consumes:
+                - application/json
+            produces:
+                - application/json
+        """
+        permission_classes = (IsAdminUser,)
+        hash_name=""
+        path=""
+        for key, file in request.FILES.items():
+            randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
+            hash_object = hashlib.sha1(randomtext)
+            file_name=hash_object.hexdigest()
+            fileExtension = os.path.splitext(file.name)[1]
+            path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
+            dest = open(path.encode('utf-8'), 'wb+')
+            hash_name=file_name+fileExtension
+            path=settings.MEDIA_ROOT
+            if file.multiple_chunks:
+                for c in file.chunks():
+                    dest.write(c)
+            else:
+                dest.write(file.read())
+            dest.close()
+        request.data['hash_name']=hash_name
+        request.data['path']=path
+        serializer=DocumentsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, pk=None):
+        permission_classes = (AllowAny,)
+        queryset = Documents.objects.filter(status=True)
+        document = get_object_or_404(queryset, pk=pk)
+        serializer = DocumentsFullSerializer(document)
+        return Response(serializer.data)
+
+    def update(self, request, pk=None):
+        """
+            Documents update, you should send all mandatory parameters.
+            ---
+            type:
+              original_name:
+                required: true
+                type: file
+              hash_name:
+                required: false
+                type: string
+              path:
+                required: false
+                type: string
+
+            request_serializer: DocumentsSerializer
+            response_serializer: DocumentsSerializer
+            omit_serializer: false
+
+            parameters_strategy: merge
+            omit_parameters:
+               - hash_name
+            parameters:
+               - name: original_name
+                 description: Document.
+                 required: true
+                 type: file
+                 paramType: file
+               - name: hash_name
+                 required: false
+                 type: string
+                 paramType: form
+               - name: path
+                 required: false
+                 type: string
+                 paramType: form
+
+            responseMessages:
+                - code: 400
+                  message: BAD REQUEST
+                - code: 200
+                  message: OK
+                - code: 201
+                  message: CREATED
+                - code: 500
+                  message: INTERNAL SERVER ERROR
+            consumes:
+                - application/json
+            produces:
+                - application/json
+        """
+        permission_classes = (IsAdminUser,)
+        document=get_object_or_404(Documents,pk=pk)
+        hash_name=document.hash_name
+        path=document.path
+        if "original_name" in request.data:
+            if request.data['original_name'] != document.original_name:
+                print "PASOOOOOO o NOOOO"
+                file_path = settings.MEDIA_ROOT + str(document.hash_name)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+                    print "LO BORRÓ D:"
+                    for key, file in request.FILES.items():
+                        randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
+                        hash_object = hashlib.sha1(randomtext)
+                        file_name=hash_object.hexdigest()
+                        fileExtension = os.path.splitext(file.name)[1]
+                        path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
+                        dest = open(path.encode('utf-8'), 'wb+')
+                        hash_name=file_name+fileExtension
+                        path=settings.MEDIA_ROOT
+                        if file.multiple_chunks:
+                            for c in file.chunks():
+                                dest.write(c)
+                        else:
+                            dest.write(file.read())
+                        dest.close()
+        request.data['hash_name']=hash_name
+        request.data['path']=path
+        serializer=DocumentsSerializer(document,data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def partial_update(self, request, pk=None):
+        """
+            Documents partial update, it's not necesary send all mandatory parameters.
+            ---
+            type:
+              original_name:
+                required: true
+                type: file
+              hash_name:
+                required: false
+                type: string
+              path:
+                required: false
+                type: string
+
+            request_serializer: DocumentsSerializer
+            response_serializer: DocumentsSerializer
+            omit_serializer: false
+
+            parameters_strategy: merge
+            omit_parameters:
+               - hash_name
+            parameters:
+               - name: original_name
+                 description: Document.
+                 required: true
+                 type: file
+                 paramType: file
+               - name: hash_name
+                 required: false
+                 type: string
+                 paramType: form
+               - name: path
+                 required: false
+                 type: string
+                 paramType: form
+
+            responseMessages:
+                - code: 400
+                  message: BAD REQUEST
+                - code: 200
+                  message: OK
+                - code: 201
+                  message: CREATED
+                - code: 500
+                  message: INTERNAL SERVER ERROR
+            consumes:
+                - application/json
+            produces:
+                - application/json
+        """
+        permission_classes = (IsAdminUser,)
+        document=get_object_or_404(Documents,pk=pk)
+        hash_name=document.hash_name
+        path=document.path
+        if "original_name" in request.data:
+            if request.data['original_name'] != document.original_name:
+                file_path = settings.MEDIA_ROOT + str(document.hash_name)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+                    for key, file in request.FILES.items():
+                        randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
+                        hash_object = hashlib.sha1(randomtext)
+                        file_name=hash_object.hexdigest()
+                        fileExtension = os.path.splitext(file.name)[1]
+                        path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
+                        dest = open(path.encode('utf-8'), 'wb+')
+                        hash_name=file_name+fileExtension
+                        path=settings.MEDIA_ROOT
+                        if file.multiple_chunks:
+                            for c in file.chunks():
+                                dest.write(c)
+                        else:
+                            dest.write(file.read())
+                        dest.close()
+        request.data['hash_name']=hash_name
+        request.data['path']=path
+        serializer=DocumentsSerializer(document,data=request.data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None):
+        permission_classes = (IsAdminUser,)
+        document=get_object_or_404(Documents,pk=pk)
+        file_path = settings.MEDIA_ROOT + str(document.hash_name)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+        document.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class DocumentsFilterViewSet(viewsets.ReadOnlyModelViewSet):
  
@@ -1048,23 +1477,6 @@ class EventsFilterViewSet(viewsets.ModelViewSet):
             'administrator__id',
             'status'
         )
-
-class EventsTypeViewSet(viewsets.ViewSet):
-    def list(self, request,typeEvent_pk=None):
-        queryset = Events.objects.filter(
-            type_event__pk=typeEvent_pk,status=True
-        )
-
-        serializer = EventsSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request,typeEvent_pk=None, pk=None):
-        queryset = Events.bjects.filter(
-            type_event__pk=typeEvent_pk,status=True
-        )
-        event = get_object_or_404(queryset, pk=pk)
-        serializer = EventsSerializer(contact)
-        return Response(serializer.data)
 
 
 
@@ -1364,16 +1776,6 @@ class CustomersFilterViewSet(viewsets.ReadOnlyModelViewSet):
             'status'
         )
 
-
-class vwCustomerViewSet(viewsets.ViewSet):
-    def list(self, request,contact_pk=None):
-        queryset = Customers.objects.filter(
-            contact__pk=contact_pk,status=True
-        )
-
-        serializer = CustomersSerializer(queryset, many=True)
-        return Response(serializer.data)
-
 class vwCustomersForTypeViewSet(viewsets.ViewSet):
     def list(self, request,typeCustomer_pk=None):
         queryset =Customers.objects.filter(
@@ -1436,16 +1838,6 @@ class vwTasksViewSet(viewsets.ViewSet):
         task = get_object_or_404(queryset, pk=pk)
         serializer = TasksSerializer(task)
         return Response(serializer.data)   
-
-class vwTaskViewSet(viewsets.ViewSet):
-    def list(self, request,contact_pk=None):
-        queryset = Tasks.objects.filter(
-            contact__pk=contact_pk,status=True
-        )
-
-        serializer = TasksSerializer(queryset, many=True)
-        return Response(serializer.data)
-
  
   
 class UploadFilesViewSet(viewsets.ViewSet):
