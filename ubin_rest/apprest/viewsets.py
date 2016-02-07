@@ -841,6 +841,24 @@ class CommentsViewSet(viewsets.ModelViewSet):
     serializer_class = CommentsSerializer
     queryset = Comments.objects.all()
 
+class CommentsFilterViewSet(viewsets.ReadOnlyModelViewSet):
+ 
+    serializer_class = CommentsFullerializer
+    queryset = Comments.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,filters.SearchFilter,)
+    search_fields = (
+        'comment'
+        )
+    ordering_fields ='__all__'
+    filter_fields = (
+        'id',
+        'publication__id',
+        'user__id', 
+        'comment',
+        'date',
+        'status'
+        )
+
 class vwCommentsViewSet(viewsets.ViewSet):
     def list(self, request,user_pk=None):
         queryset = Comments.objects.filter(
@@ -1380,7 +1398,27 @@ class vwCustomersForTypeViewSet(viewsets.ViewSet):
 class TasksViewSet(viewsets.ModelViewSet):
  
     serializer_class = TasksSerializer
-    queryset = Tasks.objects.all()   
+    queryset = Tasks.objects.all()
+
+class TasksFilterViewSet(viewsets.ReadOnlyModelViewSet):
+ 
+    serializer_class = TasksFullSerializer
+    queryset = Tasks.objects.all() 
+    filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,filters.SearchFilter,)
+    search_fields = (
+        'description'
+        )
+    ordering_fields ='__all__'
+    filter_fields = (
+            'id',
+            'description',
+            'date',
+            'hour',
+            'customer__id',
+            'user__id',
+            'status'
+        )
+   
 
 class vwTasksViewSet(viewsets.ViewSet):
     def list(self, request,user_pk=None):

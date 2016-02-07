@@ -181,6 +181,7 @@ vw_photos_publications.register(r'photos',vwPhotosPublicationsViewSet,base_name=
 Comments
 '''
 router.register(r'comment',CommentsViewSet)
+router.register(r'commentsFilter',CommentsFilterViewSet)
 
 '''
 Contacts
@@ -275,7 +276,7 @@ router.register(r'customersFilter',CustomersFilterViewSet)
 Tasks
 '''
 router.register(r'task',TasksViewSet)
-
+router.register(r'tasksFilter',TasksFilterViewSet)
 '''
 Upload files to server
 '''

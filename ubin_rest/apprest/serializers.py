@@ -404,12 +404,11 @@ class CommentsSerializer(serializers.ModelSerializer):
         	'user', 
         	'comment',
         	'date',
-                'status'
+            'status'
         	)
 
 class CommentsFullerializer(serializers.ModelSerializer):
     user=UsersDetailSerializer()
-    publication=PublicationsSerializer()
     class Meta:
         model = Comments
         fields = (
@@ -429,14 +428,14 @@ class ContactsSerializer(serializers.ModelSerializer):
         	'id',
         	'name',
         	'lastname', 
-                'mothers_maiden_name',
+            'mothers_maiden_name',
         	'phone',
         	'email',
         	'user',
         	'type_contact',
         	'note',
-                'is_favorite',
-                'status'
+            'is_favorite',
+            'status'
         	)
 
 class ContactsFullSerializer(serializers.ModelSerializer):
