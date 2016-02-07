@@ -248,25 +248,28 @@ class RegisterViewSet(viewsets.ViewSet):
                 - application/json
         """
         photo=""
-        if request.FILES.items() :
-                for key, file in request.FILES.items():
-                    randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
-                    hash_object = hashlib.sha1(randomtext)
-                    code=hash_object.hexdigest()
-                    file_name=hash_object.hexdigest()
-                    fileExtension = os.path.splitext(file.name)[1]
-                    photo=file_name+fileExtension
-                    path = settings.MEDIA_ROOT+file_name+fileExtension
-                    dest = open(path.encode('utf-8'), 'wb+')
-                    if file.multiple_chunks:
-                        for c in file.chunks():
-                            dest.write(c)
-                    else:
-                        dest.write(file.read())
+        if len(request.FILES.items()) > 0 :
+            for key, file in request.FILES.items():
+                randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
+                hash_object = hashlib.sha1(randomtext)
+                code=hash_object.hexdigest()
+                file_name=hash_object.hexdigest()
+                fileExtension = os.path.splitext(file.name)[1]
+                photo=file_name+fileExtension
+                path = settings.MEDIA_ROOT+file_name+fileExtension
+                dest = open(path.encode('utf-8'), 'wb+')
+                if file.multiple_chunks:
+                    for c in file.chunks():
+                        dest.write(c)
+                else:
+                    dest.write(file.read())
                     dest.close()
+
         request.POST = request.POST.copy()
         request.POST['photo'] = photo
+
         serializer = RegisterSerializer(data=request.POST)
+        
         if serializer.is_valid():
             serializer.save()
             if 'device_os' in request.data:
