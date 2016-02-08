@@ -461,8 +461,8 @@ class UsersViewSet(viewsets.ViewSet):
         request.data['photo']=photo
         serializer=UsersSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            user=serializer.save()
+            return Response(UsersFullSerializer(user).data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -532,8 +532,8 @@ class UsersViewSet(viewsets.ViewSet):
         request.data['photo']=photo
         serializer=UsersSerializer(user,data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            user=serializer.save()
+            return Response(UsersFullSerializer(user).data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -597,8 +597,8 @@ class UsersViewSet(viewsets.ViewSet):
         request.data['photo']=photo
         serializer=UsersSerializer(user,data=request.data,partial=True)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            user=serializer.save()
+            return Response(UsersFullSerializer(user).data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

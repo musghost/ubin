@@ -188,32 +188,6 @@ class UsersDetailSerializer(serializers.ModelSerializer):
         number_of_publications=Publications.objects.filter(id=obj.id,status=True).count()
         return number_of_publications
 
-class UsersDetailSerializer(serializers.ModelSerializer):
-    type_advisor=TypesAdvisorsSerializer()
-    number_of_publications=serializers.SerializerMethodField()
-    class Meta:
-        model = Users
-        fields = (
-            'id',
-            'email',
-            'name',
-            'last_name',
-            'mothers_maiden_name',
-            'birthday',
-            'gender',
-            'phone',
-            'type_advisor',
-            'property_company_name',
-            'property_company_phone',
-            'photo',
-            'is_superuser',
-            'is_staff',
-            'number_of_publications',
-            'is_active'
-            )
-    def get_number_of_publications(self,obj):
-        number_of_publications=Publications.objects.filter(id=obj.id,status=True).count()
-        return number_of_publications
 
 class ProvidersSerializer(serializers.ModelSerializer):
     
