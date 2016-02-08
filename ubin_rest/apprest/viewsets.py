@@ -1536,7 +1536,7 @@ class vwNotificationsViewSet(viewsets.ViewSet):
             user__pk=user_pk,status=True
         )
 
-        serializer = NotificationsSerializer(queryset, many=True)
+        serializer =NotificationsFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,user_pk=None, pk=None):
@@ -1544,7 +1544,7 @@ class vwNotificationsViewSet(viewsets.ViewSet):
             user__pk=user_pk,status=True
         )
         notification = get_object_or_404(queryset, pk=pk)
-        serializer = NotificationsSerializer(notification)
+        serializer = NotificationsFullSerializer(notification)
         return Response(serializer.data)
 
 class vwNotificationsPublicationsViewSet(viewsets.ViewSet):
@@ -1553,7 +1553,7 @@ class vwNotificationsPublicationsViewSet(viewsets.ViewSet):
             publication__pk=publication_pk,status=True
         )
 
-        serializer = NotificationsSerializer(queryset, many=True)
+        serializer = NotificationsFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,publication_pk=None, pk=None):
@@ -1561,7 +1561,7 @@ class vwNotificationsPublicationsViewSet(viewsets.ViewSet):
             publication__pk=user_pk,status=True
         )
         notification = get_object_or_404(queryset, pk=pk)
-        serializer = NotificationsSerializer(notification)
+        serializer = NotificationsFullSerializer(notification)
         return Response(serializer.data)
 
 
