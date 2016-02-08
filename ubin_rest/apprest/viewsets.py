@@ -415,7 +415,7 @@ class UsersViewSet(viewsets.ViewSet):
                 type: file
 
             request_serializer: UsersSerializer
-            response_serializer: UsersSerializer
+            response_serializer: UsersFullSerializer
             omit_serializer: false
 
             parameters_strategy: merge
@@ -483,7 +483,7 @@ class UsersViewSet(viewsets.ViewSet):
                 type: file
 
             request_serializer: UsersSerializer
-            response_serializer: UsersSerializer
+            response_serializer: UsersFullSerializer
             omit_serializer: false
 
             parameters_strategy: merge
@@ -548,7 +548,7 @@ class UsersViewSet(viewsets.ViewSet):
                 type: file
 
             request_serializer: UsersSerializer
-            response_serializer: UsersSerializer
+            response_serializer: UsersFullSerializer
             omit_serializer: false
 
             parameters_strategy: merge
