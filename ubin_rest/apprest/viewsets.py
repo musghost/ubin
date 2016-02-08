@@ -267,7 +267,7 @@ class RegisterViewSet(viewsets.ViewSet):
         request.POST = request.POST.copy()
         request.POST['photo'] = photo
         request.POST['is_active'] = True
-        serializer = RegisterSerializer(data=request.POST)
+        serializer = UsersSerializer(data=request.POST)
 
         
         if serializer.is_valid():
@@ -285,7 +285,7 @@ class RegisterViewSet(viewsets.ViewSet):
                     device_os=request.data['device_os'],
                     device_user=user)
                 device.save()
-            return Response(UsersFullSerializer(user).data, status=status.HTTP_201_CREATED)
+            return Response(RegisterSerializer(user).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

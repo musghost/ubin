@@ -43,9 +43,9 @@ class TypesDocumentsSerializer(serializers.ModelSerializer):
         model = Types_Documents
         fields = ('id','name', 'status')
 
-
 class RegisterSerializer(serializers.ModelSerializer):
     token=serializers.SerializerMethodField()
+    type_advisor=TypesAdvisorsSerializer(required=False)
     class Meta:
         model = Users
         fields = (
