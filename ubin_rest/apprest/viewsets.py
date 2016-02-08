@@ -271,7 +271,7 @@ class RegisterViewSet(viewsets.ViewSet):
 
         
         if serializer.is_valid():
-            serializer.save()
+            user=serializer.save()
             if 'device_os' in request.data:
                 user = Users.objects.get(pk=serializer.data['id'])
                 device_token=""
@@ -285,7 +285,7 @@ class RegisterViewSet(viewsets.ViewSet):
                     device_os=request.data['device_os'],
                     device_user=user)
                 device.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(UsersFullSerializer(user).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
