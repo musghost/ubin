@@ -201,7 +201,6 @@ class vwTypesDocumentsViewSet(viewsets.ViewSet):
 '''
 class RegisterViewSet(viewsets.ViewSet):
     permission_classes = (AllowAny,)
-    parser_classes = (MultiPartParser,FormParser,JSONParser,)
     def create(self, request, format=None):
         """
             Register user.
