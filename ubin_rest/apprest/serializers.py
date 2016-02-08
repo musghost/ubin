@@ -169,7 +169,6 @@ class UsersDetailSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'email',
-            'password',
             'name',
             'last_name',
             'mothers_maiden_name',
@@ -463,6 +462,12 @@ class FavoritesSerializer(serializers.ModelSerializer):
         model = Favorites
         fields = ('id','publication','user', 'status')
 
+class FavoritesFullSerializer(serializers.ModelSerializer):
+    publication=PublicationsFullSerializer()
+    user=UsersFullSerializer()
+    class Meta:
+        model = Favorites
+        fields = ('id','publication','user', 'status')
 
 class NotificationsSerializer(serializers.ModelSerializer):
     class Meta:

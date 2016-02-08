@@ -82,7 +82,7 @@ class Users(AbstractBaseUser, PermissionsMixin):
         blank=False,
         null=False
         )
-    type_advisor= models.ForeignKey(Types_Advisors,blank=True, null=True)
+    type_advisor= models.ForeignKey(Types_Advisors,blank=True, null=True,related_name="user")
     property_company_name = models.TextField(max_length=250,blank=True)
     property_company_phone = models.TextField(max_length=20,blank=True)
     photo = models.TextField(max_length=250,blank=True)
@@ -217,7 +217,7 @@ class Events(models.Model):
 
 class Favorites(models.Model):
     publication=models.ForeignKey(Publications,null=False,related_name='favorite')
-    user= models.ForeignKey(Users,null=False)
+    user= models.ForeignKey(Users,null=False,related_name="favorite")
     status = models.BooleanField(default=False)
 
 

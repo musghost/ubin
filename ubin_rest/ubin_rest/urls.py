@@ -188,6 +188,7 @@ router.register(r'eventsFilter',EventsFilterViewSet)
 Favorites
 '''
 router.register(r'favorite',FavoritesViewSet)
+router.register(r'favoritesFilter',FavoritesFilterViewSet)
 
 '''
 Notifications

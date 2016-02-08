@@ -942,14 +942,14 @@ class PublicationsDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
     ordering_fields ='__all__'
     filter_fields = (
         'id',
-        'user',
-        'user__type_advisor',
+        'user__id',
+        'user__type_advisor__id',
         'canvas_number',
-        'type_publications',
-        'type_property',
+        'type_publications__id',
+        'type_property__id',
         'title',
         'price_first',
-        'currency',
+        'currency__id',
         'bathrooms',
         'antiquity',
         'area',
@@ -1493,6 +1493,15 @@ class FavoritesViewSet(viewsets.ModelViewSet):
  
     serializer_class = FavoritesSerializer
     queryset = Favorites.objects.all()
+
+class FavoritesFilterViewSet(viewsets.ReadOnlyModelViewSet):
+ 
+    serializer_class = FavoritesFullSerializer
+    queryset = Favorites.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter)
+    ordering_fields ='__all__'
+    filter_fields = ('id','publication__id','user__id', 'status')
+
 
 
 class vwFavoritesPublicationsViewSet(viewsets.ViewSet):
