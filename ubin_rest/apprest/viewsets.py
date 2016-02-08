@@ -267,8 +267,9 @@ class RegisterViewSet(viewsets.ViewSet):
 
         request.POST = request.POST.copy()
         request.POST['photo'] = photo
-
+        request.POST['is_active'] = True
         serializer = RegisterSerializer(data=request.POST)
+
         
         if serializer.is_valid():
             serializer.save()
