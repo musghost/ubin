@@ -225,7 +225,7 @@ class Notifications(models.Model):
     publication=models.ForeignKey(Publications,null=False)
     user= models.ForeignKey(Users,null=False)
     message= models.TextField(max_length=200,null=False,blank=False)
-    date= models.DateField(auto_now_add=True)
+    date= models.DateTimeField(auto_now_add=False,null=False)
     read = models.BooleanField(default=False)
     viewed = models.BooleanField(default=False)
     expired = models.BooleanField(default=False)

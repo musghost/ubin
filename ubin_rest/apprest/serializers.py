@@ -481,8 +481,25 @@ class NotificationsSerializer(serializers.ModelSerializer):
         	'read',
         	'viewed',
         	'expired',
-                'status'
+            'status'
         	)
+
+class NotificationsFullSerializer(serializers.ModelSerializer):
+    publication=PublicationsFullSerializer()
+    user=UsersDetailSerializer()
+    class Meta:
+        model = Notifications
+        fields = (
+            'id',
+            'publication',
+            'user', 
+            'message',
+            'date',
+            'read',
+            'viewed',
+            'expired',
+            'status'
+            )
 
 class PushNotificationsSerializer(serializers.ModelSerializer):
     class Meta:
