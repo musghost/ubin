@@ -26,8 +26,4 @@ class Migration(migrations.Migration):
             name='date',
             field=models.DateTimeField(auto_now_add=True),
         ),
-        migrations.AlterUniqueTogether(
-            name='favorites',
-            unique_together=set([('publication', 'user')]),
-        ),
     ]
