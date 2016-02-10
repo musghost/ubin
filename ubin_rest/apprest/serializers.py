@@ -351,8 +351,7 @@ class PublicationsFullSerializer(serializers.ModelSerializer):
             'status',
             'isfavorite',
             'votes',
-            'photos',
-            'current_user'
+            'photos'
             )
     def get_isfavorite(self,obj):
         user = None
