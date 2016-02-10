@@ -1559,11 +1559,11 @@ class FavoritesViewSet(viewsets.ViewSet):
                - name: publication
                  required: true
                  type: integer
-                 paramType: path
+                 paramType: form
                - name: user
                  required: true
                  type: integer
-                 paramType: path
+                 paramType: form
 
             responseMessages:
                 - code: 400
@@ -1579,11 +1579,10 @@ class FavoritesViewSet(viewsets.ViewSet):
             produces:
                 - application/json
         """
-        favorite=get_object_or_404(
-            Favorites,
-            publication__id=request.data['publication'],
-            user__id=request.data['user']
-        )
+        favorite=Favorites.objects.filter(
+                publication__id=request.data['publication'],
+                user__id=request.data['user']
+            )
         serializer=FavoritesSerializer(favorite,data=request.data)
         if serializer.is_valid():
             favorite=serializer.save()
@@ -1619,11 +1618,11 @@ class FavoritesViewSet(viewsets.ViewSet):
                - name: publication
                  required: true
                  type: integer
-                 paramType: path
+                 paramType: form
                - name: user
                  required: true
                  type: integer
-                 paramType: path
+                 paramType: form
 
             responseMessages:
                 - code: 400
@@ -1639,8 +1638,7 @@ class FavoritesViewSet(viewsets.ViewSet):
             produces:
                 - application/json
         """
-        favorite=get_object_or_404(
-            Favorites,
+        favorite=Favorites.objects.filter(
             publication__id=request.data['publication'],
             user__id=request.data['user']
         )
@@ -1674,11 +1672,11 @@ class FavoritesViewSet(viewsets.ViewSet):
                - name: publication
                  required: true
                  type: integer
-                 paramType: path
+                 paramType: form
                - name: user
                  required: true
                  type: integer
-                 paramType: path
+                 paramType: form
 
             responseMessages:
                 - code: 204
@@ -1690,8 +1688,7 @@ class FavoritesViewSet(viewsets.ViewSet):
             produces:
                 - application/json
         """
-        favorite=get_object_or_404(
-            Favorites,
+        avorite=Favorites.objects.filter(
             publication__id=request.data['publication'],
             user__id=request.data['user']
         )
