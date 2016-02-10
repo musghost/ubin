@@ -187,7 +187,7 @@ router.register(r'eventsFilter',EventsFilterViewSet)
 '''
 Favorites
 '''
-router.register(r'favorite',FavoritesViewSet)
+router.register(r'favorite',FavoritesViewSet,base_name="favorite")
 router.register(r'favoritesFilter',FavoritesFilterViewSet)
 
 '''
