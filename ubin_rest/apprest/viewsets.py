@@ -1537,6 +1537,9 @@ class FavoritesViewSet(viewsets.ViewSet):
             Update favorite publication, you should send all mandatory parameters.
             ---
             type:
+              pk:
+                required: False
+                type: integer
               publication:
                 required: true
                 type: integer
@@ -1549,6 +1552,10 @@ class FavoritesViewSet(viewsets.ViewSet):
             omit_serializer: false
 
             parameters:
+               - name: pk
+                 required: false
+                 type: integer
+                 paramType: path
                - name: publication
                  required: true
                  type: integer
@@ -1590,6 +1597,9 @@ class FavoritesViewSet(viewsets.ViewSet):
             Partial update favorite publication, it's not necesary send all mandatory parameters.
             ---
             type:
+              pk:
+                required: False
+                type: integer
               publication:
                 required: true
                 type: integer
@@ -1602,6 +1612,10 @@ class FavoritesViewSet(viewsets.ViewSet):
             omit_serializer: false
 
             parameters:
+               - name: pk
+                 required: false
+                 type: integer
+                 paramType: path
                - name: publication
                  required: true
                  type: integer
@@ -1642,6 +1656,9 @@ class FavoritesViewSet(viewsets.ViewSet):
             Delete favorite publication.
             ---
             type:
+              pk:
+                required: False
+                type: integer
               publication:
                 required: true
                 type: integer
@@ -1650,6 +1667,10 @@ class FavoritesViewSet(viewsets.ViewSet):
                 type: integer
 
             parameters:
+               - name: pk
+                 required: false
+                 type: integer
+                 paramType: path
                - name: publication
                  required: true
                  type: integer
