@@ -1536,9 +1536,21 @@ class FavoritesViewSet(viewsets.ViewSet):
         """
             Update favorite publication, you should send all mandatory parameters.
             ---
+            type:
+              pk:
+                required: False
+                type: integer
+              publication:
+                required: true
+                type: integer
+              user:
+                required: true
+                type: integer
+
             request_serializer: FavoritesSerializer
             response_serializer: FavoritesFullSerializer
             omit_serializer: false
+
             parameters:
                - name: pk
                  required: false
@@ -1552,6 +1564,7 @@ class FavoritesViewSet(viewsets.ViewSet):
                  required: true
                  type: integer
                  paramType: form
+
             responseMessages:
                 - code: 400
                   message: BAD REQUEST
