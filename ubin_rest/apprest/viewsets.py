@@ -1490,7 +1490,7 @@ class EventsFilterViewSet(viewsets.ModelViewSet):
 '''
 class FavoritesViewSet(viewsets.ModelViewSet):
  
-def list(self, request):
+    def list(self, request):
         queryset = Favorites.objects.filter(status=True)
         serializer = FavoritesFullSerializer(queryset, many=True)
         return Response(serializer.data)
