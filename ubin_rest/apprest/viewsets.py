@@ -1492,10 +1492,10 @@ class FavoritesViewSet(viewsets.ModelViewSet):
     serializer_class = FavoritesSerializer
     queryset = Favorites.objects.all()
 
-class FavoritesUnfavViewSet(viewsets.ViewSet):
+class UnfavoriteViewSet(viewsets.ViewSet):
     def create(self, request):
         """
-            Unfav favorite publication.
+            Unfavorite publication.
             ---
 
             request_serializer: FavoritesSerializer
@@ -1503,8 +1503,6 @@ class FavoritesUnfavViewSet(viewsets.ViewSet):
             omit_serializer: false
 
             responseMessages:
-                - code: 400
-                  message: BAD REQUEST
                 - code: 204
                   message: NO CONTENT
                 - code: 500
@@ -1514,15 +1512,16 @@ class FavoritesUnfavViewSet(viewsets.ViewSet):
             produces:
                 - application/json
         """
-        favorite=get_object_or_404(
-            Favorites,
-            publication__id=request.data['publication'],
-            user__id=request.data['user']
-        )
-        favorite.delete()
-
+        favorite=Favorites.objects.filter(
+                publication__id=request.data['publication'],
+                user__id=request.data['user']
+            )
+        if favorite :
+            favorite.delete()
+        else:
+           return Response(status=status.HTTP_404_NOT_FOUND) 
         return Response(status=status.HTTP_204_NO_CONTENT)
- 
+
 
 class FavoritesFilterViewSet(viewsets.ReadOnlyModelViewSet):
  

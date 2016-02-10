@@ -189,7 +189,7 @@ Favorites
 '''
 router.register(r'favorite',FavoritesViewSet)
 router.register(r'favoritesFilter',FavoritesFilterViewSet)
-router.register(r'unfavorite',FavoritesUnfavViewSet,base_name="unfavorite")
+router.register(r'unfavorite',UnfavoriteViewSet,base_name="unfavorite")
 
 '''
 Notifications
