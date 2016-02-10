@@ -1490,8 +1490,126 @@ class EventsFilterViewSet(viewsets.ModelViewSet):
 '''
 class FavoritesViewSet(viewsets.ModelViewSet):
  
-    serializer_class = FavoritesSerializer
-    queryset = Favorites.objects.all()
+def list(self, request):
+        queryset = Favorites.objects.filter()
+        serializer = FavoritesFullSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        """
+            Create favorite publication.
+            ---
+
+            request_serializer: FavoritesSerializer
+            response_serializer: FavoritesFullSerializer
+            omit_serializer: false
+
+            responseMessages:
+                - code: 400
+                  message: BAD REQUEST
+                - code: 200
+                  message: OK
+                - code: 201
+                  message: CREATED
+                - code: 500
+                  message: INTERNAL SERVER ERROR
+            consumes:
+                - application/json
+            produces:
+                - application/json
+        """
+        serializer=FavoritesSerializer(data=request.data)
+        if serializer.is_valid():
+            favorite=serializer.save()
+            return Response(FavoritesSerializer(favorite).data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, pk=None):
+        queryset = Favorites.objects.filter()
+        favorite = get_object_or_404(queryset, pk=pk)
+        serializer = FavoritesFullSerializer(favorite)
+        return Response(serializer.data)
+
+    def update(self, request, pk=None):
+        """
+            Update favorite publication, you should send all mandatory parameters.
+            ---
+
+            request_serializer: FavoritesSerializer
+            response_serializer: FavoritesFullSerializer
+            omit_serializer: false
+
+            responseMessages:
+                - code: 400
+                  message: BAD REQUEST
+                - code: 200
+                  message: OK
+                - code: 201
+                  message: CREATED
+                - code: 500
+                  message: INTERNAL SERVER ERROR
+            consumes:
+                - application/json
+            produces:
+                - application/json
+        """
+        favorite=get_object_or_404(
+            Favorites,
+            publication__id=request.data['publication'],
+            user__id=request.data['user']
+        )
+        serializer=FavoritesSerializer(favorite,data=request.data)
+        if serializer.is_valid():
+            favorite=serializer.save()
+            return Response(FavoritesFullSerializer(favorite).data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def partial_update(self, request, pk=None):
+        """
+            Partial update favorite publication, it's not necesary send all mandatory parameters.
+            ---
+
+            request_serializer: FavoritesSerializer
+            response_serializer: FavoritesFullSerializer
+            omit_serializer: false
+
+            responseMessages:
+                - code: 400
+                  message: BAD REQUEST
+                - code: 200
+                  message: OK
+                - code: 201
+                  message: CREATED
+                - code: 500
+                  message: INTERNAL SERVER ERROR
+            consumes:
+                - application/json
+            produces:
+                - application/json
+        """
+        favorite=get_object_or_404(
+            Favorites,
+            publication__id=request.data['publication'],
+            user__id=request.data['user']
+        )
+        serializer=FavoritesSerializer(favorite,data=request.data,partial=True)
+        if serializer.is_valid():
+            favorite=serializer.save()
+            return Response(FavoritesFullSerializer(favorite).data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None):
+        favorite=get_object_or_404(
+            Favorites,
+            publication__id=request.data['publication'],
+            user__id=request.data['user']
+        )
+        favorite.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class FavoritesFilterViewSet(viewsets.ReadOnlyModelViewSet):
  
