@@ -352,13 +352,20 @@ class PublicationsFullSerializer(serializers.ModelSerializer):
             'isfavorite',
             'votes',
             'photos'
-
             )
     def get_isfavorite(self,obj):
-        if obj.favorite.all():
-            return True
-        else:
-            return False
+        user = None
+        request = self.context.get("request")
+        if request and hasattr(request, "user"):
+            user = request.user
+            favorite=Favorites.objects.filter(
+                publication__id=obj.id,
+                user__id=user.id
+            )
+            if favorite :
+                return True
+        return False
+
     def get_votes(self,obj):
         if obj.favorite.all():
             return obj.favorite.all().count()
@@ -464,7 +471,7 @@ class FavoritesSerializer(serializers.ModelSerializer):
 
 class FavoritesFullSerializer(serializers.ModelSerializer):
     publication=PublicationsFullSerializer()
-    user=UsersFullSerializer()
+    user=UsersDetailSerializer()
     class Meta:
         model = Favorites
         fields = ('id','publication','user', 'status')

@@ -218,7 +218,10 @@ class Events(models.Model):
 class Favorites(models.Model):
     publication=models.ForeignKey(Publications,null=False,related_name='favorite')
     user= models.ForeignKey(Users,null=False,related_name="favorite")
-    status = models.BooleanField(default=False)
+    status = models.BooleanField(default=True)
+    class Meta:
+        unique_together = ("publication", "user")
+
 
     class Meta:
         unique_together = ("publication", "user")
