@@ -1532,6 +1532,7 @@ class FavoritesViewSet(viewsets.ViewSet):
         serializer = FavoritesFullSerializer(favorite)
         return Response(serializer.data)
 
+<<<<<<< HEAD
     def update(self, request, pk=None):
         """
             Update favorite publication, you should send all mandatory parameters.
@@ -1551,6 +1552,15 @@ class FavoritesViewSet(viewsets.ViewSet):
             response_serializer: FavoritesFullSerializer
             omit_serializer: false
 
+=======
+    def update(self, request):
+        """
+            Update favorite publication, you should send all mandatory parameters.
+            ---
+            request_serializer: FavoritesSerializer
+            response_serializer: FavoritesFullSerializer
+            omit_serializer: false
+>>>>>>> 34cf1ce88c67b3a4d8287581c9ede2c34e234312
             parameters:
                - name: pk
                  required: false
@@ -1564,7 +1574,10 @@ class FavoritesViewSet(viewsets.ViewSet):
                  required: true
                  type: integer
                  paramType: form
+<<<<<<< HEAD
 
+=======
+>>>>>>> 34cf1ce88c67b3a4d8287581c9ede2c34e234312
             responseMessages:
                 - code: 400
                   message: BAD REQUEST
@@ -1591,7 +1604,11 @@ class FavoritesViewSet(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+<<<<<<< HEAD
     def partial_update(self, request, pk=None):
+=======
+    def partial_update(self, request):
+>>>>>>> 34cf1ce88c67b3a4d8287581c9ede2c34e234312
         """
             Partial update favorite publication, it's not necesary send all mandatory parameters.
             ---
@@ -1649,7 +1666,11 @@ class FavoritesViewSet(viewsets.ViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+<<<<<<< HEAD
     def destroy(self, request, pk=None):
+=======
+    def destroy(self, request):
+>>>>>>> 34cf1ce88c67b3a4d8287581c9ede2c34e234312
         """
             Delete favorite publication.
             ---
