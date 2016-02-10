@@ -1491,7 +1491,7 @@ class EventsFilterViewSet(viewsets.ModelViewSet):
 class FavoritesViewSet(viewsets.ModelViewSet):
  
 def list(self, request):
-        queryset = Favorites.objects.filter()
+        queryset = Favorites.objects.filter(status=True)
         serializer = FavoritesFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -1518,6 +1518,7 @@ def list(self, request):
             produces:
                 - application/json
         """
+        request.data['status']=True
         serializer=FavoritesSerializer(data=request.data)
         if serializer.is_valid():
             favorite=serializer.save()
@@ -1526,7 +1527,7 @@ def list(self, request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, pk=None):
-        queryset = Favorites.objects.filter()
+        queryset = Favorites.objects.filter(status=True)
         favorite = get_object_or_404(queryset, pk=pk)
         serializer = FavoritesFullSerializer(favorite)
         return Response(serializer.data)
