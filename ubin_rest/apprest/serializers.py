@@ -464,7 +464,7 @@ class FavoritesSerializer(serializers.ModelSerializer):
 
 class FavoritesFullSerializer(serializers.ModelSerializer):
     publication=PublicationsFullSerializer()
-    user=UsersFullSerializer()
+    user=UsersDetailSerializer()
     class Meta:
         model = Favorites
         fields = ('id','publication','user', 'status')
