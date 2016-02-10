@@ -321,7 +321,6 @@ class PhotosSerializer(serializers.ModelSerializer):
 
 class PublicationsFullSerializer(serializers.ModelSerializer):
     isfavorite=serializers.SerializerMethodField()
-    current_user=serializers.IntegerField(max_value=None, min_value=None,required=False)
     votes=serializers.SerializerMethodField()
     type_publications=TypesPublicationsSerializer()
     type_property=TypesPropertySerializer()
@@ -355,17 +354,17 @@ class PublicationsFullSerializer(serializers.ModelSerializer):
             'photos',
             'current_user'
             )
-        extra_kwargs = {'current_user': {'write_only': True}}
     def get_isfavorite(self,obj):
-        if obj.current_user :   
+        user = None
+        request = self.context.get("request")
+        if request and hasattr(request, "user"):
+            user = request.user
             favorite=Favorites.objects.filter(
                 publication__id=obj.id,
-                user__id=obj.current_user
+                user__id=user.id
             )
             if favorite :
                 return True
-            else :
-                return False
         return False
 
     def get_votes(self,obj):
