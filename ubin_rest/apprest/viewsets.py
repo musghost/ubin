@@ -8,6 +8,7 @@ from rest_framework.parsers import MultiPartParser, FormParser,JSONParser
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from django.http import Http404
+from django.contrib.auth import logout
 from rest_framework import status
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
@@ -2052,7 +2053,7 @@ class RecoverPasswordViewSet(viewsets.ViewSet):
 
     return Response({'message':u'Se ha enviado la contraseña.','email':serializer.data['email']}, status=status.HTTP_200_OK)
 
-    '''-------------------- Recover password -------------------------------------'''
+
 class LogoutViewSet(viewsets.ViewSet):
   permission_classes = (AllowAny,)
   def create(self, request):
@@ -2060,14 +2061,14 @@ class LogoutViewSet(viewsets.ViewSet):
         Logout 
         ---
         type:
-          user_id:
+          token
             required: true
-            type: integer
+            type: string
         parameters:
-            - name: user_id
-              description: User id.
+            - name: token
+              description: JWT Token.
               required: true
-              type: integer
+              type: string
               paramType: form
         responseMessages:
             - code: 201
@@ -2079,9 +2080,7 @@ class LogoutViewSet(viewsets.ViewSet):
         produces:
             - application/json
     """
-    if 'user_id' in request.data :
-        user=Users.objects.get(id=request.data['user_id'])
-        user.backend='django.contrib.auth.backends.ModelBackend'
-        auth_login(request,user)
-        return Response({'message':'Logout ready!'}, status=status.HTTP_200_OK)
+    if request.user.is_authenticated():
+        logout(request)    
+    return Response({'message':'Logout ready!'}, status=status.HTTP_200_OK)
 
