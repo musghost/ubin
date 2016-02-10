@@ -9,6 +9,7 @@ from rest_framework import viewsets
 from rest_framework.views import APIView
 from django.http import Http404
 from django.contrib.auth import logout
+from django.contrib.auth.models import AnonymousUser
 from rest_framework import status
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
@@ -2056,7 +2057,7 @@ class RecoverPasswordViewSet(viewsets.ViewSet):
 
 class LogoutViewSet(viewsets.ViewSet):
   permission_classes = (AllowAny,)
-  def create(self, request):
+  def list(self, request):
     """
         Logout 
         ---
@@ -2066,7 +2067,7 @@ class LogoutViewSet(viewsets.ViewSet):
             type: string
         parameters:
             - name: token
-              description: JWT Token.
+              description: JWT Token in HEADER.
               required: true
               type: string
               paramType: form
@@ -2080,7 +2081,8 @@ class LogoutViewSet(viewsets.ViewSet):
         produces:
             - application/json
     """
-    if request.user.is_authenticated():
-        logout(request)    
+    logout(request)
+    request.session.flush()
+    request.user = AnonymousUser
     return Response({'message':'Logout ready!'}, status=status.HTTP_200_OK)
 
