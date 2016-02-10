@@ -1488,7 +1488,7 @@ class EventsFilterViewSet(viewsets.ModelViewSet):
 '''
 -------------- Favorites -------------------------
 '''
-class FavoritesViewSet(viewsets.ModelViewSet):
+class FavoritesViewSet(viewsets.ViewSet):
  
     def list(self, request):
         queryset = Favorites.objects.filter(status=True)
