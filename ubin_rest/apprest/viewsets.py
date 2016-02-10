@@ -1536,10 +1536,27 @@ class FavoritesViewSet(viewsets.ViewSet):
         """
             Update favorite publication, you should send all mandatory parameters.
             ---
+            type:
+              publication:
+                required: true
+                type: integer
+              user:
+                required: true
+                type: integer
 
             request_serializer: FavoritesSerializer
             response_serializer: FavoritesFullSerializer
             omit_serializer: false
+
+            parameters:
+               - name: publication
+                 required: true
+                 type: integer
+                 paramType: path
+               - name: user
+                 required: true
+                 type: integer
+                 paramType: path
 
             responseMessages:
                 - code: 400
@@ -1572,10 +1589,27 @@ class FavoritesViewSet(viewsets.ViewSet):
         """
             Partial update favorite publication, it's not necesary send all mandatory parameters.
             ---
+            type:
+              publication:
+                required: true
+                type: integer
+              user:
+                required: true
+                type: integer
 
             request_serializer: FavoritesSerializer
             response_serializer: FavoritesFullSerializer
             omit_serializer: false
+
+            parameters:
+               - name: publication
+                 required: true
+                 type: integer
+                 paramType: path
+               - name: user
+                 required: true
+                 type: integer
+                 paramType: path
 
             responseMessages:
                 - code: 400
@@ -1604,6 +1638,37 @@ class FavoritesViewSet(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
+        """
+            Delete favorite publication.
+            ---
+            type:
+              publication:
+                required: true
+                type: integer
+              user:
+                required: true
+                type: integer
+
+            parameters:
+               - name: publication
+                 required: true
+                 type: integer
+                 paramType: path
+               - name: user
+                 required: true
+                 type: integer
+                 paramType: path
+
+            responseMessages:
+                - code: 204
+                  message: NO CONTENT
+                - code: 500
+                  message: INTERNAL SERVER ERROR
+            consumes:
+                - application/json
+            produces:
+                - application/json
+        """
         favorite=get_object_or_404(
             Favorites,
             publication__id=request.data['publication'],
