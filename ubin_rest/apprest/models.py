@@ -210,7 +210,7 @@ class Events(models.Model):
     description= models.TextField(max_length=1000,null=False,blank=False)
     price= models.TextField(max_length=100,null=False,blank=False)
     type_event=models.ForeignKey(Types_Events,null=False)
-    date_event=models.DateField(auto_now_add=False,null=False)
+    date_event=models.DateField(auto_now_add=False,null=False,editable=True)
     hour=models.TimeField(null=False)
     administrator=models.ForeignKey(Users,null=False)
     status = models.BooleanField(default=True)
@@ -219,6 +219,9 @@ class Favorites(models.Model):
     publication=models.ForeignKey(Publications,null=False,related_name='favorite')
     user= models.ForeignKey(Users,null=False,related_name="favorite")
     status = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ("publication", "user")
 
 
 class Notifications(models.Model):
@@ -255,7 +258,7 @@ class Reports(models.Model):
     user=models.ForeignKey(Users,null=False)
     type_report=models.ForeignKey(Types_Reports,null=False)
     message=models.TextField(max_length=500,null=False,blank=False)
-    date= models.DateField(auto_now_add=True)
+    date= models.DateField(auto_now_add=False,auto_now=False,null=False,editable=True)
     status = models.BooleanField(default=True)
     
 class User_Location(models.Model):
@@ -264,7 +267,7 @@ class User_Location(models.Model):
     state=models.IntegerField(null=False)
     town=models.IntegerField(null=False)
     neighborhood=models.TextField(max_length=200,null=True,blank=True)
-    date= models.DateField(auto_now_add=True)
+    date= models.DateTimeField(auto_now_add=True)
     status = models.BooleanField(default=True)
 
 class Types_Customers(models.Model):
@@ -286,7 +289,7 @@ class Customers(models.Model):
 
 class Tasks(models.Model):
     description= models.TextField(max_length=300,null=False,blank=False)
-    date= models.DateField(auto_now_add=True)
+    date= models.DateField(auto_now_add=False,auto_now=False,null=False,editable=True)
     hour= models.TimeField(auto_now=False, auto_now_add=False)
     customer=models.ForeignKey(Customers,null=True)
     user= models.ForeignKey(Users,null=False)
