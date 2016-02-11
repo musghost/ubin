@@ -65,12 +65,12 @@ class CurrenciesViewSet(viewsets.ModelViewSet):
 
 class vwCurrenciesViewSet(viewsets.ViewSet):
     def list(self, request):
-        queryset = Currencies.objects.filter(status=True)
+        queryset = Currencies.objects.all()
         serializer = CurrenciesSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        queryset = Currencies.objects.filter(status=True)
+        queryset = Currencies.objects.all()
         currency = get_object_or_404(queryset, pk=pk)
         serializer = CurrenciesSerializer(currency)
 
@@ -94,12 +94,12 @@ class TypesPropertyViewSet(viewsets.ModelViewSet):
 
 class vwTypesPropertyViewSet(viewsets.ViewSet):
     def list(self, request):
-        queryset = Types_Property.objects.filter(status=True)
+        queryset = Types_Property.objects.all()
         serializer = TypesPropertySerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        queryset = Types_Property.objects.filter(status=True)
+        queryset = Types_Property.objects.all()
         type_immovable = get_object_or_404(queryset, pk=pk)
         serializer = TypesPropertySerializer(type_immovable)
 
@@ -123,12 +123,12 @@ class TypesPublicationsViewSet(viewsets.ModelViewSet):
 
 class vwTypesPublicationsViewSet(viewsets.ViewSet):
     def list(self, request):
-        queryset = Types_Publications.objects.filter(status=True)
+        queryset = Types_Publications.objects.all()
         serializer = TypesPublicationsSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        queryset = Types_Publications.objects.filter(status=True)
+        queryset = Types_Publications.objects.all()
         type_publication = get_object_or_404(queryset, pk=pk)
         serializer = TypesPublicationsSerializer(type_publication)
 
@@ -149,12 +149,12 @@ class TypesAdvisorsViewSet(viewsets.ModelViewSet):
         return super(TypesAdvisorsViewSet, self).get_permissions()
 class vwTypesAdvisorsViewSet(viewsets.ViewSet):
     def list(self, request):
-        queryset = Types_Advisors.objects.filter(status=True)
+        queryset = Types_Advisors.objects.all()
         serializer = TypesAdvisorsSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        queryset = Types_Advisors.objects.filter(status=True)
+        queryset = Types_Advisors.objects.all()
         type_advisor = get_object_or_404(queryset, pk=pk)
         serializer = TypesAdvisorsSerializer(type_advisor)
 
@@ -177,12 +177,12 @@ class TypesProvidersViewSet(viewsets.ModelViewSet):
 
 class vwTypesProvidersViewSet(viewsets.ViewSet):
     def list(self, request):
-        queryset = Types_Providers.objects.filter(status=True)
+        queryset = Types_Providers.objects.all()
         serializer = TypesProvidersSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        queryset = Types_Providers.objects.filter(status=True)
+        queryset = Types_Providers.objects.all()
         type_provider = get_object_or_404(queryset, pk=pk)
         serializer = TypesProvidersSerializer(type_provider)
 
@@ -205,12 +205,12 @@ class TypesEventsViewSet(viewsets.ModelViewSet):
 
 class vwTypesEventsViewSet(viewsets.ViewSet):
     def list(self, request):
-        queryset = Types_Events.objects.filter(status=True)
+        queryset = Types_Events.objects.all()
         serializer = TypesEventsSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        queryset = Types_Events.objects.filter(status=True)
+        queryset = Types_Events.objects.all()
         type_event = get_object_or_404(queryset, pk=pk)
         serializer = TypesEventsSerializer(type_event)
 
@@ -234,12 +234,12 @@ class TypesDocumentsViewSet(viewsets.ModelViewSet):
 
 class vwTypesDocumentsViewSet(viewsets.ViewSet):
     def list(self, request):
-        queryset = Types_Documents.objects.filter(status=True)
+        queryset = Types_Documents.objects.all()
         serializer = TypesDocumentsSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        queryset = Types_Documents.objects.filter(status=True)
+        queryset = Types_Documents.objects.all()
         type_document = get_object_or_404(queryset, pk=pk)
         serializer = TypesDocumentsSerializer(type_document)
 
@@ -450,7 +450,7 @@ class GetTokenViewSet(viewsets.ViewSet):
 '''
 class UsersViewSet(viewsets.ViewSet):
     def list(self, request):
-        queryset = Users.objects.filter()
+        queryset = Users.objects.all()
         serializer = UsersFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -516,7 +516,7 @@ class UsersViewSet(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, pk=None):
-        queryset = Users.objects.filter()
+        queryset = Users.objects.all()
         user = get_object_or_404(queryset, pk=pk)
         serializer = UsersFullSerializer(user)
         return Response(serializer.data)
@@ -732,12 +732,12 @@ class UsersFilterViewSet(viewsets.ReadOnlyModelViewSet):
 
 class vwUsersViewSet(viewsets.ViewSet):
     def list(self, request):
-        queryset = Users.objects.filter(is_active=True)
+        queryset = Users.objects.all()
         serializer = UsersDetailSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        queryset = Users.objects.filter(is_active=True)
+        queryset = Users.objects.all()
         user = get_object_or_404(queryset, pk=pk)
         serializer = UsersDetailSerializer(user)
         return Response(serializer.data)
@@ -745,7 +745,7 @@ class vwUsersViewSet(viewsets.ViewSet):
 class AdvisorUsersViewSet(viewsets.ViewSet):
     def list(self, request,typeAdvisor_pk=None):
         queryset = Users.objects.filter(
-            type_advisor__pk=typeAdvisor_pk, status=True
+            type_advisor__pk=typeAdvisor_pk
         )
 
         serializer = UsersDetailSerializer(queryset, many=True)
@@ -753,7 +753,7 @@ class AdvisorUsersViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,typeAdvisor_pk=None,pk=None):
         queryset = Users.objects.filter(
-            type_advisor__pk=typeAdvisor_pk, status=True
+            type_advisor__pk=typeAdvisor_pk
         )
         user = get_object_or_404(queryset, pk=pk)
         serializer = UsersDetailSerializer(user)
@@ -808,15 +808,15 @@ class ProvidersDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
 class vwProvidersTypeViewSet(viewsets.ViewSet):
     def list(self, request,typeProvider_pk=None):
         queryset = Providers.objects.filter(
-            type_provider__pk=typeProvider_pk,status=True
+            type_provider__pk=typeProvider_pk
         )
 
-        serializer = ProvidersFullSerializer(queryset, many=True)
+        serializer = ProvidersFullSerializer(queryset)
         return Response(serializer.data)
 
     def retrieve(self, request,typeProvider_pk=None, pk=None):
         queryset = Providers.objects.filter(
-            type_provider__pk=provider_pk,status=True
+            type_provider__pk=provider_pk
         )
         provider = get_object_or_404(queryset, pk=pk)
         serializer = ProvidersFullSerializer(provider)
@@ -825,12 +825,12 @@ class vwProvidersTypeViewSet(viewsets.ViewSet):
 
 class vwProvidersViewSet(viewsets.ViewSet):
     def list(self, request):
-        queryset = Providers.objects.filter(status=True)
+        queryset = Providers.objects.all()
         serializer = ProvidersFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        queryset = Providers.objects.filter(status=True)
+        queryset = Providers.objects.all()
         provider = get_object_or_404(queryset, pk=pk)
         serializer = ProvidersFullSerializer(provider)
 
@@ -848,7 +848,7 @@ class ClassificationProvidersViewSet(viewsets.ModelViewSet):
 class vwClassificationProvidersViewSet(viewsets.ViewSet):
     def list(self, request,user_pk=None):
         queryset = Classification_Providers.objects.filter(
-            user__pk=user_pk, status=True
+            user__pk=user_pk
         )
 
         serializer = ClassificationProvidersFullSerializer(queryset, many=True)
@@ -856,7 +856,7 @@ class vwClassificationProvidersViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,user_pk=None, pk=None):
         queryset = Classification_Providers.objects.filter(
-            user__pk=user_pk,status=True
+            user__pk=user_pk
         )
         classificationPro = get_object_or_404(queryset, pk=pk)
         serializer = ClassificationProvidersFullSerializer(classificationPro)
@@ -866,7 +866,7 @@ class vwClassificationProvidersViewSet(viewsets.ViewSet):
 class vwProviderClassificationProvidersViewSet(viewsets.ViewSet):
     def list(self, request,provider_pk=None):
         queryset = Classification_Providers.objects.filter(
-            provider__pk=provider_pk,status=True
+            provider__pk=provider_pk
         )
 
         serializer = ClassificationProvidersFullSerializer(queryset, many=True)
@@ -874,7 +874,7 @@ class vwProviderClassificationProvidersViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,provider_pk=None, pk=None):
         queryset = Classification_Providers.objects.filter(
-            provider__pk=provider_pk,status=True
+            provider__pk=provider_pk
         )
         classificationPro = get_object_or_404(queryset, pk=pk)
         serializer = ClassificationProvidersFullSerializer(classificationPro)
@@ -909,7 +909,7 @@ class PublicationsViewSet(viewsets.ViewSet):
           - application/json
 
         """
-        queryset = Publications.objects.filter()
+        queryset = Publications.objects.all()
         serializer = PublicationsFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -1018,7 +1018,7 @@ class PublicationsViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, pk=None):
         permission_classes = (AllowAny,)
-        queryset = Publications.objects.filter()
+        queryset = Publications.objects.all()
         user = get_object_or_404(queryset, pk=pk)
         serializer = PublicationsFullSerializer(user)
         return Response(serializer.data)
@@ -1235,16 +1235,11 @@ class PublicationsViewSet(viewsets.ViewSet):
                 file_name=hash_object.hexdigest()
                 fileExtension = os.path.splitext(file.name)[1]
                 id_photo=os.path.splitext(file.name)[0] 
-                print "En estring"
-                print id_photo
                 photo=None
                 try:
                     id_photo=int(id_photo)
-                    print "IDdddd"
-                    print id_photo
                     photo=Photos.objects.get(pk=id_photo)
                 except Exception:
-                    print"Errorrrrrr"
                     photo=None
                                    
                 if photo :
@@ -1435,7 +1430,7 @@ class vwPublicationsInTypeImmovableViewSet(viewsets.ViewSet):
     permission_classes = (AllowAny,)
     def list(self, request,typeProperty_pk=None):
         queryset = Publications.objects.filter(
-            type_property__pk=typeProperty_pk,status=True
+            type_property__pk=typeProperty_pk
         )
 
         serializer = PublicationsFullSerializer(queryset, many=True)
@@ -1443,7 +1438,7 @@ class vwPublicationsInTypeImmovableViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,typeProperty_pk=None,pk=None):
         queryset = Publications.objects.filter(
-            type_property__pk=typeProperty_pk,status=True
+            type_property__pk=typeProperty_pk
         )
         publication = get_object_or_404(queryset, pk=pk)
         serializer = PublicationsFullSerializer(publication)
@@ -1453,7 +1448,7 @@ class vwPublicationsInTypePublicationViewSet(viewsets.ViewSet):
     permission_classes = (AllowAny,)
     def list(self, request,typePublication_pk=None):
         queryset = Publications.objects.filter(
-            type_publications__pk=typePublication_pk,status=True
+            type_publications__pk=typePublication_pk
         )
 
         serializer = PublicationsFullSerializer(queryset, many=True)
@@ -1461,7 +1456,7 @@ class vwPublicationsInTypePublicationViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,typePublication_pk=None,pk=None):
         queryset = Publications.objects.filter(
-            type_publications__pk=typePublication_pk,status=True
+            type_publications__pk=typePublication_pk
         )
         publication = get_object_or_404(queryset, pk=pk)
         serializer = PublicationsFullSerializer(publication)
@@ -1471,7 +1466,7 @@ class vwPublicationsCurrenciesViewSet(viewsets.ViewSet):
     permission_classes = (AllowAny,)
     def list(self, request,currency_pk=None):
         queryset = Publications.objects.filter(
-            currency__pk=currency_pk,status=True
+            currency__pk=currency_pk
         )
 
         serializer = PublicationsFullSerializer(queryset, many=True)
@@ -1479,7 +1474,7 @@ class vwPublicationsCurrenciesViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,currency_pk=None,pk=None):
         queryset = Publications.objects.filter(
-            currency__pk=currency_pk,status=True
+            currency__pk=currency_pk
         )
         publication = get_object_or_404(queryset, pk=pk)
         serializer = PublicationsFullSerializer(publication)
@@ -1489,7 +1484,7 @@ class vwPublicationsViewSet(viewsets.ViewSet):
     permission_classes = (AllowAny,)
     def list(self, request,user_pk=None):
         queryset = Publications.objects.filter(
-            user__pk=user_pk,status=True
+            user__pk=user_pk
         )
 
         serializer = PublicationsFullSerializer(queryset, many=True)
@@ -1497,7 +1492,7 @@ class vwPublicationsViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,user_pk=None,pk=None):
         queryset = Publications.objects.filter(
-            user__pk=user_pk,status=True
+            user__pk=user_pk
         )
         publication = get_object_or_404(queryset, pk=pk)
         serializer = PublicationsFullSerializer(publication)
@@ -1506,13 +1501,13 @@ class vwPublicationsViewSet(viewsets.ViewSet):
 class vwAllPublicationsViewSet(viewsets.ViewSet):
     permission_classes = (AllowAny,)
     def list(self, request):
-        queryset = Publications.objects.filter(status=True)
+        queryset = Publications.objects.all()
 
         serializer = PublicationsFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        queryset = Publications.objects.filter(status=True)
+        queryset = Publications.objects.all()
         publication = get_object_or_404(queryset, pk=pk)
         serializer = PublicationsFullSerializer(publication)
         return Response(serializer.data)
@@ -1549,7 +1544,7 @@ class CommentsFilterViewSet(viewsets.ReadOnlyModelViewSet):
 class vwCommentsViewSet(viewsets.ViewSet):
     def list(self, request,user_pk=None):
         queryset = Comments.objects.filter(
-            user__pk=user_pk,status=True
+            user__pk=user_pk
         )
 
         serializer = CommentsFullSerializer(queryset, many=True)
@@ -1557,7 +1552,7 @@ class vwCommentsViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,user_pk=None,pk=None):
         queryset = Comments.objects.filter(
-            user__pk=user_pk,status=True
+            user__pk=user_pk
         )
         comment = get_object_or_404(queryset, pk=pk)
         serializer = CommentsFullSerializer(comment)
@@ -1566,7 +1561,7 @@ class vwCommentsViewSet(viewsets.ViewSet):
 class vwCommentsPublicationsViewSet(viewsets.ViewSet):
     def list(self, request,publication_pk=None):
         queryset = Comments.objects.filter(
-            publication__pk=publication_pk,status=True
+            publication__pk=publication_pk
         )
 
         serializer = CommentsSerializer(queryset, many=True)
@@ -1574,7 +1569,7 @@ class vwCommentsPublicationsViewSet(viewsets.ViewSet):
 
     def retrieve(self,request,publication_pk=None,pk=None):
         queryset = Comments.objects.filter(
-            publication__pk=user_pk,status=True
+            publication__pk=user_pk
         )
         comment = get_object_or_404(queryset, pk=pk)
         serializer = CommentsSerializer(comment)
@@ -1886,7 +1881,7 @@ class DocumentsTypeViewSet(viewsets.ViewSet):
     def list(self, request,typeDocument_pk=None):
         permission_classes
         queryset = Documents.objects.filter(
-            type_document__pk=typeDocument_pk,status=True
+            type_document__pk=typeDocument_pk
         )
 
         serializer = DocumentsSerializer(queryset, many=True)
@@ -1894,7 +1889,7 @@ class DocumentsTypeViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,typeDocument_pk=None,pk=None):
         queryset = Documents.objects.filter(
-            type_document__pk=typeDocument_pk,status=True
+            type_document__pk=typeDocument_pk
         )
         document = get_object_or_404(queryset, pk=pk)
         serializer = DocumentsSerializer(document)
@@ -1903,7 +1898,7 @@ class DocumentsTypeViewSet(viewsets.ViewSet):
 class vwDocumentsViewSet(viewsets.ViewSet):
     def list(self, request,user_pk=None):
         queryset = Documents.objects.filter(
-            administrator__pk=user_pk,status=True
+            administrator__pk=user_pk
         )
 
         serializer = DocumentsSerializer(queryset, many=True)
@@ -1911,7 +1906,7 @@ class vwDocumentsViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,user_pk=None,pk=None):
         queryset = Documents.objects.filter(
-            administrator__pk=user_pk,status=True
+            administrator__pk=user_pk
         )
         document = get_object_or_404(queryset, pk=pk)
         serializer = DocumentsSerializer(document)
@@ -2005,7 +2000,7 @@ class FavoritesFilterViewSet(viewsets.ReadOnlyModelViewSet):
 class vwFavoritesPublicationsViewSet(viewsets.ViewSet):
     def list(self, request,publication_pk=None):
         queryset = Favorites.objects.filter(
-            publication__pk=publication_pk,status=True
+            publication__pk=publication_pk
         )
 
         serializer = FavoritesSerializer(queryset, many=True)
@@ -2013,7 +2008,7 @@ class vwFavoritesPublicationsViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,publication_pk=None, pk=None):
         queryset = Favorites.bjects.filter(
-            publication__pk=publication_pk,status=True
+            publication__pk=publication_pk
         )
         favorite = get_object_or_404(queryset, pk=pk)
         serializer = FavoritesSerializer(favorite)
@@ -2032,7 +2027,7 @@ class NotificationsViewSet(viewsets.ModelViewSet):
 class vwNotificationsViewSet(viewsets.ViewSet):
     def list(self, request,user_pk=None):
         queryset = Notifications.objects.filter(
-            user__pk=user_pk,status=True
+            user__pk=user_pk
         )
 
         serializer =NotificationsFullSerializer(queryset, many=True)
@@ -2040,7 +2035,7 @@ class vwNotificationsViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,user_pk=None, pk=None):
         queryset = Notifications.bjects.filter(
-            user__pk=user_pk,status=True
+            user__pk=user_pk
         )
         notification = get_object_or_404(queryset, pk=pk)
         serializer = NotificationsFullSerializer(notification)
@@ -2049,7 +2044,7 @@ class vwNotificationsViewSet(viewsets.ViewSet):
 class vwNotificationsPublicationsViewSet(viewsets.ViewSet):
     def list(self, request,publication_pk=None):
         queryset = Notifications.objects.filter(
-            publication__pk=publication_pk,status=True
+            publication__pk=publication_pk
         )
 
         serializer = NotificationsFullSerializer(queryset, many=True)
@@ -2057,7 +2052,7 @@ class vwNotificationsPublicationsViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,publication_pk=None, pk=None):
         queryset = Notifications.bjects.filter(
-            publication__pk=user_pk,status=True
+            publication__pk=user_pk
         )
         notification = get_object_or_404(queryset, pk=pk)
         serializer = NotificationsFullSerializer(notification)
@@ -2075,7 +2070,7 @@ class PushNotificationsViewSet(viewsets.ModelViewSet):
 class vwPushNotificationsViewSet(viewsets.ViewSet):
     def list(self, request,user_pk=None):
         queryset = Push_Notifications.objects.filter(
-            user__pk=user_pk,status=True
+            user__pk=user_pk
         )
 
         serializer = PushNotificationsSerializer(queryset, many=True)
@@ -2083,7 +2078,7 @@ class vwPushNotificationsViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,user_pk=None, pk=None):
         queryset = Push_Notifications.bjects.filter(
-            user__pk=user_pk,status=True
+            user__pk=user_pk
         )
         push_notification = get_object_or_404(queryset, pk=pk)
         serializer = PushNotificationsSerializer(push_notification)
@@ -2092,7 +2087,7 @@ class vwPushNotificationsViewSet(viewsets.ViewSet):
 class vwPushNotificationsPubViewSet(viewsets.ViewSet):
     def list(self, request,publication_pk=None):
         queryset = Push_Notifications.objects.filter(
-            publication__pk=publication_pk,status=True
+            publication__pk=publication_pk
         )
 
         serializer = PushNotificationsSerializer(queryset, many=True)
@@ -2100,7 +2095,7 @@ class vwPushNotificationsPubViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,publication_pk=None, pk=None):
         queryset = Push_Notifications.objects.filter(
-            publication__pk=publication_pk,status=True
+            publication__pk=publication_pk
         )
         push_notification = get_object_or_404(queryset, pk=pk)
         serializer = PushNotificationsSerializer(push_notification)
@@ -2135,7 +2130,7 @@ class PhotosDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
 class vwPhotosPublicationsViewSet(viewsets.ViewSet):
     def list(self, request,publication_pk=None):
         queryset = Photos.objects.filter(
-            publication__pk=publication_pk,status=True
+            publication__pk=publication_pk
         )
 
         serializer =PhotosFullSerializer(queryset,many=True)
@@ -2143,7 +2138,7 @@ class vwPhotosPublicationsViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,publication_pk=None, pk=None):
         queryset =Photos.objects.filter(
-            publication__pk=publication_pk,status=True
+            publication__pk=publication_pk
         )
         photo = get_object_or_404(queryset, pk=pk)
         serializer = PhotosFullSerializer(photo)
@@ -2165,12 +2160,12 @@ class TypesReportsViewSet(viewsets.ModelViewSet):
 
 class vwAllTypesReportsViewSet(viewsets.ViewSet):
     def list(self, request):
-        queryset = Reports.objects.filter(status=True)
+        queryset = Reports.objects.all()
         serializer =ReportsSerializer(queryset,many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        queryset =Reports.objects.filter(status=True)
+        queryset =Reports.objects.all()
         report = get_object_or_404(queryset, pk=pk)
         serializer = ReportsSerializer(report)
         return Response(serializer.data)
@@ -2188,7 +2183,7 @@ class ReportsViewSet(viewsets.ModelViewSet):
 class vwReportsViewSet(viewsets.ViewSet):
     def list(self, request,user_pk=None):
         queryset = Reports.objects.filter(
-            user__pk=user_pk,status=True
+            user__pk=user_pk
         )
 
         serializer = ReportsSerializer(queryset, many=True)
@@ -2196,7 +2191,7 @@ class vwReportsViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,user_pk=None, pk=None):
         queryset =Reports.objects.filter(
-            user__pk=user_pk,status=True
+            user__pk=user_pk
         )
         report = get_object_or_404(queryset, pk=pk)
         serializer = ReportsSerializer(report)
@@ -2205,7 +2200,7 @@ class vwReportsViewSet(viewsets.ViewSet):
 class vwTypeReportsViewSet(viewsets.ViewSet):
     def list(self, request,typeReport_pk=None):
         queryset = Reports.objects.filter(
-            type_report__pk=typeReport_pk,status=True
+            type_report__pk=typeReport_pk
         )
 
         serializer = ReportsSerializer(queryset, many=True)
@@ -2213,7 +2208,7 @@ class vwTypeReportsViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,typeReport_pk=None, pk=None):
         queryset =Reports.objects.filter(
-            type_report__pk=typeReport_pk,status=True
+            type_report__pk=typeReport_pk
         )
         report = get_object_or_404(queryset, pk=pk)
         serializer = ReportsSerializer(report)
@@ -2231,7 +2226,7 @@ class UserLocationViewSet(viewsets.ModelViewSet):
 class vwUserLocationViewSet(viewsets.ViewSet):
     def list(self, request,user_pk=None):
         queryset = User_Location.objects.filter(
-            user__pk=user_pk,status=True
+            user__pk=user_pk
         )
 
         serializer = UserLocationSerializer(queryset, many=True)
@@ -2239,7 +2234,7 @@ class vwUserLocationViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,user_pk=None, pk=None):
         queryset =User_Location.objects.filter(
-            user__pk=user_pk,status=True
+            user__pk=user_pk
         )
         user_u = get_object_or_404(queryset, pk=pk)
         serializer = UserLocationSerializer(user_u)
@@ -2261,12 +2256,12 @@ class TypeCustomersViewSet(viewsets.ModelViewSet):
 
 class vwAllTypesCustomersViewSet(viewsets.ViewSet):
     def list(self, request):
-        queryset = Types_Customers.objects.filter(status=True)
+        queryset = Types_Customers.objects.all()
         serializer = TypeCustomersSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        queryset =Types_Customers.objects.filter(status=True)
+        queryset =Types_Customers.objects.all()
         type_customer = get_object_or_404(queryset, pk=pk)
         serializer = TypeCustomersSerializer(type_customer)
         return Response(serializer.data)
@@ -2306,7 +2301,7 @@ class CustomersFilterViewSet(viewsets.ReadOnlyModelViewSet):
 class vwCustomersForTypeViewSet(viewsets.ViewSet):
     def list(self, request,typeCustomer_pk=None):
         queryset =Customers.objects.filter(
-            type_customer__pk=typeCustomer_pk,status=True
+            type_customer__pk=typeCustomer_pk
         )
 
         serializer = CustomersSerializer(queryset, many=True)
@@ -2314,7 +2309,7 @@ class vwCustomersForTypeViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,typeCustomer_pk=None, pk=None):
         queryset =Customers.objects.filter(
-            type_customer__pk=typeCustomer_pk,status=True
+            type_customer__pk=typeCustomer_pk
         )
         customer = get_object_or_404(queryset, pk=pk)
         serializer = CustomersSerializer(customer)
@@ -2352,7 +2347,7 @@ class TasksFilterViewSet(viewsets.ReadOnlyModelViewSet):
 class vwTasksViewSet(viewsets.ViewSet):
     def list(self, request,user_pk=None):
         queryset = Tasks.objects.filter(
-            user__pk=user_pk,status=True
+            user__pk=user_pk
         )
 
         serializer = TasksSerializer(queryset, many=True)
@@ -2360,7 +2355,7 @@ class vwTasksViewSet(viewsets.ViewSet):
 
     def retrieve(self, request,user_pk=None, pk=None):
         queryset =Tasks.objects.filter(
-            user__pk=user_pk,status=True
+            user__pk=user_pk
         )
         task = get_object_or_404(queryset, pk=pk)
         serializer = TasksSerializer(task)
