@@ -1587,7 +1587,7 @@ class vwCommentsPublicationsViewSet(viewsets.ViewSet):
 class DocumentsViewSet(viewsets.ViewSet):
     def list(self, request):
         permission_classes = (IsAuthenticated,)
-        queryset = Documents.objects.filter()
+        queryset = Documents.objects.all()
         serializer = DocumentsFullSerializer(queryset, many=True)
         return Response(serializer.data)
 
