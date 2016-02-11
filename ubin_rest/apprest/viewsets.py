@@ -43,7 +43,7 @@ from rest_framework_jwt.settings import api_settings
 from calendar import timegm
 from datetime import datetime
 
-from rest_framework.permissions import AllowAny, IsAuthenticated,IsAdminUser
+from rest_framework.permissions import AllowAny, IsAuthenticated,IsAdminUser,IsAuthenticatedOrReadOnly
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.renderers import JSONRenderer
 
@@ -55,13 +55,23 @@ class CurrenciesViewSet(viewsets.ModelViewSet):
     serializer_class = CurrenciesSerializer
     queryset = Currencies.objects.all()
 
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated, ]
+        else:
+            self.permission_classes = [IsAdminUser, ]
+
+        return super(CurrenciesViewSet, self).get_permissions()
+
 class vwCurrenciesViewSet(viewsets.ViewSet):
     def list(self, request):
+        permission_classes=(IsAuthenticated,)
         queryset = Currencies.objects.filter(status=True)
         serializer = CurrenciesSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
+        permission_classes=(IsAuthenticated,)
         queryset = Currencies.objects.filter(status=True)
         currency = get_object_or_404(queryset, pk=pk)
         serializer = CurrenciesSerializer(currency)
@@ -76,14 +86,23 @@ class vwCurrenciesViewSet(viewsets.ViewSet):
 class TypesPropertyViewSet(viewsets.ModelViewSet):
     serializer_class = TypesPropertySerializer
     queryset = Types_Property.objects.all()
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated, ]
+        else:
+            self.permission_classes = [IsAdminUser, ]
+
+        return super(TypesPropertyViewSet, self).get_permissions()
 
 class vwTypesPropertyViewSet(viewsets.ViewSet):
     def list(self, request):
+        permission_classes=(IsAuthenticated,)
         queryset = Types_Property.objects.filter(status=True)
         serializer = TypesPropertySerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
+        permission_classes=(IsAuthenticated,)
         queryset = Types_Property.objects.filter(status=True)
         type_immovable = get_object_or_404(queryset, pk=pk)
         serializer = TypesPropertySerializer(type_immovable)
@@ -98,14 +117,23 @@ class vwTypesPropertyViewSet(viewsets.ViewSet):
 class TypesPublicationsViewSet(viewsets.ModelViewSet):
     serializer_class = TypesPublicationsSerializer
     queryset = Types_Publications.objects.all()
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated, ]
+        else:
+            self.permission_classes = [IsAdminUser, ]
+
+        return super(TypesPublicationsViewSet, self).get_permissions()
 
 class vwTypesPublicationsViewSet(viewsets.ViewSet):
     def list(self, request):
+        permission_classes=(IsAuthenticated,)
         queryset = Types_Publications.objects.filter(status=True)
         serializer = TypesPublicationsSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
+        permission_classes= (IsAuthenticated,)
         queryset = Types_Publications.objects.filter(status=True)
         type_publication = get_object_or_404(queryset, pk=pk)
         serializer = TypesPublicationsSerializer(type_publication)
@@ -118,15 +146,22 @@ class vwTypesPublicationsViewSet(viewsets.ViewSet):
 class TypesAdvisorsViewSet(viewsets.ModelViewSet):
     serializer_class = TypesAdvisorsSerializer
     queryset = Types_Advisors.objects.all()
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [AllowAny, ]
+        else:
+            self.permission_classes = [IsAdminUser, ]
 
+        return super(TypesAdvisorsViewSet, self).get_permissions()
 class vwTypesAdvisorsViewSet(viewsets.ViewSet):
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
     def list(self, request):
         queryset = Types_Advisors.objects.filter(status=True)
         serializer = TypesAdvisorsSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
+        permission_classes=(IsAuthenticated,)
         queryset = Types_Advisors.objects.filter(status=True)
         type_advisor = get_object_or_404(queryset, pk=pk)
         serializer = TypesAdvisorsSerializer(type_advisor)
@@ -140,14 +175,23 @@ class vwTypesAdvisorsViewSet(viewsets.ViewSet):
 class TypesProvidersViewSet(viewsets.ModelViewSet):
     serializer_class = TypesProvidersSerializer
     queryset = Types_Providers.objects.all()
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated, ]
+        else:
+            self.permission_classes = [IsAdminUser, ]
+
+        return super(TypesProvidersViewSet, self).get_permissions()
 
 class vwTypesProvidersViewSet(viewsets.ViewSet):
     def list(self, request):
+        permission_classes=(IsAuthenticated,)
         queryset = Types_Providers.objects.filter(status=True)
         serializer = TypesProvidersSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
+        permission_classes=(IsAuthenticated,)
         queryset = Types_Providers.objects.filter(status=True)
         type_provider = get_object_or_404(queryset, pk=pk)
         serializer = TypesProvidersSerializer(type_provider)
@@ -161,14 +205,23 @@ class vwTypesProvidersViewSet(viewsets.ViewSet):
 class TypesEventsViewSet(viewsets.ModelViewSet):
     serializer_class = TypesEventsSerializer
     queryset = Types_Events.objects.all()
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated, ]
+        else:
+            self.permission_classes = [IsAdminUser, ]
+
+        return super(TypesEventsViewSet, self).get_permissions()
 
 class vwTypesEventsViewSet(viewsets.ViewSet):
     def list(self, request):
+        permission_classes=(IsAuthenticated,)
         queryset = Types_Events.objects.filter(status=True)
         serializer = TypesEventsSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
+        permission_classes=(IsAuthenticated,)
         queryset = Types_Events.objects.filter(status=True)
         type_event = get_object_or_404(queryset, pk=pk)
         serializer = TypesEventsSerializer(type_event)
@@ -183,14 +236,23 @@ class vwTypesEventsViewSet(viewsets.ViewSet):
 class TypesDocumentsViewSet(viewsets.ModelViewSet):
     serializer_class = TypesDocumentsSerializer
     queryset = Types_Documents.objects.all()
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated, ]
+        else:
+            self.permission_classes = [IsAdminUser, ]
+
+        return super(TypesDocumentsViewSet, self).get_permissions()
 
 class vwTypesDocumentsViewSet(viewsets.ViewSet):
     def list(self, request):
+        permission_classes=(IsAuthenticated,)
         queryset = Types_Documents.objects.filter(status=True)
         serializer = TypesDocumentsSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
+        permission_classes=(IsAuthenticated,)
         queryset = Types_Documents.objects.filter(status=True)
         type_document = get_object_or_404(queryset, pk=pk)
         serializer = TypesDocumentsSerializer(type_document)
@@ -468,7 +530,6 @@ class UsersViewSet(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, pk=None):
-        permission_classes = (AllowAny,)
         queryset = Users.objects.filter()
         user = get_object_or_404(queryset, pk=pk)
         serializer = UsersFullSerializer(user)
@@ -509,6 +570,7 @@ class UsersViewSet(viewsets.ViewSet):
             produces:
                 - application/json
         """
+
         user=get_object_or_404(Users,pk=pk)
         photo=user.photo
         if len(request.FILES.items()) > 0 :
@@ -612,7 +674,6 @@ class UsersViewSet(viewsets.ViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class DocumentsFilterViewSet(viewsets.ReadOnlyModelViewSet):
- 
     serializer_class = DocumentsFullSerializer
     queryset = Documents.objects.all()
     filter_backends = (filters.DjangoFilterBackend,filters.OrderingFilter,filters.SearchFilter,)
@@ -721,6 +782,13 @@ class ProvidersViewSet(viewsets.ModelViewSet):
  
     serializer_class = ProvidersSerializer
     queryset = Providers.objects.all()
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated, ]
+        else:
+            self.permission_classes = [IsAdminUser, ]
+
+        return super(ProvidersViewSet, self).get_permissions()   
 
 class ProvidersDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ProvidersFullSerializer
@@ -1532,7 +1600,7 @@ class vwCommentsPublicationsViewSet(viewsets.ViewSet):
 '''
 class DocumentsViewSet(viewsets.ViewSet):
     def list(self, request):
-        permission_classes = (AllowAny,)
+        permission_classes = (IsAuthenticated,)
         queryset = Documents.objects.filter()
         serializer = DocumentsFullSerializer(queryset, many=True)
         return Response(serializer.data)
@@ -1617,7 +1685,7 @@ class DocumentsViewSet(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, pk=None):
-        permission_classes = (AllowAny,)
+        permission_classes = (IsAuthenticated,)
         queryset = Documents.objects.filter()
         document = get_object_or_404(queryset, pk=pk)
         serializer = DocumentsFullSerializer(document)
@@ -1831,6 +1899,7 @@ class DocumentsFilterViewSet(viewsets.ReadOnlyModelViewSet):
 
 class DocumentsTypeViewSet(viewsets.ViewSet):
     def list(self, request,typeDocument_pk=None):
+        permission_classes
         queryset = Documents.objects.filter(
             type_document__pk=typeDocument_pk,status=True
         )
@@ -2101,6 +2170,13 @@ class vwPhotosPublicationsViewSet(viewsets.ViewSet):
 class TypesReportsViewSet(viewsets.ModelViewSet):
     serializer_class = TypesReportsSerializer
     queryset = Types_Reports.objects.all()
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated, ]
+        else:
+            self.permission_classes = [IsAdminUser, ]
+
+        return super(TypesReportsViewSet, self).get_permissions()
 
 class vwAllTypesReportsViewSet(viewsets.ViewSet):
     def list(self, request):
@@ -2190,6 +2266,13 @@ class vwUserLocationViewSet(viewsets.ViewSet):
 class TypeCustomersViewSet(viewsets.ModelViewSet):
     serializer_class = TypeCustomersSerializer
     queryset = Types_Customers.objects.all()
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated, ]
+        else:
+            self.permission_classes = [IsAdminUser, ]
+
+        return super(TypeCustomersViewSet, self).get_permissions()
 
 class vwAllTypesCustomersViewSet(viewsets.ViewSet):
     def list(self, request):
@@ -2300,7 +2383,7 @@ class vwTasksViewSet(viewsets.ViewSet):
  
   
 class UploadFilesViewSet(viewsets.ViewSet):
-  permission_classes = (AllowAny,)
+  permission_classes = (IsAuthenticated,)
   parser_classes = (MultiPartParser,FormParser,JSONParser,)
   def create(self, request, format=None):
     """
