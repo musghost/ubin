@@ -1671,7 +1671,7 @@ class DocumentsViewSet(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, pk=None):
-        queryset = Documents.objects.filter()
+        queryset = Documents.objects.all()
         document = get_object_or_404(queryset, pk=pk)
         serializer = DocumentsFullSerializer(document)
         return Response(serializer.data)
