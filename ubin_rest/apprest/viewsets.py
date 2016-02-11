@@ -1367,6 +1367,15 @@ class PublicationsDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
         'status'
         )
 
+    def get_queryset(self):
+        from_price=self.request.query_params.get('from_price', None)
+        to_price=self.request.query_params.get('to_price', None)
+        if from_price is not None and to_price is not None:
+            return Publications.objects.filter(
+                price_first__range=(from_price,to_price)
+            )
+        return Publications.objects.all()
+
 
 class vwPublicationsInTypeImmovableViewSet(viewsets.ViewSet):
     permission_classes = (AllowAny,)
