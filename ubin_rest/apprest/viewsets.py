@@ -65,13 +65,11 @@ class CurrenciesViewSet(viewsets.ModelViewSet):
 
 class vwCurrenciesViewSet(viewsets.ViewSet):
     def list(self, request):
-        permission_classes=(IsAuthenticated,)
         queryset = Currencies.objects.filter(status=True)
         serializer = CurrenciesSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        permission_classes=(IsAuthenticated,)
         queryset = Currencies.objects.filter(status=True)
         currency = get_object_or_404(queryset, pk=pk)
         serializer = CurrenciesSerializer(currency)
@@ -96,13 +94,11 @@ class TypesPropertyViewSet(viewsets.ModelViewSet):
 
 class vwTypesPropertyViewSet(viewsets.ViewSet):
     def list(self, request):
-        permission_classes=(IsAuthenticated,)
         queryset = Types_Property.objects.filter(status=True)
         serializer = TypesPropertySerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        permission_classes=(IsAuthenticated,)
         queryset = Types_Property.objects.filter(status=True)
         type_immovable = get_object_or_404(queryset, pk=pk)
         serializer = TypesPropertySerializer(type_immovable)
@@ -127,13 +123,11 @@ class TypesPublicationsViewSet(viewsets.ModelViewSet):
 
 class vwTypesPublicationsViewSet(viewsets.ViewSet):
     def list(self, request):
-        permission_classes=(IsAuthenticated,)
         queryset = Types_Publications.objects.filter(status=True)
         serializer = TypesPublicationsSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        permission_classes= (IsAuthenticated,)
         queryset = Types_Publications.objects.filter(status=True)
         type_publication = get_object_or_404(queryset, pk=pk)
         serializer = TypesPublicationsSerializer(type_publication)
@@ -154,14 +148,12 @@ class TypesAdvisorsViewSet(viewsets.ModelViewSet):
 
         return super(TypesAdvisorsViewSet, self).get_permissions()
 class vwTypesAdvisorsViewSet(viewsets.ViewSet):
-    permission_classes = (IsAuthenticated,)
     def list(self, request):
         queryset = Types_Advisors.objects.filter(status=True)
         serializer = TypesAdvisorsSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        permission_classes=(IsAuthenticated,)
         queryset = Types_Advisors.objects.filter(status=True)
         type_advisor = get_object_or_404(queryset, pk=pk)
         serializer = TypesAdvisorsSerializer(type_advisor)
@@ -185,13 +177,11 @@ class TypesProvidersViewSet(viewsets.ModelViewSet):
 
 class vwTypesProvidersViewSet(viewsets.ViewSet):
     def list(self, request):
-        permission_classes=(IsAuthenticated,)
         queryset = Types_Providers.objects.filter(status=True)
         serializer = TypesProvidersSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        permission_classes=(IsAuthenticated,)
         queryset = Types_Providers.objects.filter(status=True)
         type_provider = get_object_or_404(queryset, pk=pk)
         serializer = TypesProvidersSerializer(type_provider)
@@ -215,13 +205,11 @@ class TypesEventsViewSet(viewsets.ModelViewSet):
 
 class vwTypesEventsViewSet(viewsets.ViewSet):
     def list(self, request):
-        permission_classes=(IsAuthenticated,)
         queryset = Types_Events.objects.filter(status=True)
         serializer = TypesEventsSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        permission_classes=(IsAuthenticated,)
         queryset = Types_Events.objects.filter(status=True)
         type_event = get_object_or_404(queryset, pk=pk)
         serializer = TypesEventsSerializer(type_event)
@@ -246,13 +234,11 @@ class TypesDocumentsViewSet(viewsets.ModelViewSet):
 
 class vwTypesDocumentsViewSet(viewsets.ViewSet):
     def list(self, request):
-        permission_classes=(IsAuthenticated,)
         queryset = Types_Documents.objects.filter(status=True)
         serializer = TypesDocumentsSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request,pk=None):
-        permission_classes=(IsAuthenticated,)
         queryset = Types_Documents.objects.filter(status=True)
         type_document = get_object_or_404(queryset, pk=pk)
         serializer = TypesDocumentsSerializer(type_document)
@@ -1685,7 +1671,6 @@ class DocumentsViewSet(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, pk=None):
-        permission_classes = (IsAuthenticated,)
         queryset = Documents.objects.filter()
         document = get_object_or_404(queryset, pk=pk)
         serializer = DocumentsFullSerializer(document)
