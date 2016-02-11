@@ -143,7 +143,7 @@ router.register(r'classificationProvider',ClassificationProvidersViewSet)
 Publications
 '''
 #CRUD
-router.register(r'publication',PublicationsViewSet)
+router.register(r'publication',PublicationsViewSet,base_name="publication")
 router.register(r'publicationAndPhotos',PublicationsAndPhotosViewSet,base_name="publicationAndPhotos")
 #Filter
 router.register(r'publicationsFilter', PublicationsDefaultFilterViewSet)
