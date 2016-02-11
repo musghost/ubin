@@ -831,9 +831,297 @@ class vwProviderClassificationProvidersViewSet(viewsets.ViewSet):
 '''
 ---------------- Publications ----------------------
 '''
-class PublicationsViewSet(viewsets.ModelViewSet):
-    serializer_class = PublicationsSerializer
-    queryset = Publications.objects.all()
+class PublicationsViewSet(viewsets.ViewSet):
+        
+    def list(self, request):
+        queryset = Publications.objects.filter()
+        serializer = PublicationsFullSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        """
+            Publication.
+            ---
+            type:
+              photos_1:
+                required: false
+                type: file
+              photo_2:
+                required: false
+                type: file
+              photo_3:
+                required: false
+                type: file
+              photo_4:
+                required: false
+                type: file
+              photo_5:
+                required: false
+                type: file
+              photo_6:
+                required: false
+                type: file
+
+            request_serializer: PublicationsSerializer
+            response_serializer: PublicationsFullSerializer
+            omit_serializer: false
+
+            parameters_strategy: merge
+
+            parameters:
+               - name: photo_1
+                 description: Photo publication.
+                 required: false
+                 type: file
+                 paramType: file
+               - name: photo_2
+                 description: Photo publication.
+                 required: false
+                 type: file
+                 paramType: file
+               - name: photo_3
+                 description: Photo publication.
+                 required: false
+                 type: file
+                 paramType: file
+               - name: photo_4
+                 description: Photo publication.
+                 required: false
+                 type: file
+                 paramType: file
+               - name: photo_5
+                 description: Photo publication.
+                 required: false
+                 type: file
+                 paramType: file
+              - name: photo_6
+                 description: Photo publication.
+                 required: false
+                 type: file
+                 paramType: file
+
+            responseMessages:
+                - code: 400
+                  message: BAD REQUEST
+                - code: 200
+                  message: OK
+                - code: 500
+                  message: INTERNAL SERVER ERROR
+            consumes:
+                - application/json
+            produces:
+                - application/json
+        """
+        serializer = PublicationsSerializer(data=request.POST)
+        if serializer.is_valid():
+            publication=serializer.save()
+            if request.FILES.items() :
+                for key, file in request.FILES.items():
+                    randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
+                    hash_object = hashlib.sha1(randomtext)
+                    code=hash_object.hexdigest()
+                    file_name=hash_object.hexdigest()
+                    fileExtension = os.path.splitext(file.name)[1]
+                    photo=file_name+fileExtension
+                    Photos(
+                        hash_name=file_name+fileExtension,
+                        original_name=file.name,
+                        path=settings.MEDIA_ROOT,
+                        publication=publication
+                        ).save()
+                    path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
+                    dest = open(path.encode('utf-8'), 'wb+')
+                    if file.multiple_chunks:
+                        for c in file.chunks():
+                            dest.write(c)
+                    else:
+                        dest.write(file.read())
+                    dest.close()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, pk=None):
+        permission_classes = (AllowAny,)
+        queryset = Publications.objects.filter()
+        user = get_object_or_404(queryset, pk=pk)
+        serializer = PublicationsFullSerializer(user)
+        return Response(serializer.data)
+
+    def update(self, request, pk=None):
+        """
+            Publication.
+            ---
+            type:
+              photos_1:
+                required: false
+                type: file
+              photo_2:
+                required: false
+                type: file
+              photo_3:
+                required: false
+                type: file
+              photo_4:
+                required: false
+                type: file
+              photo_5:
+                required: false
+                type: file
+              photo_6:
+                required: false
+                type: file
+
+            request_serializer: PublicationsSerializer
+            response_serializer: PublicationsFullSerializer
+            omit_serializer: false
+
+            parameters_strategy: merge
+
+            parameters:
+               - name: photo_1
+                 description: Photo publication.
+                 required: false
+                 type: file
+                 paramType: file
+               - name: photo_2
+                 description: Photo publication.
+                 required: false
+                 type: file
+                 paramType: file
+               - name: photo_3
+                 description: Photo publication.
+                 required: false
+                 type: file
+                 paramType: file
+               - name: photo_4
+                 description: Photo publication.
+                 required: false
+                 type: file
+                 paramType: file
+               - name: photo_5
+                 description: Photo publication.
+                 required: false
+                 type: file
+                 paramType: file
+              - name: photo_6
+                 description: Photo publication.
+                 required: false
+                 type: file
+                 paramType: file
+
+            responseMessages:
+                - code: 400
+                  message: BAD REQUEST
+                - code: 200
+                  message: OK
+                - code: 500
+                  message: INTERNAL SERVER ERROR
+            consumes:
+                - application/json
+            produces:
+                - application/json
+        """
+        publication=get_object_or_404(Publications,pk=pk)
+        if len(request.FILES.items()) > 0 :
+                for key, file in request.FILES.items():
+                    randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
+                    hash_object = hashlib.sha1(randomtext)
+                    code=hash_object.hexdigest()
+                    file_name=hash_object.hexdigest()
+                    fileExtension = os.path.splitext(file.name)[1]
+                    
+                    file_path = settings.MEDIA_ROOT + str(photo)
+                    if os.path.isfile(file_path):
+                        os.remove(file_path)
+                    Photos(
+                        hash_name=file_name+fileExtension,
+                        original_name=file.name,
+                        path=settings.MEDIA_ROOT,
+                        publication=publication
+                        ).save()
+                    path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
+                    dest = open(path.encode('utf-8'), 'wb+')
+                    if file.multiple_chunks:
+                        for c in file.chunks():
+                            dest.write(c)
+                    else:
+                        dest.write(file.read())
+                    dest.close()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def partial_update(self, request, pk=None):
+        """
+            Partial update user
+            ---
+            type:
+              photo:
+                required: false
+                type: file
+
+            request_serializer: UsersSerializer
+            response_serializer: UsersFullSerializer
+            omit_serializer: false
+
+            parameters_strategy: merge
+            parameters:
+               - name: photo
+                 description: photo.
+                 required: true
+                 type: file
+                 paramType: file
+
+            responseMessages:
+                - code: 400
+                  message: BAD REQUEST
+                - code: 200
+                  message: OK
+                - code: 201
+                  message: CREATED
+                - code: 500
+                  message: INTERNAL SERVER ERROR
+            consumes:
+                - application/json
+            produces:
+                - application/json
+        """
+        user=get_object_or_404(Users,pk=pk)
+        photo=user.photo
+        if len(request.FILES.items()) > 0:
+            file_path = settings.MEDIA_ROOT + str(photo)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+            for key, file in request.FILES.items():
+                randomtext ="".join( [random.choice(string.digits+string.letters) for i in   xrange(200)] )
+                hash_object = hashlib.sha1(randomtext)
+                file_name=hash_object.hexdigest()
+                fileExtension = os.path.splitext(file.name)[1]
+                path = settings.MEDIA_ROOT+file_name+fileExtension #file.name
+                dest = open(path.encode('utf-8'), 'wb+')
+                hash_name=file_name+fileExtension
+                photo=hash_name
+                if file.multiple_chunks:
+                    for c in file.chunks():
+                        dest.write(c)
+                else:
+                    dest.write(file.read())
+                    dest.close()
+        request.data['photo']=photo
+        serializer=UsersSerializer(user,data=request.data,partial=True)
+        if serializer.is_valid():
+            user=serializer.save()
+            return Response(UsersFullSerializer(user).data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None):
+        user=get_object_or_404(Users,pk=pk)
+        file_path = settings.MEDIA_ROOT + str(user.photo)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class PublicationsAndPhotosViewSet(viewsets.ViewSet):
     def create(self, request):
@@ -916,7 +1204,7 @@ class PublicationsAndPhotosViewSet(viewsets.ViewSet):
                     photo=file_name+fileExtension
                     Photos(
                         hash_name=file_name+fileExtension,
-                        original_name=file.name+fileExtension,
+                        original_name=file.name,
                         path=settings.MEDIA_ROOT,
                         publication=publication
                         ).save()
