@@ -180,13 +180,15 @@ class Publications(models.Model):
     town=models.IntegerField(null=False)
     neighborhood=models.TextField(max_length=200,null=True,blank=True)
     date= models.DateTimeField(auto_now_add=False,auto_now=False,null=False)
+    code=models.TextField(max_length=50,null=True, blank=True)
+    is_mortgage = models.BooleanField(default=False)
     status = models.BooleanField(default=True)
     class Meta:
         ordering = ['date','price_first']
 
 
 class Comments(models.Model):
-    publication= models.ForeignKey(Publications,null=False)
+    publication= models.ForeignKey(Publications,null=False,related_name='comments')
     user= models.ForeignKey(Users,null=False)
     comment= models.TextField(max_length=1000,null=False,blank=False)
     date= models.DateTimeField(auto_now=False, auto_now_add=False,null=False)

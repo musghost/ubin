@@ -195,6 +195,7 @@ router.register(r'unfavorite',UnfavoriteViewSet,base_name="unfavorite")
 Notifications
 '''
 router.register(r'notification',NotificationsViewSet)
+router.register(r'notificationsFilter',NotificationsFilterViewSet,base_name='notificationsFilter')
 
 '''
 Push Notifications
