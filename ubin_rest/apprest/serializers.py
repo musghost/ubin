@@ -382,7 +382,7 @@ class PublicationsNotificationSerializer(serializers.ModelSerializer):
     type_property=TypesPropertySerializer()
     currency=CurrenciesSerializer()
     user=UsersDetailSerializer()
-    comments = CommentsSerializer(many=True,read_only=True)
+    comments = CommentsFullerializer(many=True,read_only=True)
     class Meta:
         model = Publications
         fields = (
