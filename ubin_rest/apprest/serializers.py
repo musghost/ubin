@@ -375,7 +375,19 @@ class PublicationsFullSerializer(serializers.ModelSerializer):
             return obj.favorite.all().count()
         else:
             return 0
-
+            
+class CommentsFullerializer(serializers.ModelSerializer):
+    user=UsersDetailSerializer()
+    class Meta:
+        model = Comments
+        fields = (
+            'id',
+            'publication',
+            'user', 
+            'comment',
+            'date',
+            'status'
+            )
 
 class PublicationsNotificationSerializer(serializers.ModelSerializer):
     type_publications=TypesPublicationsSerializer()
@@ -422,19 +434,6 @@ class CommentsSerializer(serializers.ModelSerializer):
         	'date',
             'status'
         	)
-
-class CommentsFullerializer(serializers.ModelSerializer):
-    user=UsersDetailSerializer()
-    class Meta:
-        model = Comments
-        fields = (
-            'id',
-            'publication',
-            'user', 
-            'comment',
-            'date',
-            'status'
-            )
 
 
 class DocumentsSerializer(serializers.ModelSerializer):
