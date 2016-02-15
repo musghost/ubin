@@ -301,8 +301,10 @@ class PublicationsSerializer(serializers.ModelSerializer):
         	'construction_area',
         	'country',
         	'state',
-                'town',
-                'neighborhood',
+            'town',
+            'neighborhood',
+            'is_mortgage',
+            'code',
         	'date',
         	'status'
         	)
@@ -349,6 +351,8 @@ class PublicationsFullSerializer(serializers.ModelSerializer):
             'neighborhood',
             'date',
             'status',
+            'is_mortgage',
+            'code',
             'isfavorite',
             'votes',
             'photos'
@@ -371,19 +375,7 @@ class PublicationsFullSerializer(serializers.ModelSerializer):
             return obj.favorite.all().count()
         else:
             return 0
-
-class CommentsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comments
-        fields = (
-        	'id',
-        	'publication',
-        	'user', 
-        	'comment',
-        	'date',
-            'status'
-        	)
-
+            
 class CommentsFullerializer(serializers.ModelSerializer):
     user=UsersDetailSerializer()
     class Meta:
@@ -396,6 +388,52 @@ class CommentsFullerializer(serializers.ModelSerializer):
             'date',
             'status'
             )
+
+class PublicationsNotificationSerializer(serializers.ModelSerializer):
+    type_publications=TypesPublicationsSerializer()
+    type_property=TypesPropertySerializer()
+    currency=CurrenciesSerializer()
+    user=UsersDetailSerializer()
+    comments = CommentsFullerializer(many=True,read_only=True)
+    class Meta:
+        model = Publications
+        fields = (
+            'id',
+            'canvas_number',
+            'user', 
+            'type_publications',
+            'type_property',
+            'title',
+            'description',
+            'price_first',
+            'currency',
+            'bathrooms',
+            'antiquity',
+            'area',
+            'construction_area',
+            'country',
+            'state',
+            'town',
+            'neighborhood',
+            'date',
+            'status',
+            'is_mortgage',
+            'code',
+            'comments'
+            )
+
+
+class CommentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comments
+        fields = (
+        	'id',
+        	'publication',
+        	'user', 
+        	'comment',
+        	'date',
+            'status'
+        	)
 
 
 class DocumentsSerializer(serializers.ModelSerializer):
@@ -492,7 +530,7 @@ class NotificationsSerializer(serializers.ModelSerializer):
         	)
 
 class NotificationsFullSerializer(serializers.ModelSerializer):
-    publication=PublicationsFullSerializer()
+    publication=PublicationsNotificationSerializer()
     user=UsersDetailSerializer()
     class Meta:
         model = Notifications
