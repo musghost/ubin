@@ -2157,7 +2157,7 @@ class NotificationsFilterViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         if self.request.user.id :
             return  Notifications.objects.filter(user__id=self.request.user.id)
-        return Notifications.objects.all()
+        return Notifications.objects.filter(pk=0)
 
 
 class vwNotificationsViewSet(viewsets.ViewSet):
