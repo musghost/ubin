@@ -5,6 +5,7 @@ from django.contrib.auth.models import (
 from django.core.mail import EmailMultiAlternatives
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.db.models.signals import post_save
 
 
 # Create your models here.
@@ -200,6 +201,15 @@ class Publications(models.Model):
     class Meta:
         ordering = ['date','price_first']
 
+class Notifications(models.Model):
+    publication=models.ForeignKey(Publications,null=False)
+    user= models.ForeignKey(Users,null=False)
+    message= models.TextField(max_length=200,null=False,blank=False)
+    date= models.DateTimeField(auto_now_add=False,null=False)
+    read = models.BooleanField(default=False)
+    viewed = models.BooleanField(default=False)
+    expired = models.BooleanField(default=False)
+    status = models.BooleanField(default=True)
 
 class Comments(models.Model):
     publication= models.ForeignKey(Publications,null=False,related_name='comments')
@@ -207,6 +217,22 @@ class Comments(models.Model):
     comment= models.TextField(max_length=1000,null=False,blank=False)
     date= models.DateTimeField(auto_now=False, auto_now_add=False,null=False)
     status = models.BooleanField(default=True)
+
+def after_insert_comment(sender, instance, **kwargs):
+    Notifications(
+        message=instance.comment,
+        publication=instance.publication,
+        user=instance.publication.user,
+        date=instance.date,
+        read=False,
+        viewed=False,
+        expired=False,
+        status=True
+        ).save()
+
+# register the signal
+post_save.connect(after_insert_comment, sender=Comments, dispatch_uid=__file__)
+
 
 
 class Documents(models.Model):
@@ -242,16 +268,6 @@ class Favorites(models.Model):
     class Meta:
         unique_together = ("publication", "user")
 
-
-class Notifications(models.Model):
-    publication=models.ForeignKey(Publications,null=False)
-    user= models.ForeignKey(Users,null=False)
-    message= models.TextField(max_length=200,null=False,blank=False)
-    date= models.DateTimeField(auto_now_add=False,null=False)
-    read = models.BooleanField(default=False)
-    viewed = models.BooleanField(default=False)
-    expired = models.BooleanField(default=False)
-    status = models.BooleanField(default=True)
 
 class Push_Notifications(models.Model):
     publication=models.ForeignKey(Publications,null=False)
