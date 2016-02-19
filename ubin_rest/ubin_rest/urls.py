@@ -301,13 +301,13 @@ router.register(r'logout',LogoutViewSet,base_name="logout")
 Type publications to past due portfolio
 '''
 #CRUD
-router.register(r'TypePublicationsPastDue', TypesPublicationsPastDueViewSet)
+router.register(r'typePublicationsPastDue', TypesPublicationsPastDueViewSet)
 
 '''
 Legal status
 '''
 #CRUD
-router.register(r'LegalStatus', LegalStatusViewSet)
+router.register(r'legalStatus', LegalStatusViewSet)
 
 urlpatterns = [
     url(r'^api/v1/admin/', include(admin.site.urls)),

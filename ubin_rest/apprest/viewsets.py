@@ -165,7 +165,7 @@ class TypesPublicationsPastDueViewSet(viewsets.ModelViewSet):
         else:
             self.permission_classes = [IsAdminUser, ]
 
-        return super(TypesPublicationsViewSet, self).get_permissions()
+        return super(TypesPublicationsPastDueViewSet, self).get_permissions()
 
 '''
 -----------  Legal Status --------------------------
@@ -182,7 +182,7 @@ class LegalStatusViewSet(viewsets.ModelViewSet):
         else:
             self.permission_classes = [IsAdminUser, ]
 
-        return super(TypesPublicationsViewSet, self).get_permissions()
+        return super(LegalStatusViewSet, self).get_permissions()
 
 '''
 ----------- Types Advisor --------------------------
