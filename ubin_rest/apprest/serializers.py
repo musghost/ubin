@@ -408,42 +408,6 @@ class CommentsFullerializer(serializers.ModelSerializer):
             'status'
             )
 
-class PublicationsNotificationSerializer(serializers.ModelSerializer):
-    type_publications=TypesPublicationsSerializer()
-    type_property=TypesPropertySerializer()
-    currency=CurrenciesSerializer()
-    user=UsersDetailSerializer()
-    comments = CommentsFullerializer(many=True,read_only=True)
-    class Meta:
-        model = Publications
-        fields = (
-            'id',
-            'canvas_number',
-            'user', 
-            'type_publications',
-            'type_publications_past_due'
-            'type_property',
-            'title',
-            'description',
-            'price_first',
-            'currency',
-            'bathrooms',
-            'antiquity',
-            'area',
-            'construction_area',
-            'country',
-            'state',
-            'town',
-            'neighborhood',
-            'mortgage',
-            'price_appraisal',
-            'legal_status',
-            'date',
-            'status',
-            'code',
-            'comments'
-            )
-
 
 class CommentsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -552,7 +516,7 @@ class NotificationsSerializer(serializers.ModelSerializer):
         	)
 
 class NotificationsFullSerializer(serializers.ModelSerializer):
-    publication=PublicationsNotificationSerializer()
+    publication=PublicationsFullSerializer()
     user=UsersDetailSerializer()
     class Meta:
         model = Notifications
