@@ -26,7 +26,7 @@ MEDIA_ROOT ='/home/ubinrest/media/' #os.environ['UBIN_MEDIA']
 # Setting Emails
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'ubintest2016@gmail.com'
-EMAIL_HOST_PASSWORD = 'clubpr3m13r'
+EMAIL_HOST_PASSWORD = 'r3st0*151410'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -53,7 +53,7 @@ INSTALLED_APPS = (
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-     # 'rest_framework.permissions.IsAuthenticated',
+      'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',

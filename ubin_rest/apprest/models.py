@@ -127,6 +127,10 @@ class Types_Publications(models.Model):
     name = models.TextField(max_length=100,null=False,blank=False)
     status = models.BooleanField(default=True)
 
+class Types_Publications_Past_Due(models.Model):
+    name = models.TextField(max_length=100,null=False,blank=False)
+    status = models.BooleanField(default=True)
+
 class Types_Providers(models.Model):
     name = models.TextField(max_length=100,null=False,blank=False)
     status = models.BooleanField(default=True)
@@ -136,6 +140,10 @@ class Types_Events(models.Model):
     status = models.BooleanField(default=True)
 
 class Types_Documents(models.Model):
+    name = models.TextField(max_length=100,null=False,blank=False)
+    status = models.BooleanField(default=True)
+
+class Legal_Status(models.Model):
     name = models.TextField(max_length=100,null=False,blank=False)
     status = models.BooleanField(default=True)
 
@@ -166,6 +174,10 @@ class Publications(models.Model):
     canvas_number = models.IntegerField(null=True)
     user= models.ForeignKey(Users,null=False,related_name="user")
     type_publications= models.ForeignKey(Types_Publications,null=False)
+    type_publications_past_due= models.ForeignKey(
+        Types_Publications_Past_Due,
+        null=True
+    )
     type_property= models.ForeignKey(Types_Property,null=True)
     title=models.TextField(max_length=100,null=False)
     description=models.TextField(max_length=500,null=False)
@@ -181,7 +193,9 @@ class Publications(models.Model):
     neighborhood=models.TextField(max_length=200,null=True,blank=True)
     date= models.DateTimeField(auto_now_add=False,auto_now=False,null=False)
     code=models.TextField(max_length=50,null=True, blank=True)
-    is_mortgage = models.BooleanField(default=False)
+    mortgage = models.IntegerField(default=1,null=True)
+    price_appraisal = models.DecimalField(decimal_places=2,max_digits=50,null=False)
+    legal_status= models.ForeignKey(Legal_Status,null=True)
     status = models.BooleanField(default=True)
     class Meta:
         ordering = ['date','price_first']

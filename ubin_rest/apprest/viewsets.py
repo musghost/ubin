@@ -151,6 +151,40 @@ class vwTypesPublicationsViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 '''
+-----------  Types Publications Past Due --------------------------
+'''
+
+
+class TypesPublicationsPastDueViewSet(viewsets.ModelViewSet):
+    serializer_class = TypesPublicationsPastDueSerializer
+    queryset = Types_Publications_Past_Due.objects.all()
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated, ]
+        else:
+            self.permission_classes = [IsAdminUser, ]
+
+        return super(TypesPublicationsViewSet, self).get_permissions()
+
+'''
+-----------  Legal Status --------------------------
+'''
+
+
+class LegalStatusViewSet(viewsets.ModelViewSet):
+    serializer_class = LegalStatusSerializer
+    queryset = Legal_Status.objects.all()
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated, ]
+        else:
+            self.permission_classes = [IsAdminUser, ]
+
+        return super(TypesPublicationsViewSet, self).get_permissions()
+
+'''
 ----------- Types Advisor --------------------------
 '''
 
@@ -1479,6 +1513,7 @@ class PublicationsDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
         'user__type_advisor__id',
         'canvas_number',
         'type_publications__id',
+        'type_publication_past_due__id'
         'type_property__id',
         'title',
         'price_first',
@@ -1491,8 +1526,10 @@ class PublicationsDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
         'state',
         'town',
         'neighborhood',
+        'mortgage',
+        'price_appraisal',
+        'legal_status',
         'date',
-        'is_mortgage',
         'code',
         'status'
     )

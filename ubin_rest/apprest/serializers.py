@@ -23,6 +23,16 @@ class TypesPublicationsSerializer(serializers.ModelSerializer):
         model = Types_Publications
         fields = ('id','name', 'status')
 
+class TypesPublicationsPastDueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Types_Publications_Past_Due
+        fields = ('id','name', 'status')
+
+class LegalStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Legal_Status
+        fields = ('id','name', 'status')
+
 class TypesAdvisorsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Types_Advisors
@@ -181,6 +191,7 @@ class UsersDetailSerializer(serializers.ModelSerializer):
             'photo',
             'register_date',
             'number_of_publications',
+            'allow_past_due_portfolio',
             'is_active'
             )
     def get_number_of_publications(self,obj):
@@ -290,6 +301,7 @@ class PublicationsSerializer(serializers.ModelSerializer):
         	'canvas_number',
         	'user', 
         	'type_publications',
+            'type_publications_past_due',
         	'type_property',
         	'title',
         	'description',
@@ -303,8 +315,10 @@ class PublicationsSerializer(serializers.ModelSerializer):
         	'state',
             'town',
             'neighborhood',
-            'is_mortgage',
             'code',
+            'mortgage',
+            'price_appraisal',
+            'legal_status',
         	'date',
         	'status'
         	)
@@ -323,12 +337,14 @@ class PhotosSerializer(serializers.ModelSerializer):
 
 class PublicationsFullSerializer(serializers.ModelSerializer):
     isfavorite=serializers.SerializerMethodField()
+    type_publications_past_due= TypesPublicationsPastDueSerializer()
     votes=serializers.SerializerMethodField()
     type_publications=TypesPublicationsSerializer()
     type_property=TypesPropertySerializer()
     currency=CurrenciesSerializer()
     user=UsersDetailSerializer()
     photos=PhotosSerializer(many=True,read_only=True)
+    legal_status=LegalStatusSerializer()
     class Meta:
         model = Publications
         fields = (
@@ -336,6 +352,7 @@ class PublicationsFullSerializer(serializers.ModelSerializer):
             'canvas_number',
             'user', 
             'type_publications',
+            'type_publications_past_due',
             'type_property',
             'title',
             'description',
@@ -349,9 +366,11 @@ class PublicationsFullSerializer(serializers.ModelSerializer):
             'state',
             'town',
             'neighborhood',
+            'mortgage',
+            'price_appraisal',
+            'legal_status',
             'date',
             'status',
-            'is_mortgage',
             'code',
             'isfavorite',
             'votes',
@@ -402,6 +421,7 @@ class PublicationsNotificationSerializer(serializers.ModelSerializer):
             'canvas_number',
             'user', 
             'type_publications',
+            'type_publications_past_due'
             'type_property',
             'title',
             'description',
@@ -415,9 +435,11 @@ class PublicationsNotificationSerializer(serializers.ModelSerializer):
             'state',
             'town',
             'neighborhood',
+            'mortgage',
+            'price_appraisal',
+            'legal_status',
             'date',
             'status',
-            'is_mortgage',
             'code',
             'comments'
             )
@@ -442,14 +464,14 @@ class DocumentsSerializer(serializers.ModelSerializer):
         fields = (
         	'id',
         	'original_name',
-                'hash_name',
+            'hash_name',
         	'administrator', 
         	'type_document',
         	'path',
-                'country',
-                'state',
-                'town',
-                'status'
+            'country',
+            'state',
+            'town',
+            'status'
         	)
 
 class DocumentsFullSerializer(serializers.ModelSerializer):
