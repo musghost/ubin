@@ -1513,7 +1513,7 @@ class PublicationsDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
         'user__type_advisor__id',
         'canvas_number',
         'type_publications__id',
-        'type_publication_past_due__id'
+        'type_publications_past_due__id',
         'type_property__id',
         'title',
         'price_first',
