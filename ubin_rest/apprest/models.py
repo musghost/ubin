@@ -188,7 +188,7 @@ class Classification_Providers(models.Model):
 class Publications(models.Model):
     canvas_number = models.IntegerField(null=True)
     user = models.ForeignKey(Users, null=False, related_name="user")
-    type_publications = models.ForeignKey(Types_Publications, null=False)
+    type_publications = models.ForeignKey(Types_Publications, null=True)
     type_publications_past_due = models.ForeignKey(
         Types_Publications_Past_Due,
         null=True
@@ -211,7 +211,7 @@ class Publications(models.Model):
     code = models.TextField(max_length=50, null=True, blank=True)
     mortgage = models.IntegerField(default=1, null=True)
     price_appraisal = models.DecimalField(
-        decimal_places=2, max_digits=50, null=False)
+        decimal_places=2, max_digits=50, null=True)
     legal_status = models.ForeignKey(Legal_Status, null=True)
     status = models.BooleanField(default=True)
 
