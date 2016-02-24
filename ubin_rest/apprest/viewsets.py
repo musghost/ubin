@@ -2743,7 +2743,7 @@ class RecoverPasswordViewSet(viewsets.ViewSet):
             email = request.data['email']
             queryset = Users.objects.filter(email=email, is_active=True)
             user = get_object_or_404(queryset)
-            serializer = UsersDetailSerializer(user)
+            serializer = UsersSerializer(user)
             try:
                 password = serializer.data['password']
                 name = serializer.data['name']
