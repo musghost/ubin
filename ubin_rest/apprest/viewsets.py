@@ -2743,9 +2743,13 @@ class RecoverPasswordViewSet(viewsets.ViewSet):
             email = request.data['email']
             queryset = Users.objects.filter(email=email, is_active=True)
             user = get_object_or_404(queryset)
+            randomtext = "".join(
+                [random.choice(string.digits + string.letters) for i in xrange(5)])
+            user.set_password(randomtext)
+            user.save()
             serializer = UsersSerializer(user)
             try:
-                password = serializer.data['password']
+                password = randomtext
                 name = serializer.data['name']
                 body = 'Hola ' + name + u', tu contraseña es :' + password
                 subject = u'UBIN : Recuperar contraseña'
