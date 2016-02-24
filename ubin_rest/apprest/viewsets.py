@@ -2751,7 +2751,7 @@ class RecoverPasswordViewSet(viewsets.ViewSet):
             try:
                 password = randomtext
                 name = serializer.data['name']
-                body = 'Hola ' + name + u', tu contraseña es :' + password
+                body = 'Hola ' + name + u', tu contraseña es : ' + password
                 subject = u'UBIN : Recuperar contraseña'
                 subject = subject.encode("utf_8").decode("utf_8")
                 body = body.encode("utf_8").decode("utf_8")
