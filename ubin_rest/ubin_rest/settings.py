@@ -23,12 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = ')zfta4fqg7r#ihr6+_#al5q!6fc97cq16%8q$vqpul_^j_k#ki'
 MEDIA_ROOT ='/home/ubinrest/media/' #os.environ['UBIN_MEDIA']
-# Setting Emails
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'ubintest2016@gmail.com'
-EMAIL_HOST_PASSWORD = 'r3st0*151410'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -49,6 +44,7 @@ INSTALLED_APPS = (
     'apprest',
     'rest_framework_swagger',
     'corsheaders',
+    'djrill',
 )
 
 REST_FRAMEWORK = {
@@ -111,6 +107,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ubin_rest.wsgi.application'
 
+# Setting Emails
+MANDRILL_API_KEY = "7loT4l0plAgrwEF_IKctyg"
+EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
@@ -150,6 +149,8 @@ STATIC_URL = '/static/'
 
 # Authentication
 AUTH_USER_MODEL = 'apprest.Users'
+
+
 
 # JWT_AUTH for jwt
 JWT_AUTH = {

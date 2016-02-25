@@ -51,7 +51,11 @@ from datetime import timedelta
 
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+
 from rest_framework.renderers import JSONRenderer
+
+import mandrill
+mandrill_client = mandrill.Mandrill('laiImqin9Bj6jAcyoBGZkA')
 
 
 class TokenPermission(permissions.BasePermission):
@@ -420,7 +424,8 @@ class RegisterViewSet(viewsets.ViewSet):
             device_serializer = DevicesUserRegisterSerializer(data=request.data)
             if device_serializer.is_valid():
                 device_serializer.save()
-                
+            user.set_password(request.data['password'])
+            user.save()
             return Response(RegisterSerializer(user).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -665,6 +670,8 @@ class UsersViewSet(viewsets.ViewSet):
         serializer = UsersSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
+            user.set_password(request.data['password'])
+            user.save()
             return Response(UsersFullSerializer(user).data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -737,6 +744,9 @@ class UsersViewSet(viewsets.ViewSet):
         serializer = UsersSerializer(user, data=request.data)
         if serializer.is_valid():
             user = serializer.save()
+            if 'password' in request.data:
+                user.set_password(request.data['password'])
+                user.save()
             return Response(UsersFullSerializer(user).data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -802,6 +812,9 @@ class UsersViewSet(viewsets.ViewSet):
         serializer = UsersSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             user = serializer.save()
+            if 'password' in request.data:
+                user.set_password(request.data['password'])
+                user.save()
             return Response(UsersFullSerializer(user).data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -2816,11 +2829,15 @@ class RecoverPasswordViewSet(viewsets.ViewSet):
             email = request.data['email']
             queryset = Users.objects.filter(email=email, is_active=True)
             user = get_object_or_404(queryset)
-            serializer = UsersDetailSerializer(user)
+            randomtext = "".join(
+                [random.choice(string.digits + string.letters) for i in xrange(5)])
+            user.set_password(randomtext)
+            user.save()
+            serializer = UsersSerializer(user)
             try:
-                password = serializer.data['password']
+                password = randomtext
                 name = serializer.data['name']
-                body = 'Hola ' + name + u', tu contraseña es :' + password
+                body = 'Hola ' + name + u', tu contraseña es : ' + password
                 subject = u'UBIN : Recuperar contraseña'
                 subject = subject.encode("utf_8").decode("utf_8")
                 body = body.encode("utf_8").decode("utf_8")
