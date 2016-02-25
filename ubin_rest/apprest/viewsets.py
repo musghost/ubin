@@ -7,6 +7,7 @@ from rest_framework.parsers import FileUploadParser
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework import viewsets
 from rest_framework.views import APIView
+from rest_framework import permissions
 from django.http import Http404
 from django.contrib.auth import logout
 from django.contrib.auth.models import AnonymousUser
@@ -46,10 +47,26 @@ from rest_framework_jwt.serializers import (
 from rest_framework_jwt.settings import api_settings
 from calendar import timegm
 from datetime import datetime
+from datetime import timedelta
 
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.renderers import JSONRenderer
+
+
+class TokenPermission(permissions.BasePermission):
+    """
+    Global permission check for blacklisted IPs.
+    """
+
+    def has_permission(self, request, view):
+        try:
+            token=Token.objects.get(token=request.auth)
+            if token.is_active:
+                return True
+        except Exception, e:
+            return False
+        return False
 
 
 '''
@@ -62,10 +79,11 @@ class CurrenciesViewSet(viewsets.ModelViewSet):
     queryset = Currencies.objects.all()
 
     def get_permissions(self):
+
         if self.request.method == 'GET':
-            self.permission_classes = [IsAuthenticated, ]
+            self.permission_classes = [IsAuthenticated,TokenPermission, ]
         else:
-            self.permission_classes = [IsAdminUser, ]
+            self.permission_classes = [IsAdminUser,TokenPermission, ]
 
         return super(CurrenciesViewSet, self).get_permissions()
 
@@ -394,20 +412,15 @@ class RegisterViewSet(viewsets.ViewSet):
         serializer = UsersSerializer(data=request.POST)
 
         if serializer.is_valid():
+
             user = serializer.save()
-            if 'device_os' in request.data:
-                user = Users.objects.get(pk=serializer.data['id'])
-                device_token = ""
-                if 'device_token' in request.data:
-                    device = Devices_User_Register(
-                        device_os=request.data['device_os'],
-                        device_token=device_token,
-                        device_user=user)
-                else:
-                    device = Devices_User_Register(
-                        device_os=request.data['device_os'],
-                        device_user=user)
-                device.save()
+
+            # Save device
+            request.data['user'] = user.id
+            device_serializer = DevicesUserRegisterSerializer(data=request.data)
+            if device_serializer.is_valid():
+                device_serializer.save()
+                
             return Response(RegisterSerializer(user).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -422,106 +435,166 @@ class GetTokenViewSet(viewsets.ViewSet):
 
     def create(self, request, format=None):
         """
-            Get Token (Or login).
-            ---
-            type:
-              email:
-                required: true
-                type: string
-              password:
-                required: true
-                type: string
-              device_os:
-                required: true
-                type: string
-              device_token:
-                required: false
-                type: string
-            parameters:
-                - name: email
-                  description: Email user.
-                  required: true
-                  type: string
-                  paramType: form
-                - name: password
-                  description: password.
-                  required: true
-                  type: string
-                  paramType: form
-                - name: device_os
-                  description: Operating system mobile.
-                  required: true
-                  type: string
-                  paramType: form
-                - name: device_token
-                  description: Mobile token.
-                  required: false
-                  type: string
-                  paramType: form
-            responseMessages:
-                - code: 400
-                  message: BAD REQUEST
-                - code: 200
-                  message: OK
-                - code: 500
-                  message: INTERNAL SERVER ERROR
-            consumes:
-                - application/json
-            produces:
-                - application/json
+        Login
+        ---
+
+        type:
+          email:
+            required: true
+            type: string
+          password:
+            required: true
+            type: string
+          device_os:
+            required: true
+            type: string
+          device_token:
+            required: false
+            type: string
+
+        parameters:
+            - name: email
+              description: email user.
+              required: true
+              type: string
+              paramType: form
+            - name: password
+              description: Password.
+              required: true
+              type: string
+              paramType: form
+            - name: device_os
+              required: true
+              description: Mobile operating system device user.
+              type: string
+              paramType: form
+            - name: device_token
+              description: Device token.
+              required: false
+              type: string
+              paramType: form
+
+        responseMessages:
+            - code: 400
+              message: BAD REQUEST
+            - code: 200
+              message: OK
+            - code: 500
+              message: INTERNAL SERVER ERROR
+
+        consumes:
+            - application/json
+        produces:
+            - application/json
         """
-        if 'email' in request.data:
-            if 'password' in request.data:
-                if 'device_os' in request.data:
 
-                    # Save device
-                    user = None
-                    try:
-                        user = Users.objects.get(
-                            email=request.data['email'], is_active=True)
-                    except Exception:
-                        return Response({"non_field_errors": "Unable to login with provided credentials."}, status=status.HTTP_400_BAD_REQUEST)
-                    deviceToken = ""
-                    if 'device_token' in request.data:
-                        device = Devices_User_Register(
-                            device_os=request.data['device_os'],
-                            device_token=request.data['device_token'],
-                            device_user=user)
-                        deviceToken = request.data['device_token']
-                    else:
-                        device = Devices_User_Register(
-                            device_os=request.data['device_os'],
-                            device_token="",
-                            device_user=user)
-                        deviceToken = ""
+        login_serializer=LoginSerializer(data=request.data)
 
-                    deviceTokenExist = Devices_User_Register.objects.filter(
-                        device_token=deviceToken,
-                        device_user_id=user.id
+        if login_serializer.is_valid():
+
+            # Init user object.
+            user = None
+
+            try:
+
+                # Get user.
+                user = Users.objects.get(
+                        email=request.data['email'], 
+                        is_active=True
                     )
-                    if deviceTokenExist is None:
-                        device.save()
+
+                # Check password.
+                if not user.check_password(request.data['password']):
+
+                    return Response(
+                        {"non_field_errors":"Unable to login with provided credentials."},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+            except Exception:
+                return Response(
+                    {"non_field_errors": "Unable to login with provided credentials."},
+                    status=status.HTTP_400_BAD_REQUEST)
+            
+            # Save device
+            request.data['user'] = user.id
+            device_serializer = DevicesUserRegisterSerializer(data=request.data)
+            if device_serializer.is_valid():
+                device_serializer.save()
+
+            #Get token, if exist
+            token=""
+
+            try:
+                tokenobj=Token.objects.get(user__pk=user.id)
+            except Exception, e:
+                tokenobj=None
+
+            if tokenobj:
+                # Get current date.
+                date_now = datetime.date(datetime.now())
+
+                # Get expiration date token.
+                expiration_days=api_settings.JWT_ALLOW_REFRESH
+                expiration_date= tokenobj.expiration_date + timedelta(days=365)
+
+                # Validate expiration date token.
+                if date_now >= expiration_date:
+
+                    # Delete token, when he expired.
+                    token.delete()
 
                     # Generate Token
                     jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
                     jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-
                     payload = jwt_payload_handler(user)
 
                     if api_settings.JWT_ALLOW_REFRESH:
                         payload['orig_iat'] = timegm(
+                                datetime.utcnow().utctimetuple()
+                            )
+                    # Token
+                    token = jwt_encode_handler(payload)
+
+                    # Save new token.
+                    Token(user=user,token=token,is_active=True).save()
+
+                else:
+
+                    # Token is active?
+                    if not tokenobj.is_active:
+
+                        # Update status token to True.
+                        tokenobj.is_active=True
+                        tokenobj.save()
+
+                    # Set token.
+                    token=tokenobj.token
+
+            else:
+
+                # Generate Token.
+                jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+                jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+                payload = jwt_payload_handler(user)
+
+                if api_settings.JWT_ALLOW_REFRESH:
+                    payload['orig_iat'] = timegm(
                             datetime.utcnow().utctimetuple()
                         )
+                #Token.
+                token = jwt_encode_handler(payload)
 
-                    token = jwt_encode_handler(payload)
-                    user_serializer = UsersFullSerializer(user)
-                    return Response({"token": token, "user": user_serializer.data}, status=status.HTTP_201_CREATED)
-                else:
-                    return Response({"device_os": "This field is mandatory"}, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                return Response({"password": "This field is mandatory"}, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response({"email": "This field is mandatory"}, status=status.HTTP_400_BAD_REQUEST)
+                # Save new token.
+                Token(user=user,token=token,is_active=True).save()
+
+            user_serializer=UsersFullSerializer(user)
+
+            return Response({"token": token, "user": user_serializer.data},
+                            status=status.HTTP_200_OK
+                            )
+
+        return Response(login_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 '''
 ----------------  Users -------------------------
 '''
@@ -2766,29 +2839,25 @@ class LogoutViewSet(viewsets.ViewSet):
 
     def list(self, request):
         """
-            Logout 
-            ---
-            type:
-              token
-                required: true
-                type: string
-            parameters:
-                - name: token
-                  description: JWT Token in HEADER.
-                  required: true
-                  type: string
-                  paramType: form
-            responseMessages:
-                - code: 201
-                  message: CREATED
-                - code: 500
-                  message: INTERNAL SERVER ERROR
-            consumes:
-                - application/json
-            produces:
-                - application/json
+        Logout 
+        ---
+        responseMessages:
+            - code: 201
+              message: CREATED
+            - code: 500
+              message: INTERNAL SERVER ERROR
+        consumes:
+            - application/json
+        produces:
+            - application/json
         """
+        try:
+            token=Token.objects.get(token=request.auth)
+            token.is_active=False
+            token.save()
+        except Exception, e:
+            print "Logout: Not found token."
+
         logout(request)
-        request.session.flush()
-        request.user = AnonymousUser
-        return Response({'message': 'Logout ready!'}, status=status.HTTP_200_OK)
+        return Response({"success": "Successfully logged out."},
+                        status=status.HTTP_200_OK)

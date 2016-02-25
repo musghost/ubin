@@ -100,6 +100,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         token = jwt_encode_handler(payload)
 
+        # Save new token.
+        Token(user=obj.id,token=token,is_active=True).save()
+
         return token
 
 class UsersSerializer(serializers.ModelSerializer):
@@ -688,3 +691,9 @@ class DevicesUserRegisterFullSerializer(serializers.ModelSerializer):
                 'device_register_date',
                 'device_status'
             )
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True)
+    device_os = serializers.CharField(max_length=100, required=True)
+    device_token = serializers.CharField(max_length=250, required=False)

@@ -312,8 +312,6 @@ router.register(r'legalStatus', LegalStatusViewSet)
 urlpatterns = [
     url(r'^api/v1/admin/', include(admin.site.urls)),
     url(r'^api/v1/',include(router.urls)),
-    url(r'^api/v1/api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^api/v1/api-token-refresh/', 'rest_framework_jwt.views.refresh_jwt_token'),
     url(r'^api/v1/api-token-verify/', 'rest_framework_jwt.views.verify_jwt_token'),
     url(r'^api/v1/',include(vw_property_publications.urls)),
     url(r'^api/v1/',include(vw_type_publications.urls)),
@@ -339,5 +337,7 @@ urlpatterns = [
     url(r'^api/v1/',include(vw_photos_publications.urls)),
     url(r'^api/v1/',include(vw_types_customers.urls)),
     url(r'^api/v1/',include(vw_types_reports.urls)),
+    url(r'^api/v1/api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api/v1/docs/', include('rest_framework_swagger.urls')),
+
 ]   

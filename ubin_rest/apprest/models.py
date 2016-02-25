@@ -373,3 +373,11 @@ class Devices_User_Register(models.Model):
 
     class Meta:
         unique_together = ("device_user", "device_token")
+
+class Token(models.Model):
+    token = models.TextField(max_length=300, null=False, blank=False, unique=True)
+    user = models.ForeignKey(Users, null=False)
+    expiration_date = models.DateField(auto_now_add=True, editable=True)
+    is_active = models.BooleanField(default=True)
+    class Meta:
+        unique_together = ("user", "token")
