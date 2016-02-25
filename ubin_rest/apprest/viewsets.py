@@ -395,6 +395,8 @@ class RegisterViewSet(viewsets.ViewSet):
 
         if serializer.is_valid():
             user = serializer.save()
+            user.set_password(request.data['password'])
+            user.save()
             if 'device_os' in request.data:
                 user = Users.objects.get(pk=serializer.data['id'])
                 device_token = ""
@@ -592,6 +594,8 @@ class UsersViewSet(viewsets.ViewSet):
         serializer = UsersSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
+            user.set_password(request.data['password'])
+            user.save()
             return Response(UsersFullSerializer(user).data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -664,6 +668,9 @@ class UsersViewSet(viewsets.ViewSet):
         serializer = UsersSerializer(user, data=request.data)
         if serializer.is_valid():
             user = serializer.save()
+            if 'password' in request.data:
+                user.set_password(request.data['password'])
+                user.save()
             return Response(UsersFullSerializer(user).data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -729,6 +736,9 @@ class UsersViewSet(viewsets.ViewSet):
         serializer = UsersSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             user = serializer.save()
+            if 'password' in request.data:
+                user.set_password(request.data['password'])
+                user.save()
             return Response(UsersFullSerializer(user).data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
