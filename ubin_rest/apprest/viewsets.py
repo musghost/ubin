@@ -54,9 +54,6 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 
 from rest_framework.renderers import JSONRenderer
 
-import mandrill
-mandrill_client = mandrill.Mandrill('laiImqin9Bj6jAcyoBGZkA')
-
 
 class TokenPermission(permissions.BasePermission):
     """
