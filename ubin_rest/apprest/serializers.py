@@ -513,8 +513,7 @@ class NotificationsSerializer(serializers.ModelSerializer):
         	'message',
         	'date',
         	'read',
-        	'viewed',
-        	'expired',
+        	'type_notification',
             'status'
         	)
 
@@ -530,8 +529,7 @@ class NotificationsFullSerializer(serializers.ModelSerializer):
             'message',
             'date',
             'read',
-            'viewed',
-            'expired',
+            'type_notification',
             'status'
             )
 

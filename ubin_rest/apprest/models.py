@@ -225,8 +225,7 @@ class Notifications(models.Model):
     message = models.TextField(max_length=200, null=False, blank=False)
     date = models.DateTimeField(auto_now_add=False, null=False)
     read = models.BooleanField(default=False)
-    viewed = models.BooleanField(default=False)
-    expired = models.BooleanField(default=False)
+    type_notification = models.IntegerField(null=True)
     status = models.BooleanField(default=True)
 
 
@@ -373,11 +372,3 @@ class Devices_User_Register(models.Model):
 
     class Meta:
         unique_together = ("device_user", "device_token")
-
-class Token(models.Model):
-    token = models.TextField(max_length=300, null=False, blank=False, unique=True)
-    user = models.ForeignKey(Users, null=False)
-    expiration_date = models.DateField(auto_now_add=True, editable=True)
-    is_active = models.BooleanField(default=True)
-    class Meta:
-        unique_together = ("user", "token")

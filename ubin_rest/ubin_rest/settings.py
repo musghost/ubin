@@ -170,7 +170,7 @@ JWT_AUTH = {
     'rest_framework_jwt.utils.jwt_response_payload_handler',
 
     'VJWT_ALGORITHM': 'HS256',
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=365),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=30),
     'JWT_VERIFY': True,
     'JWT_VERIFY_EXPIRATION': True,
     'JWT_ALLOW_REFRESH': True,

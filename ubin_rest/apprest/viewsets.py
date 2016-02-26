@@ -55,21 +55,6 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.renderers import JSONRenderer
 
 
-class TokenPermission(permissions.BasePermission):
-    """
-    Global permission check for blacklisted IPs.
-    """
-
-    def has_permission(self, request, view):
-        try:
-            token=Token.objects.get(token=request.auth)
-            if token.is_active:
-                return True
-        except Exception, e:
-            return False
-        return False
-
-
 '''
 -----------  Currencies --------------------------
 '''
@@ -82,9 +67,9 @@ class CurrenciesViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
 
         if self.request.method == 'GET':
-            self.permission_classes = [IsAuthenticated,TokenPermission, ]
+            self.permission_classes = [IsAuthenticated, ]
         else:
-            self.permission_classes = [IsAdminUser,TokenPermission, ]
+            self.permission_classes = [IsAdminUser, ]
 
         return super(CurrenciesViewSet, self).get_permissions()
 
@@ -345,48 +330,49 @@ class RegisterViewSet(viewsets.ViewSet):
 
     def create(self, request, format=None):
         """
-            Register user.
-            ---
-            type:
-              photo:
-                required: false
-                type: file
-              device_os:
-                required: true
-                type: string
-              device_token:
-                required: true
-                type: string
-            serializer: RegisterSerializer
-            omit_serializer: false
+        Register user.
+        ---
+        type:
+          photo:
+            required: false
+            type: file
+          device_os:
+            required: true
+            type: string
+          device_token:
+            required: true
+            type: string
 
-            parameters:
-               - name: photo
-                 description: Photo user.
-                 required: false
-                 type: file
-                 paramType: file
-               - name: device_os
-                 description: device_os.
-                 required: true
-                 paramType: form
-               - name: device_token
-                 description: device_token.
-                 required: false
-                 paramType: form
+        serializer: RegisterSerializer
+        omit_serializer: false
+
+        parameters:
+            - name: photo
+              description: Photo user.
+              required: false
+              type: file
+              paramType: file
+            - name: device_os
+              description: device_os.
+              equired: true
+              paramType: form
+            - name: device_token
+              description: device_token.
+              required: false
+              paramType: form
 
 
-            responseMessages:
-                - code: 400
-                  message: BAD REQUEST
-                - code: 200
-                  message: OK
-                - code: 500
-                  message: INTERNAL SERVER ERROR
-            consumes:
-                - application/json
-            produces:
-                - application/json
+        responseMessages:
+            - code: 400
+              message: BAD REQUEST
+            - code: 200
+              message: OK
+            - code: 500
+              message: INTERNAL SERVER ERROR
+        consumes:
+            - application/json
+        produces:
+            - application/json
         """
         photo = ""
         if len(request.FILES.items()) > 0:
@@ -523,72 +509,18 @@ class GetTokenViewSet(viewsets.ViewSet):
             if device_serializer.is_valid():
                 device_serializer.save()
 
-            #Get token, if exist
-            token=""
+            # Generate Token.
+            jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+            jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+            payload = jwt_payload_handler(user)
 
-            try:
-                tokenobj=Token.objects.get(user__pk=user.id)
-            except Exception, e:
-                tokenobj=None
+            if api_settings.JWT_ALLOW_REFRESH:
+                payload['orig_iat'] = timegm(
+                        datetime.utcnow().utctimetuple()
+                    )
 
-            if tokenobj:
-                # Get current date.
-                date_now = datetime.date(datetime.now())
-
-                # Get expiration date token.
-                expiration_days=api_settings.JWT_ALLOW_REFRESH
-                expiration_date= tokenobj.expiration_date + timedelta(days=365)
-
-                # Validate expiration date token.
-                if date_now >= expiration_date:
-
-                    # Delete token, when he expired.
-                    token.delete()
-
-                    # Generate Token
-                    jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-                    jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-                    payload = jwt_payload_handler(user)
-
-                    if api_settings.JWT_ALLOW_REFRESH:
-                        payload['orig_iat'] = timegm(
-                                datetime.utcnow().utctimetuple()
-                            )
-                    # Token
-                    token = jwt_encode_handler(payload)
-
-                    # Save new token.
-                    Token(user=user,token=token,is_active=True).save()
-
-                else:
-
-                    # Token is active?
-                    if not tokenobj.is_active:
-
-                        # Update status token to True.
-                        tokenobj.is_active=True
-                        tokenobj.save()
-
-                    # Set token.
-                    token=tokenobj.token
-
-            else:
-
-                # Generate Token.
-                jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-                jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-                payload = jwt_payload_handler(user)
-
-                if api_settings.JWT_ALLOW_REFRESH:
-                    payload['orig_iat'] = timegm(
-                            datetime.utcnow().utctimetuple()
-                        )
-                #Token.
-                token = jwt_encode_handler(payload)
-
-                # Save new token.
-                Token(user=user,token=token,is_active=True).save()
-
+            #Token.
+            token = jwt_encode_handler(payload)
             user_serializer=UsersFullSerializer(user)
 
             return Response({"token": token, "user": user_serializer.data},
@@ -1102,6 +1034,7 @@ class PublicationsViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def create(self, request):
+        permission_classes = (IsAdminUser, )
         """
         Publication.
         ---
@@ -1478,105 +1411,6 @@ class PublicationsViewSet(viewsets.ViewSet):
                 os.remove(file_path)
         publication.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class PublicationsAndPhotosViewSet(viewsets.ViewSet):
-
-    def create(self, request):
-        """
-            Publication.
-            ---
-            type:
-              photos_1:
-                required: false
-                type: file
-              photo_2:
-                required: false
-                type: file
-              photo_3:
-                required: false
-                type: file
-              photo_4:
-                required: false
-                type: file
-              photo_5:
-                required: false
-                type: file
-
-            request_serializer: PublicationsSerializer
-            response_serializer: PublicationsFullSerializer
-            omit_serializer: false
-
-            parameters_strategy: merge
-
-            parameters:
-               - name: photo_1
-                 description: Photo publication.
-                 required: false
-                 type: file
-                 paramType: file
-               - name: photo_2
-                 description: Photo publication.
-                 required: false
-                 type: file
-                 paramType: file
-               - name: photo_3
-                 description: Photo publication.
-                 required: false
-                 type: file
-                 paramType: file
-               - name: photo_4
-                 description: Photo publication.
-                 required: false
-                 type: file
-                 paramType: file
-               - name: photo_5
-                 description: Photo publication.
-                 required: false
-                 type: file
-                 paramType: file
-
-            responseMessages:
-                - code: 400
-                  message: BAD REQUEST
-                - code: 200
-                  message: OK
-                - code: 500
-                  message: INTERNAL SERVER ERROR
-            consumes:
-                - application/json
-            produces:
-                - application/json
-        """
-
-        serializer = PublicationsSerializer(data=request.POST)
-        if serializer.is_valid():
-            publication = serializer.save()
-            if request.FILES.items():
-                for key, file in request.FILES.items():
-                    randomtext = "".join(
-                        [random.choice(string.digits + string.letters) for i in xrange(200)])
-                    hash_object = hashlib.sha1(randomtext)
-                    code = hash_object.hexdigest()
-                    file_name = hash_object.hexdigest()
-                    fileExtension = os.path.splitext(file.name)[1]
-                    photo = file_name + fileExtension
-                    Photos(
-                        hash_name=file_name + fileExtension,
-                        original_name=file.name,
-                        path=settings.MEDIA_ROOT,
-                        publication=publication
-                    ).save()
-                    path = settings.MEDIA_ROOT + file_name + fileExtension  # file.name
-                    dest = open(path.encode('utf-8'), 'wb+')
-                    if file.multiple_chunks:
-                        for c in file.chunks():
-                            dest.write(c)
-                    else:
-                        dest.write(file.read())
-                    dest.close()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PublicationsDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
@@ -2269,8 +2103,7 @@ class NotificationsFilterViewSet(viewsets.ReadOnlyModelViewSet):
         'message',
         'date',
         'read',
-        'viewed',
-        'expired',
+        'type_notification',
         'status'
     )
 
@@ -2866,11 +2699,11 @@ class LogoutViewSet(viewsets.ViewSet):
             - application/json
         """
         try:
-            token=Token.objects.get(token=request.auth)
-            token.is_active=False
-            token.save()
+            if device_token in request.GET:
+                device=Devices_User_Register.objects.get(device_token=request.GET['device_token'])
+                device.delete()
         except Exception, e:
-            print "Logout: Not found token."
+            print "Error logout" + e
 
         logout(request)
         return Response({"success": "Successfully logged out."},

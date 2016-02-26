@@ -144,7 +144,6 @@ Publications
 '''
 #CRUD
 router.register(r'publication',PublicationsViewSet,base_name="publication")
-router.register(r'publicationAndPhotos',PublicationsAndPhotosViewSet,base_name="publicationAndPhotos")
 #Filter
 router.register(r'publicationsFilter', PublicationsDefaultFilterViewSet)
 #VIEW : publications/pk/comments/pk
@@ -313,6 +312,7 @@ urlpatterns = [
     url(r'^api/v1/admin/', include(admin.site.urls)),
     url(r'^api/v1/',include(router.urls)),
     url(r'^api/v1/api-token-verify/', 'rest_framework_jwt.views.verify_jwt_token'),
+    url(r'^api/v1/api-token-refresh/', 'rest_framework_jwt.views.refresh_jwt_token'),
     url(r'^api/v1/',include(vw_property_publications.urls)),
     url(r'^api/v1/',include(vw_type_publications.urls)),
     url(r'^api/v1/',include(vw_currencies_publications.urls)),
