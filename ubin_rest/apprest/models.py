@@ -220,7 +220,7 @@ class Publications(models.Model):
 
 
 class Notifications(models.Model):
-    publication = models.ForeignKey(Publications, null=False)
+    publication = models.ForeignKey(Publications, null=True)
     user = models.ForeignKey(Users, null=False)
     message = models.TextField(max_length=200, null=False, blank=False)
     date = models.DateTimeField(auto_now_add=False, null=False)
