@@ -230,8 +230,7 @@ class Notifications(models.Model):
 
 
 class Comments(models.Model):
-    publication = models.ForeignKey(
-        Publications, null=False, related_name='comments')
+    publication = models.ForeignKey(Publications, null=False, related_name='comments')
     user = models.ForeignKey(Users, null=False)
     comment = models.TextField(max_length=1000, null=False, blank=False)
     date = models.DateTimeField(auto_now=False, auto_now_add=False, null=False)
@@ -245,8 +244,7 @@ def after_insert_comment(sender, instance, **kwargs):
         user=instance.user,
         date=instance.date,
         read=False,
-        viewed=False,
-        expired=False,
+        type_notification = 1,
         status=True
     ).save()
 
