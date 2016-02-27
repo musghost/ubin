@@ -244,7 +244,7 @@ def after_insert_comment(sender, instance, **kwargs):
         user=instance.user,
         date=instance.date,
         read=False,
-        type_notification = 1,
+        type_notification=1,
         status=True
     ).save()
 
