@@ -390,7 +390,7 @@ def after_insert_task(sender, instance, **kwargs):
     Notifications(
         message=instance.description,
         publication=None,
-        task=instance.id,
+        task=instance,
         user=instance.user,
         date=instance.date,
         read=False,
