@@ -55,6 +55,90 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.renderers import JSONRenderer
 
 
+
+'''
+-----------  Country --------------------------
+'''
+
+
+class CountryViewSet(viewsets.ModelViewSet):
+    serializer_class = CountrySerializer
+    queryset = Country.objects.all()
+
+'''
+-----------  State --------------------------
+'''
+
+
+class StateViewSet(viewsets.ModelViewSet):
+    serializer_class = StateSerializer
+    queryset = State.objects.all()
+
+'''
+-----------  Town --------------------------
+'''
+
+
+class TownViewSet(viewsets.ModelViewSet):
+    serializer_class = TownSerializer
+    queryset = Town.objects.all()
+
+
+'''
+-----------  Neighborhood --------------------------
+'''
+
+
+class NeighborhoodViewSet(viewsets.ModelViewSet):
+    serializer_class = NeighborhoodSerializer
+    queryset = Neighborhood.objects.all()
+
+
+class NeighborhoodFilterViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = NeighborhoodFullSerializer
+    queryset = Neighborhood.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,
+                       filters.OrderingFilter, filters.SearchFilter,)
+    search_fields = (
+        'name'
+    )
+    ordering_fields = '__all__'
+    filter_fields = (
+        'id',
+        'name',
+        'town__id'
+    )
+
+class TownFilterViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = TownFullSerializer
+    queryset = Town.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,
+                       filters.OrderingFilter, filters.SearchFilter,)
+    search_fields = (
+        'name'
+    )
+    ordering_fields = '__all__'
+    filter_fields = (
+        'id',
+        'name',
+        'state__id'
+    )
+
+class StateFilterViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = StateFullSerializer
+    queryset = State.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,
+                       filters.OrderingFilter, filters.SearchFilter,)
+    search_fields = (
+        'name'
+    )
+    ordering_fields = '__all__'
+    filter_fields = (
+        'id',
+        'name',
+        'country__id'
+    )
+
 '''
 -----------  Currencies --------------------------
 '''
@@ -775,9 +859,9 @@ class DocumentsFilterViewSet(viewsets.ReadOnlyModelViewSet):
         'administrator__id',
         'type_document',
         'path',
-        'country',
-        'state',
-        'town',
+        'country__id',
+        'state__id',
+        'town__id',
         'status'
     )
 
@@ -900,9 +984,9 @@ class ProvidersDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
         'id',
         'name',
         'type_provider__id',
-        'state',
-        'town',
-        'neighborhood',
+        'state__id',
+        'town__id',
+        'neighborhood__id',
         'register_date',
         'address',
         'phone',
@@ -1439,10 +1523,10 @@ class PublicationsDefaultFilterViewSet(viewsets.ReadOnlyModelViewSet):
         'antiquity',
         'area',
         'construction_area',
-        'country',
-        'state',
-        'town',
-        'neighborhood',
+        'country__id',
+        'state__id',
+        'town__id',
+        'neighborhood__id',
         'mortgage',
         'price_appraisal',
         'legal_status',
@@ -1929,9 +2013,9 @@ class DocumentsFilterViewSet(viewsets.ReadOnlyModelViewSet):
         'administrator__id',
         'type_document',
         'path',
-        'country',
-        'state',
-        'town',
+        'country__id',
+        'state__id',
+        'town__id',
         'status'
     )
 
@@ -2099,6 +2183,7 @@ class NotificationsFilterViewSet(viewsets.ReadOnlyModelViewSet):
     filter_fields = (
         'id',
         'publication__id',
+        'task__id',
         'user__id',
         'message',
         'date',
@@ -2109,7 +2194,7 @@ class NotificationsFilterViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         if self.request.user.id:
-            return Notifications.objects.filter(publication__user__id=self.request.user.id)
+            return Notifications.objects.filter(publication__user__id=self.request.user.id, task__user__id=self.request.user.id)
         return Notifications.objects.filter(pk=0)
 
 

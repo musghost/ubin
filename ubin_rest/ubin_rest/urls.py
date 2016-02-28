@@ -13,6 +13,14 @@ from rest_framework_nested import routers
 router = DefaultRouter()
 #router = routers.SimpleRouter()
 
+router.register(r'country', CountryViewSet)
+router.register(r'state', StateViewSet)
+router.register(r'town', TownViewSet)
+router.register(r'neighborhood', NeighborhoodViewSet)
+router.register(r'neighborhoodFilter',NeighborhoodFilterViewSet)
+router.register(r'townFilter',TownFilterViewSet)
+router.register(r'stateFilter',StateFilterViewSet)
+
 '''
 Currencies
 '''

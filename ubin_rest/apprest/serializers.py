@@ -7,6 +7,49 @@ from datetime import datetime
 
 
 
+class CountrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Country
+        fields = ('id','name')
+
+class StateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = State
+        fields = ('id','name','country')
+
+class TownSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Town
+        fields = ('id','name','state')
+
+class NeighborhoodSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Neighborhood
+        fields = ('id','name','town')
+
+class NeighborhoodFullSerializer(serializers.ModelSerializer):
+    town=TownSerializer()
+    class Meta:
+        model = Neighborhood
+        fields = ('id','name','town')
+
+class TownFullSerializer(serializers.ModelSerializer):
+    neighborhood=NeighborhoodSerializer(many=True,read_only=True)
+    class Meta:
+        model = Town
+        fields = ('id','name','state','neighborhood')
+
+class StateFullSerializer(serializers.ModelSerializer):
+    towns=TownFullSerializer(many=True,read_only=True)
+    class Meta:
+        model = State
+        fields = ('id','name','country','towns')
+
+class CountryFullSerializer(serializers.ModelSerializer):
+    states=StateFullSerializer(many=True,read_only=True)
+    class Meta:
+        model = Country
+        fields = ('id','name', 'states')
 
 class CurrenciesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -220,8 +263,8 @@ class ProvidersSerializer(serializers.ModelSerializer):
             'neighborhood',
             'town',
         	'status',
-                'is_favorite',
-                'administrator'
+            'is_favorite',
+            'administrator'
         	)
 
 class ProvidersFullSerializer(serializers.ModelSerializer):
@@ -229,6 +272,9 @@ class ProvidersFullSerializer(serializers.ModelSerializer):
     totalScore=serializers.SerializerMethodField()
     average=serializers.SerializerMethodField()
     type_provider=TypesProvidersSerializer()
+    state=StateFullSerializer()
+    neighborhood=NeighborhoodSerializer()
+    town=TownSerializer()
     class Meta:
         model = Providers
         fields = (
@@ -348,6 +394,10 @@ class PublicationsFullSerializer(serializers.ModelSerializer):
     user=UsersDetailSerializer()
     photos=PhotosSerializer(many=True,read_only=True)
     legal_status=LegalStatusSerializer()
+    country=CountrySerializer()
+    state=StateSerializer()
+    town=TownSerializer()
+    neighborhood=NeighborhoodSerializer()
     class Meta:
         model = Publications
         fields = (
@@ -444,6 +494,9 @@ class DocumentsSerializer(serializers.ModelSerializer):
 class DocumentsFullSerializer(serializers.ModelSerializer):
     administrator=UsersDetailSerializer()
     type_document=TypesDocumentsSerializer()
+    country=CountrySerializer()
+    state=StateSerializer()
+    town=TownSerializer()
     class Meta:
         model = Documents
         fields = (
@@ -503,35 +556,6 @@ class FavoritesFullSerializer(serializers.ModelSerializer):
         model = Favorites
         fields = ('id','publication','user', 'status')
 
-class NotificationsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Notifications
-        fields = (
-        	'id',
-        	'publication',
-        	'user', 
-        	'message',
-        	'date',
-        	'read',
-        	'type_notification',
-            'status'
-        	)
-
-class NotificationsFullSerializer(serializers.ModelSerializer):
-    publication=PublicationsFullSerializer()
-    user=UsersDetailSerializer()
-    class Meta:
-        model = Notifications
-        fields = (
-            'id',
-            'publication',
-            'user', 
-            'message',
-            'date',
-            'read',
-            'type_notification',
-            'status'
-            )
 
 class PushNotificationsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -577,7 +601,7 @@ class ReportsSerializer(serializers.ModelSerializer):
         	'type_report',
         	'message',
         	'date',
-                'status'
+            'status'
         	)
 
 class UserLocationSerializer(serializers.ModelSerializer):
@@ -588,10 +612,10 @@ class UserLocationSerializer(serializers.ModelSerializer):
         	'user',
         	'country',
         	'state',
-                'town',
-                'neighborhood',
+            'town',
+            'neighborhood',
         	'date',
-                'status'
+            'status'
         	)
 
 class TypeCustomersSerializer(serializers.ModelSerializer):
@@ -647,6 +671,39 @@ class TasksSerializer(serializers.ModelSerializer):
             'hour',
             'customer',
             'user',
+            'status'
+            )
+
+class NotificationsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notifications
+        fields = (
+            'id',
+            'publication',
+            'task',
+            'user', 
+            'message',
+            'date',
+            'read',
+            'type_notification',
+            'status'
+            )
+
+class NotificationsFullSerializer(serializers.ModelSerializer):
+    task=TasksSerializer()
+    publication=PublicationsFullSerializer()
+    user=UsersDetailSerializer()
+    class Meta:
+        model = Notifications
+        fields = (
+            'id',
+            'publication',
+            'task',
+            'user', 
+            'message',
+            'date',
+            'read',
+            'type_notification',
             'status'
             )
 

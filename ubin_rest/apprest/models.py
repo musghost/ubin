@@ -10,6 +10,42 @@ from django.db.models.signals import post_save
 
 # Create your models here.
 
+class Country(models.Model):
+    name = models.TextField(
+        max_length=60,
+        null=False,
+        blank=False,
+        unique=True
+    )
+
+class State(models.Model):
+    name = models.TextField(
+        max_length=60,
+        null=False,
+        blank=False,
+        unique=True
+    )
+    country = models.ForeignKey(Country, null=False, related_name='states')
+
+class Town(models.Model):
+    name = models.TextField(
+        max_length=60,
+        null=False,
+        blank=False,
+        unique=True
+    )
+    state = models.ForeignKey(State, null=False, related_name='towns')
+
+class Neighborhood(models.Model):
+    name = models.TextField(
+        max_length=60,
+        null=False,
+        blank=False,
+        unique=True
+    )
+    town = models.ForeignKey(Town, null=False, related_name='neighborhood')
+
+
 class Types_Advisors(models.Model):
     name = models.TextField(max_length=100)
     status = models.BooleanField(default=True)
@@ -163,9 +199,9 @@ class Legal_Status(models.Model):
 class Providers(models.Model):
     name = models.TextField(max_length=100)
     type_provider = models.ForeignKey(Types_Providers, null=False)
-    state = models.IntegerField(null=False)
-    town = models.IntegerField(null=False)
-    neighborhood = models.TextField(max_length=200, null=True, blank=True)
+    state = models.ForeignKey(State, null=True, related_name='providers_in_state')
+    town =  models.ForeignKey(Town, null=True, related_name='providers_in_town')
+    neighborhood = models.ForeignKey(Neighborhood, null=True, related_name='providers_in_neighborhood')
     references = models.TextField(max_length=100)
     register_date = models.DateField(auto_now_add=True)
     address = models.TextField(max_length=250)
@@ -203,10 +239,10 @@ class Publications(models.Model):
     antiquity = models.FloatField(null=True)
     area = models.IntegerField(null=False)
     construction_area = models.IntegerField(null=False)
-    country = models.IntegerField(null=False)
-    state = models.IntegerField(null=False)
-    town = models.IntegerField(null=False)
-    neighborhood = models.TextField(max_length=200, null=True, blank=True)
+    country = models.ForeignKey(Country, null=True, related_name='publications_in_country')
+    state = models.ForeignKey(State, null=True, related_name='publications_in_state')
+    town =  models.ForeignKey(Town, null=True, related_name='publications_in_town')
+    neighborhood = models.ForeignKey(Neighborhood, null=True, related_name='publications_in_neighborhood')
     date = models.DateTimeField(auto_now_add=False, auto_now=False, null=False)
     code = models.TextField(max_length=50, null=True, blank=True)
     mortgage = models.IntegerField(default=1, null=True)
@@ -217,17 +253,6 @@ class Publications(models.Model):
 
     class Meta:
         ordering = ['date', 'price_first']
-
-
-class Notifications(models.Model):
-    publication = models.ForeignKey(Publications, null=True)
-    user = models.ForeignKey(Users, null=False)
-    message = models.TextField(max_length=200, null=False, blank=False)
-    date = models.DateTimeField(auto_now_add=False, null=False)
-    read = models.BooleanField(default=False)
-    type_notification = models.IntegerField(null=True)
-    status = models.BooleanField(default=True)
-
 
 class Comments(models.Model):
     publication = models.ForeignKey(Publications, null=False, related_name='comments')
@@ -241,6 +266,7 @@ def after_insert_comment(sender, instance, **kwargs):
     Notifications(
         message=instance.comment,
         publication=instance.publication,
+        task=None,
         user=instance.user,
         date=instance.date,
         read=False,
@@ -257,9 +283,9 @@ class Documents(models.Model):
     hash_name = models.TextField(max_length=250, null=False, blank=False)
     administrator = models.ForeignKey(Users, null=False)
     type_document = models.ForeignKey(Types_Documents, null=False)
-    country = models.IntegerField(null=False)
-    state = models.IntegerField(null=False)
-    town = models.IntegerField(null=False)
+    country = models.ForeignKey(Country, null=True)
+    state = models.ForeignKey(State, null=True, related_name='documents_in_state')
+    town =  models.ForeignKey(Town, null=True, related_name='documents_in_town')
     path = models.TextField(max_length=100, null=False)
     status = models.BooleanField(default=True)
 
@@ -324,10 +350,10 @@ class Reports(models.Model):
 
 class User_Location(models.Model):
     user = models.ForeignKey(Users, null=False)
-    country = models.IntegerField(null=False)
-    state = models.IntegerField(null=False)
-    town = models.IntegerField(null=False)
-    neighborhood = models.TextField(max_length=200, null=True, blank=True)
+    country = models.ForeignKey(Country, null=True)
+    state = models.ForeignKey(State, null=True)
+    town =  models.ForeignKey(Town, null=True)
+    neighborhood = models.ForeignKey(Neighborhood, null=True)
     date = models.DateTimeField(auto_now_add=True)
     status = models.BooleanField(default=True)
 
@@ -360,6 +386,30 @@ class Tasks(models.Model):
     user = models.ForeignKey(Users, null=False)
     status = models.BooleanField(default=True)
 
+def after_insert_task(sender, instance, **kwargs):
+    Notifications(
+        message=instance.description,
+        publication=None,
+        task=instance.id,
+        user=instance.user,
+        date=instance.date,
+        read=False,
+        type_notification=2,
+        status=True
+    ).save()
+
+# register the signal
+post_save.connect(after_insert_task, sender=Tasks, dispatch_uid=__file__)
+
+class Notifications(models.Model):
+    publication = models.ForeignKey(Publications, null=True)
+    task = models.ForeignKey(Tasks, null=True)
+    user = models.ForeignKey(Users, null=False)
+    message = models.TextField(max_length=200, null=False, blank=False)
+    date = models.DateTimeField(auto_now_add=False, null=False)
+    read = models.BooleanField(default=False)
+    type_notification = models.IntegerField(null=True)
+    status = models.BooleanField(default=True)
 
 class Devices_User_Register(models.Model):
     device_user = models.ForeignKey(Users, null=False)
