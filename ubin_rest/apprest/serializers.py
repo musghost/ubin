@@ -143,9 +143,6 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         token = jwt_encode_handler(payload)
 
-        # Save new token.
-        Token(user=obj.id,token=token,is_active=True).save()
-
         return token
 
 class UsersSerializer(serializers.ModelSerializer):
