@@ -2194,7 +2194,14 @@ class NotificationsFilterViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         if self.request.user.id:
-            return Notifications.objects.filter(publication__user__id=self.request.user.id, task__user__id=self.request.user.id)
+            return Notifications.objects.filter(
+                publication__user__id=self.request.user.id,
+                task__user__id=self.request.user.id,
+                user__id=self.request.user.id
+            ).exclude(
+                type_notification__range=(1,2),
+                user__id=self.request.user.id
+            )
         return Notifications.objects.filter(pk=0)
 
 
