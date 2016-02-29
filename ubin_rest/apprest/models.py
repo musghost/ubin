@@ -265,7 +265,7 @@ def after_insert_comment(sender, instance, **kwargs):
         message=instance.comment,
         publication=instance.publication,
         task=None,
-        user=instance.user,
+        user=instance.publication.user,
         date=instance.date,
         read=False,
         type_notification=1,
