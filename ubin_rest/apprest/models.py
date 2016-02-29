@@ -31,8 +31,7 @@ class Town(models.Model):
     name = models.TextField(
         max_length=60,
         null=False,
-        blank=False,
-        unique=True
+        blank=False
     )
     state = models.ForeignKey(State, null=False, related_name='towns')
 
@@ -40,8 +39,7 @@ class Neighborhood(models.Model):
     name = models.TextField(
         max_length=60,
         null=False,
-        blank=False,
-        unique=True
+        blank=False
     )
     town = models.ForeignKey(Town, null=False, related_name='neighborhood')
 
