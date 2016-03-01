@@ -1122,7 +1122,6 @@ class PublicationsViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def create(self, request):
-        permission_classes = (IsAdminUser, )
         """
         Publication.
         ---
@@ -1149,7 +1148,7 @@ class PublicationsViewSet(viewsets.ViewSet):
 
         request_serializer: PublicationsSerializer
         response_serializer: PublicationsFullSerializer
-        omit_serializer: true
+        omit_serializer: false
 
         parameters_strategy: merge
         parameters:
