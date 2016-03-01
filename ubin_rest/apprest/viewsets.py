@@ -56,7 +56,6 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.renderers import JSONRenderer
 
 
-
 '''
 -----------  Country --------------------------
 '''
@@ -110,6 +109,7 @@ class NeighborhoodFilterViewSet(viewsets.ReadOnlyModelViewSet):
         'town__id'
     )
 
+
 class TownFilterViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = TownFullSerializer
     queryset = Town.objects.all()
@@ -124,6 +124,7 @@ class TownFilterViewSet(viewsets.ReadOnlyModelViewSet):
         'name',
         'state__id'
     )
+
 
 class StateFilterViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = StateFullSerializer
@@ -489,7 +490,8 @@ class RegisterViewSet(viewsets.ViewSet):
 
             # Save device
             request.data['user'] = user.id
-            device_serializer = DevicesUserRegisterSerializer(data=request.data)
+            device_serializer = DevicesUserRegisterSerializer(
+                data=request.data)
             if device_serializer.is_valid():
                 device_serializer.save()
             user.set_password(request.data['password'])
@@ -561,7 +563,7 @@ class GetTokenViewSet(viewsets.ViewSet):
             - application/json
         """
 
-        login_serializer=LoginSerializer(data=request.data)
+        login_serializer = LoginSerializer(data=request.data)
 
         if login_serializer.is_valid():
 
@@ -572,25 +574,26 @@ class GetTokenViewSet(viewsets.ViewSet):
 
                 # Get user.
                 user = Users.objects.get(
-                        email=request.data['email'], 
-                        is_active=True
-                    )
+                    email=request.data['email'],
+                    is_active=True
+                )
 
                 # Check password.
                 if not user.check_password(request.data['password']):
 
                     return Response(
-                        {"non_field_errors":"Unable to login with provided credentials."},
+                        {"non_field_errors": "Unable to login with provided credentials."},
                         status=status.HTTP_400_BAD_REQUEST)
 
             except Exception:
                 return Response(
                     {"non_field_errors": "Unable to login with provided credentials."},
                     status=status.HTTP_400_BAD_REQUEST)
-            
+
             # Save device
             request.data['user'] = user.id
-            device_serializer = DevicesUserRegisterSerializer(data=request.data)
+            device_serializer = DevicesUserRegisterSerializer(
+                data=request.data)
             if device_serializer.is_valid():
                 device_serializer.save()
 
@@ -601,12 +604,12 @@ class GetTokenViewSet(viewsets.ViewSet):
 
             if api_settings.JWT_ALLOW_REFRESH:
                 payload['orig_iat'] = timegm(
-                        datetime.utcnow().utctimetuple()
-                    )
+                    datetime.utcnow().utctimetuple()
+                )
 
-            #Token.
+            # Token.
             token = jwt_encode_handler(payload)
-            user_serializer=UsersFullSerializer(user)
+            user_serializer = UsersFullSerializer(user)
 
             return Response({"token": token, "user": user_serializer.data},
                             status=status.HTTP_200_OK
@@ -2196,7 +2199,7 @@ class NotificationsFilterViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         if self.request.user.id:
             return Notifications.objects.filter(
-               Q(publication__user__id=self.request.user.id,type_notification=1) |
+                Q(publication__user__id=self.request.user.id, type_notification=1) |
                 Q(task__user__id=self.request.user.id, type_notification=2) |
                 Q(user__id=self.request.user.id, type_notification=3)
             )
@@ -2586,7 +2589,6 @@ class vwTasksViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 
-
 '''-------------------- Device User Reigister -------------------------------------'''
 
 
@@ -2691,7 +2693,8 @@ class LogoutViewSet(viewsets.ViewSet):
         """
         try:
             if device_token in request.GET:
-                device=Devices_User_Register.objects.get(device_token=request.GET['device_token'])
+                device = Devices_User_Register.objects.get(
+                    device_token=request.GET['device_token'])
                 device.delete()
         except Exception, e:
             print "Error logout" + e
