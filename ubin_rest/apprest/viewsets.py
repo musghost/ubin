@@ -11,6 +11,7 @@ from rest_framework import permissions
 from django.http import Http404
 from django.contrib.auth import logout
 from django.contrib.auth.models import AnonymousUser
+from django.db.models import Q
 from rest_framework import status
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
@@ -2195,9 +2196,9 @@ class NotificationsFilterViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         if self.request.user.id:
             return Notifications.objects.filter(
-                publication__user__id=self.request.user.id,
-                task__user__id=self.request.user.id,
-                user__id=self.request.user.id
+               Q(publication__user__id=self.request.user.id,type_notification=1) |
+                Q(task__user__id=self.request.user.id, type_notification=2) |
+                Q(user__id=self.request.user.id, type_notification=3)
             )
         return Notifications.objects.filter(pk=0)
 
