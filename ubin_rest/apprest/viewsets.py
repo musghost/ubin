@@ -2195,6 +2195,8 @@ class NotificationsFilterViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         if self.request.user.id:
             return Notifications.objects.filter(
+                publication__user__id=self.request.user.id,
+                task__user__id=self.request.user.id,
                 user__id=self.request.user.id
             )
         return Notifications.objects.filter(pk=0)
@@ -2583,105 +2585,6 @@ class vwTasksViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 
-class UploadFilesViewSet(viewsets.ViewSet):
-    permission_classes = (IsAuthenticated,)
-    parser_classes = (MultiPartParser, FormParser, JSONParser,)
-
-    def create(self, request, format=None):
-        """
-            Upload Files to server
-            ---
-            type:
-              file:
-                required: true
-                type: file
-            parameters:
-                - name: file
-                  description: File to transfer server.
-                  required: true
-                  type: file
-                  paramType: file
-            responseMessages:
-                - code: 400
-                  message: BAD REQUEST
-                - code: 200
-                  message: OK
-                - code: 500
-                  message: INTERNAL SERVER ERROR
-            consumes:
-                - application/json
-            produces:
-                - application/json
-        """
-        list_name = []
-        for key, file in request.FILES.items():
-            randomtext = "".join(
-                [random.choice(string.digits + string.letters) for i in xrange(200)])
-            hash_object = hashlib.sha1(randomtext)
-            file_name = hash_object.hexdigest()
-            fileExtension = os.path.splitext(file.name)[1]
-            path = settings.MEDIA_ROOT + file_name + fileExtension  # file.name
-            dest = open(path.encode('utf-8'), 'wb+')
-            obj_JSON = {
-                'id': file_name,
-                'name': file_name + fileExtension,
-                'original_name': file.name,
-                'path': settings.MEDIA_ROOT
-            }
-            list_name.append(obj_JSON)
-            if file.multiple_chunks:
-                for c in file.chunks():
-                    dest.write(c)
-            else:
-                dest.write(file.read())
-            dest.close()
-
-        return Response(list_name, status=status.HTTP_200_OK)
-
-
-class DownloadFilesViewSet(viewsets.ViewSet):
-
-    def list(self, request):
-        """
-            Dowload Files in server.
-            ---
-            type:
-              filename:
-                required: true
-                type: string
-            parameters:
-                - name: filename
-                  description: Name file in server, example:79fc437deb6bb4790e51d603ad11c2e2cf6b5eea.jpg
-                  required: true
-                  type: string
-                  paramType: query
-            responseMessages:
-                - code: 400
-                  message: BAD REQUEST
-                - code: 200
-                  message: OK
-                - code: 500
-                  message: INTERNAL SERVER ERROR
-            consumes:
-                - application/json
-            produces:
-                - application/json
-        """
-        if 'filename' in request.GET:
-            if os.path.isfile(settings.MEDIA_ROOT + request.GET['filename']):
-                the_file = settings.MEDIA_ROOT + request.GET['filename']
-                filename = os.path.basename(the_file)
-                chunk_size = 8192
-                response = StreamingHttpResponse(FileWrapper(open(the_file), chunk_size),
-                                                 content_type=mimetypes.guess_type(the_file)[0])
-                response['Content-Length'] = os.path.getsize(the_file)
-                response[
-                    'Content-Disposition'] = "attachment; filename=%s" % filename
-                return response
-            else:
-                return Response({'error': 'El archivo no existe'}, status=status.HTTP_404_NOT_FOUND)
-        else:
-            return Response({'error': 'filename es requerido'}, status=status.HTTP_400_BAD_REQUEST)
 
 '''-------------------- Device User Reigister -------------------------------------'''
 

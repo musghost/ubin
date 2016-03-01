@@ -18,6 +18,7 @@ class Country(models.Model):
         unique=True
     )
 
+
 class State(models.Model):
     name = models.TextField(
         max_length=60,
@@ -27,6 +28,7 @@ class State(models.Model):
     )
     country = models.ForeignKey(Country, null=False, related_name='states')
 
+
 class Town(models.Model):
     name = models.TextField(
         max_length=60,
@@ -34,6 +36,7 @@ class Town(models.Model):
         blank=False
     )
     state = models.ForeignKey(State, null=False, related_name='towns')
+
 
 class Neighborhood(models.Model):
     name = models.TextField(
@@ -197,9 +200,11 @@ class Legal_Status(models.Model):
 class Providers(models.Model):
     name = models.TextField(max_length=100)
     type_provider = models.ForeignKey(Types_Providers, null=False)
-    state = models.ForeignKey(State, null=True, related_name='providers_in_state')
-    town =  models.ForeignKey(Town, null=True, related_name='providers_in_town')
-    neighborhood = models.ForeignKey(Neighborhood, null=True, related_name='providers_in_neighborhood')
+    state = models.ForeignKey(
+        State, null=True, related_name='providers_in_state')
+    town = models.ForeignKey(Town, null=True, related_name='providers_in_town')
+    neighborhood = models.ForeignKey(
+        Neighborhood, null=True, related_name='providers_in_neighborhood')
     references = models.TextField(max_length=100)
     register_date = models.DateField(auto_now_add=True)
     address = models.TextField(max_length=250)
@@ -237,10 +242,14 @@ class Publications(models.Model):
     antiquity = models.FloatField(null=True)
     area = models.IntegerField(null=False)
     construction_area = models.IntegerField(null=False)
-    country = models.ForeignKey(Country, null=True, related_name='publications_in_country')
-    state = models.ForeignKey(State, null=True, related_name='publications_in_state')
-    town =  models.ForeignKey(Town, null=True, related_name='publications_in_town')
-    neighborhood = models.ForeignKey(Neighborhood, null=True, related_name='publications_in_neighborhood')
+    country = models.ForeignKey(
+        Country, null=True, related_name='publications_in_country')
+    state = models.ForeignKey(
+        State, null=True, related_name='publications_in_state')
+    town = models.ForeignKey(
+        Town, null=True, related_name='publications_in_town')
+    neighborhood = models.ForeignKey(
+        Neighborhood, null=True, related_name='publications_in_neighborhood')
     date = models.DateTimeField(auto_now_add=False, auto_now=False, null=False)
     code = models.TextField(max_length=50, null=True, blank=True)
     mortgage = models.IntegerField(default=1, null=True)
@@ -252,8 +261,10 @@ class Publications(models.Model):
     class Meta:
         ordering = ['date', 'price_first']
 
+
 class Comments(models.Model):
-    publication = models.ForeignKey(Publications, null=False, related_name='comments')
+    publication = models.ForeignKey(
+        Publications, null=False, related_name='comments')
     user = models.ForeignKey(Users, null=False)
     comment = models.TextField(max_length=1000, null=False, blank=False)
     date = models.DateTimeField(auto_now=False, auto_now_add=False, null=False)
@@ -265,7 +276,7 @@ def after_insert_comment(sender, instance, **kwargs):
         message=instance.comment,
         publication=instance.publication,
         task=None,
-        user=instance.publication.user,
+        user=instance.user,
         date=instance.date,
         read=False,
         type_notification=1,
@@ -282,8 +293,9 @@ class Documents(models.Model):
     administrator = models.ForeignKey(Users, null=False)
     type_document = models.ForeignKey(Types_Documents, null=False)
     country = models.ForeignKey(Country, null=True)
-    state = models.ForeignKey(State, null=True, related_name='documents_in_state')
-    town =  models.ForeignKey(Town, null=True, related_name='documents_in_town')
+    state = models.ForeignKey(
+        State, null=True, related_name='documents_in_state')
+    town = models.ForeignKey(Town, null=True, related_name='documents_in_town')
     path = models.TextField(max_length=100, null=False)
     status = models.BooleanField(default=True)
 
@@ -350,7 +362,7 @@ class User_Location(models.Model):
     user = models.ForeignKey(Users, null=False)
     country = models.ForeignKey(Country, null=True)
     state = models.ForeignKey(State, null=True)
-    town =  models.ForeignKey(Town, null=True)
+    town = models.ForeignKey(Town, null=True)
     neighborhood = models.ForeignKey(Neighborhood, null=True)
     date = models.DateTimeField(auto_now_add=True)
     status = models.BooleanField(default=True)
@@ -384,6 +396,7 @@ class Tasks(models.Model):
     user = models.ForeignKey(Users, null=False)
     status = models.BooleanField(default=True)
 
+
 def after_insert_task(sender, instance, **kwargs):
     Notifications(
         message=instance.description,
@@ -399,6 +412,7 @@ def after_insert_task(sender, instance, **kwargs):
 # register the signal
 post_save.connect(after_insert_task, sender=Tasks, dispatch_uid=__file__)
 
+
 class Notifications(models.Model):
     publication = models.ForeignKey(Publications, null=True)
     task = models.ForeignKey(Tasks, null=True)
@@ -408,6 +422,7 @@ class Notifications(models.Model):
     read = models.BooleanField(default=False)
     type_notification = models.IntegerField(null=True)
     status = models.BooleanField(default=True)
+
 
 class Devices_User_Register(models.Model):
     device_user = models.ForeignKey(Users, null=False)
