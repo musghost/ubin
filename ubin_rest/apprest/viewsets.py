@@ -65,6 +65,15 @@ class CountryViewSet(viewsets.ModelViewSet):
     serializer_class = CountrySerializer
     queryset = Country.objects.all()
 
+    def get_permissions(self):
+
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated, ]
+        else:
+            self.permission_classes = [IsAdminUser, ]
+
+        return super(CountryViewSet, self).get_permissions()
+
 '''
 -----------  State --------------------------
 '''
@@ -73,6 +82,14 @@ class CountryViewSet(viewsets.ModelViewSet):
 class StateViewSet(viewsets.ModelViewSet):
     serializer_class = StateSerializer
     queryset = State.objects.all()
+    def get_permissions(self):
+
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated, ]
+        else:
+            self.permission_classes = [IsAdminUser, ]
+
+        return super(StateViewSet, self).get_permissions()
 
 '''
 -----------  Town --------------------------
@@ -82,6 +99,14 @@ class StateViewSet(viewsets.ModelViewSet):
 class TownViewSet(viewsets.ModelViewSet):
     serializer_class = TownSerializer
     queryset = Town.objects.all()
+    def get_permissions(self):
+
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated, ]
+        else:
+            self.permission_classes = [IsAdminUser, ]
+
+        return super(TownViewSet, self).get_permissions()
 
 
 '''
@@ -92,6 +117,15 @@ class TownViewSet(viewsets.ModelViewSet):
 class NeighborhoodViewSet(viewsets.ModelViewSet):
     serializer_class = NeighborhoodSerializer
     queryset = Neighborhood.objects.all()
+
+    def get_permissions(self):
+
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated, ]
+        else:
+            self.permission_classes = [IsAdminUser, ]
+
+        return super(NeighborhoodViewSet, self).get_permissions()
 
 
 class NeighborhoodFilterViewSet(viewsets.ReadOnlyModelViewSet):
@@ -625,6 +659,7 @@ class GetTokenViewSet(viewsets.ViewSet):
 class UsersViewSet(viewsets.ViewSet):
 
     def list(self, request):
+        permission_classes = (IsAdminUser,)
         queryset = Users.objects.all()
         serializer = UsersFullSerializer(queryset, many=True)
         return Response(serializer.data)
@@ -665,6 +700,7 @@ class UsersViewSet(viewsets.ViewSet):
             produces:
                 - application/json
         """
+        permission_classes = (IsAdminUser,)
         photo = ""
         for key, file in request.FILES.items():
             randomtext = "".join(
@@ -694,79 +730,11 @@ class UsersViewSet(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, pk=None):
+        permission_classes = (IsAdminUser,)
         queryset = Users.objects.all()
         user = get_object_or_404(queryset, pk=pk)
         serializer = UsersFullSerializer(user)
         return Response(serializer.data)
-
-    def update(self, request, pk=None):
-        """
-            Update user
-            ---
-            type:
-              photo:
-                required: false
-                type: file
-
-            request_serializer: UsersSerializer
-            response_serializer: UsersFullSerializer
-            omit_serializer: false
-
-            parameters_strategy: merge
-            parameters:
-               - name: photo
-                 description: photo.
-                 required: true
-                 type: file
-                 paramType: file
-
-            responseMessages:
-                - code: 400
-                  message: BAD REQUEST
-                - code: 200
-                  message: OK
-                - code: 201
-                  message: CREATED
-                - code: 500
-                  message: INTERNAL SERVER ERROR
-            consumes:
-                - application/json
-            produces:
-                - application/json
-        """
-
-        user = get_object_or_404(Users, pk=pk)
-        photo = user.photo
-        if len(request.FILES.items()) > 0:
-            file_path = settings.MEDIA_ROOT + str(photo)
-            if os.path.isfile(file_path):
-                os.remove(file_path)
-            for key, file in request.FILES.items():
-                randomtext = "".join(
-                    [random.choice(string.digits + string.letters) for i in xrange(200)])
-                hash_object = hashlib.sha1(randomtext)
-                file_name = hash_object.hexdigest()
-                fileExtension = os.path.splitext(file.name)[1]
-                path = settings.MEDIA_ROOT + file_name + fileExtension  # file.name
-                dest = open(path.encode('utf-8'), 'wb+')
-                hash_name = file_name + fileExtension
-                photo = hash_name
-                if file.multiple_chunks:
-                    for c in file.chunks():
-                        dest.write(c)
-                else:
-                    dest.write(file.read())
-                    dest.close()
-        request.data['photo'] = photo
-        serializer = UsersSerializer(user, data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            if 'password' in request.data:
-                user.set_password(request.data['password'])
-                user.save()
-            return Response(UsersFullSerializer(user).data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
         """
@@ -837,6 +805,7 @@ class UsersViewSet(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
+        permission_classes = (IsAdminUser,)
         user = get_object_or_404(Users, pk=pk)
         file_path = settings.MEDIA_ROOT + str(user.photo)
         if os.path.isfile(file_path):
@@ -922,11 +891,13 @@ class UsersFilterViewSet(viewsets.ReadOnlyModelViewSet):
 class vwUsersViewSet(viewsets.ViewSet):
 
     def list(self, request):
+        permission_classes = (IsAdminUser,)
         queryset = Users.objects.all()
         serializer = UsersDetailSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
+        permission_classes = (IsAdminUser,)
         queryset = Users.objects.all()
         user = get_object_or_404(queryset, pk=pk)
         serializer = UsersDetailSerializer(user)
@@ -1231,134 +1202,6 @@ class PublicationsViewSet(viewsets.ViewSet):
         user = get_object_or_404(queryset, pk=pk)
         serializer = PublicationsFullSerializer(user)
         return Response(serializer.data)
-
-    def update(self, request, pk=None):
-        """
-        Publication.
-        ---
-
-        type:
-          photos_1:
-            required: false
-            type: file
-          photo_2:
-            required: false
-            type: file
-          photo_3:
-            required: false
-            type: file
-          photo_4:
-            required: false
-            type: file
-          photo_5:
-            required: false
-            type: file
-          photo_6:
-            required: false
-            type: file
-
-        request_serializer: PublicationsSerializer
-        response_serializer: PublicationsFullSerializer
-        omit_serializer: false
-
-        parameters_strategy: merge
-        parameters:
-          - name: photo_1
-            description: Photo publication.
-            required: false
-            type: file
-            paramType: file
-          - name: photo_2
-            description: Photo publication.
-            required: false
-            type: file
-            paramType: file
-          - name: photo_3
-            description: Photo publication.
-            required: false
-            type: file
-            paramType: file
-          - name: photo_4
-            description: Photo publication.
-            required: false
-            type: file
-            paramType: file
-          - name: photo_5
-            description: Photo publication.
-            required: false
-            type: file
-            paramType: file
-          - name: photo_6
-            description: Photo publication.
-            required: false
-            type: file
-            paramType: file    
-
-        responseMessages:
-          - code: 400
-            message: BAD REQUEST
-          - code: 200
-            message: OK
-          - code: 500
-            message: INTERNAL SERVER ERROR
-        consumes:
-          - application/json
-        produces:
-          - application/json
-
-        """
-        publication = get_object_or_404(Publications, pk=pk)
-        if len(request.FILES.items()) > 0:
-            for key, file in request.FILES.items():
-                randomtext = "".join(
-                    [random.choice(string.digits + string.letters) for i in xrange(200)])
-                hash_object = hashlib.sha1(randomtext)
-                code = hash_object.hexdigest()
-                file_name = hash_object.hexdigest()
-                fileExtension = os.path.splitext(file.name)[1]
-                id_photo = os.path.splitext(file.name)[0]
-                photo = None
-                try:
-                    id_photo = int(id_photo)
-                    photo = Photos.objects.get(pk=id_photo)
-                except Exception:
-                    photo = None
-
-                if photo:
-                    file_path = settings.MEDIA_ROOT + photo.hash_name
-                    if os.path.isfile(file_path):
-                        os.remove(file_path)
-                    photo.hash_name = file_name + fileExtension
-                    photo.save()
-                    path = settings.MEDIA_ROOT + file_name + fileExtension  # file.name
-                    dest = open(path.encode('utf-8'), 'wb+')
-                    if file.multiple_chunks:
-                        for c in file.chunks():
-                            dest.write(c)
-                        else:
-                            dest.write(file.read())
-                        dest.close()
-                else:
-                    path = settings.MEDIA_ROOT + file_name + fileExtension  # file.name
-                    dest = open(path.encode('utf-8'), 'wb+')
-                    if file.multiple_chunks:
-                        for c in file.chunks():
-                            dest.write(c)
-                        else:
-                            dest.write(file.read())
-                        dest.close()
-                    Photos(
-                        hash_name=file_name + fileExtension,
-                        original_name=file.name,
-                        path=settings.MEDIA_ROOT,
-                        publication=publication
-                    ).save()
-
-        serializer = PublicationsSerializer(publication, data=request.data)
-        if serializer.is_valid():
-            publication = serializer.save()
-            return Response(PublicationsFullSerializer(publication).data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
         """
@@ -1811,93 +1654,6 @@ class DocumentsViewSet(viewsets.ViewSet):
         document = get_object_or_404(queryset, pk=pk)
         serializer = DocumentsFullSerializer(document)
         return Response(serializer.data)
-
-    def update(self, request, pk=None):
-        """
-            Documents update, you should send all mandatory parameters.
-            ---
-            type:
-              original_name:
-                required: true
-                type: file
-              hash_name:
-                required: false
-                type: string
-              path:
-                required: false
-                type: string
-
-            request_serializer: DocumentsSerializer
-            response_serializer: DocumentsSerializer
-            omit_serializer: false
-
-            parameters_strategy: merge
-            omit_parameters:
-               - hash_name
-            parameters:
-               - name: original_name
-                 description: Document.
-                 required: true
-                 type: file
-                 paramType: file
-               - name: hash_name
-                 required: false
-                 type: string
-                 paramType: form
-               - name: path
-                 required: false
-                 type: string
-                 paramType: form
-
-            responseMessages:
-                - code: 400
-                  message: BAD REQUEST
-                - code: 200
-                  message: OK
-                - code: 201
-                  message: CREATED
-                - code: 500
-                  message: INTERNAL SERVER ERROR
-            consumes:
-                - application/json
-            produces:
-                - application/json
-        """
-        permission_classes = (IsAdminUser,)
-        document = get_object_or_404(Documents, pk=pk)
-        hash_name = document.hash_name
-        path = document.path
-        original_name = document.original_name
-        if len(request.FILES.items()) > 0:
-            file_path = settings.MEDIA_ROOT + str(hash_name)
-            if os.path.isfile(file_path):
-                os.remove(file_path)
-            for key, file in request.FILES.items():
-                randomtext = "".join(
-                    [random.choice(string.digits + string.letters) for i in xrange(200)])
-                hash_object = hashlib.sha1(randomtext)
-                file_name = hash_object.hexdigest()
-                fileExtension = os.path.splitext(file.name)[1]
-                path = settings.MEDIA_ROOT + file_name + fileExtension  # file.name
-                dest = open(path.encode('utf-8'), 'wb+')
-                hash_name = file_name + fileExtension
-                path = settings.MEDIA_ROOT
-                original_name = file.name
-                if file.multiple_chunks:
-                    for c in file.chunks():
-                        dest.write(c)
-                else:
-                    dest.write(file.read())
-                    dest.close()
-        request.data['hash_name'] = hash_name
-        request.data['path'] = path
-        request.data['original_name'] = original_name
-        serializer = DocumentsSerializer(document, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
         """
