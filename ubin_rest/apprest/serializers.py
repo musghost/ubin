@@ -314,7 +314,7 @@ class ProvidersFullSerializer(serializers.ModelSerializer):
     totalScore = serializers.SerializerMethodField()
     average = serializers.SerializerMethodField()
     type_provider = TypesProvidersSerializer()
-    state = StateFullSerializer()
+    state = StateSerializer()
     neighborhood = NeighborhoodSerializer()
     town = TownSerializer()
 

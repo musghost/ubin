@@ -830,7 +830,7 @@ class DocumentsFilterViewSet(viewsets.ReadOnlyModelViewSet):
         'original_name',
         'hash_name',
         'administrator__id',
-        'type_document',
+        'type_document__id',
         'path',
         'country__id',
         'state__id',
