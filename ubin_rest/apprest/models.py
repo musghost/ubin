@@ -153,6 +153,22 @@ class Users(AbstractBaseUser, PermissionsMixin):
         'is_active'
     ]
 
+    def get_full_name(self):
+        """
+        Return full name user:
+             name last_name mothers_maiden_name
+        """
+        parts = [self.name, self.last_name, self.mothers_maiden_name]
+        return ' '.join(filter(None, parts))
+
+    def get_short_name(self):
+        """
+        Return short name user:
+            name last_name
+        """
+        parts = [self.name, self.last_name]
+        return ' '.join(filter(None, parts))
+
 
 class Currencies(models.Model):
     name = models.TextField(max_length=100, null=False, blank=False)
