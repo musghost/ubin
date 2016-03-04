@@ -68,7 +68,7 @@ class CountryViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
 
         if self.request.method == 'GET':
-            self.permission_classes = [IsAuthenticated, ]
+            self.permission_classes = [AllowAny, ]
         else:
             self.permission_classes = [IsAdminUser, ]
 
@@ -85,7 +85,7 @@ class StateViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
 
         if self.request.method == 'GET':
-            self.permission_classes = [IsAuthenticated, ]
+            self.permission_classes = [AllowAny, ]
         else:
             self.permission_classes = [IsAdminUser, ]
 
@@ -102,7 +102,7 @@ class TownViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
 
         if self.request.method == 'GET':
-            self.permission_classes = [IsAuthenticated, ]
+            self.permission_classes = [AllowAny, ]
         else:
             self.permission_classes = [IsAdminUser, ]
 
@@ -121,7 +121,7 @@ class NeighborhoodViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
 
         if self.request.method == 'GET':
-            self.permission_classes = [IsAuthenticated, ]
+            self.permission_classes = [AllowAny, ]
         else:
             self.permission_classes = [IsAdminUser, ]
 
@@ -129,6 +129,7 @@ class NeighborhoodViewSet(viewsets.ModelViewSet):
 
 
 class NeighborhoodFilterViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = (AllowAny,)
     serializer_class = NeighborhoodFullSerializer
     queryset = Neighborhood.objects.all()
     filter_backends = (filters.DjangoFilterBackend,
@@ -145,6 +146,7 @@ class NeighborhoodFilterViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class TownFilterViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = (AllowAny,)
     serializer_class = TownFullSerializer
     queryset = Town.objects.all()
     filter_backends = (filters.DjangoFilterBackend,
@@ -161,6 +163,7 @@ class TownFilterViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class StateFilterViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = (AllowAny,)
     serializer_class = StateFullSerializer
     queryset = State.objects.all()
     filter_backends = (filters.DjangoFilterBackend,
