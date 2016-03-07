@@ -2,10 +2,12 @@
 from django.conf import settings
 from django.contrib.auth.models import (
     AbstractBaseUser, BaseUserManager, PermissionsMixin)
-from django.core.mail import EmailMultiAlternatives
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.signals import post_save
+
+from django.core.mail import EmailMultiAlternatives
+
 
 
 # Create your models here.
@@ -168,6 +170,21 @@ class Users(AbstractBaseUser, PermissionsMixin):
         """
         parts = [self.name, self.last_name]
         return ' '.join(filter(None, parts))
+
+    def email_user(self, subject, txt, html=None, from_email=None, **kwargs):
+        """
+        Send email to user.
+        """
+        if not from_email :
+            from_email = settings.DEFAULT_FROM_EMAIL
+
+        message = EmailMultiAlternatives(
+            subject, txt, from_email, [self.email], **kwargs)
+
+        if html is not None:
+            message.attach_alternative(html, 'text/html')
+
+        message.send()
 
 
 class Currencies(models.Model):

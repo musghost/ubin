@@ -89,10 +89,11 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'ubin_rest.urls'
 
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.realpath(os.path.join(BASE_DIR,'templates'))],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -110,6 +111,7 @@ WSGI_APPLICATION = 'ubin_rest.wsgi.application'
 # Setting Emails
 MANDRILL_API_KEY = "7loT4l0plAgrwEF_IKctyg"
 EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
+DEFAULT_FROM_EMAIL="ubin@ubin.com"
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases

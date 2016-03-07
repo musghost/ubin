@@ -33,7 +33,7 @@ from django.utils.encoding import smart_str
 from django.db.models import Avg
 from django.db.models.signals import pre_delete, post_delete
 from django.dispatch import receiver
-
+from django.template.loader import render_to_string
 import mimetypes
 from django.http import StreamingHttpResponse
 from django.core.servers.basehttp import FileWrapper
@@ -332,11 +332,13 @@ class TypesAdvisorsViewSet(viewsets.ModelViewSet):
 class vwTypesAdvisorsViewSet(viewsets.ViewSet):
 
     def list(self, request):
+        permission_classes = (AllowAny,)
         queryset = Types_Advisors.objects.all()
         serializer = TypesAdvisorsSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
+        permission_classes = (AllowAny,)
         queryset = Types_Advisors.objects.all()
         type_advisor = get_object_or_404(queryset, pk=pk)
         serializer = TypesAdvisorsSerializer(type_advisor)
@@ -524,6 +526,36 @@ class RegisterViewSet(viewsets.ViewSet):
         if serializer.is_valid():
 
             user = serializer.save()
+
+            context = {
+                'name': user.email
+            }
+
+            # Gets the email subject in a single line.
+            message_subject = render_to_string(
+                'registration/welcome_email_subject.txt',
+                context
+            )
+
+            message_subject = ''.join(message_subject.splitlines())
+
+            # Renders the plain text message.
+            message_text = render_to_string(
+                'registration/welcome_email.txt',
+                context
+            )
+
+            # Renders the html message.
+            message_html = render_to_string(
+                'registration/welcome_email.html',
+                context
+            )
+
+            try:
+                # Send a mail with the data for account activation
+                user.email_user(message_subject, message_text, message_html)
+            except Exception, e:
+                print "Error enviando email de bienvenida a el usuario : " + user.email
 
             # Save device
             request.data['user'] = user.id
@@ -2415,17 +2447,39 @@ class RecoverPasswordViewSet(viewsets.ViewSet):
             user.set_password(randomtext)
             user.save()
             serializer = UsersSerializer(user)
+
+            context = {
+                'name': user.name,
+                'email': user.email,
+                'password': randomtext
+            }
+
+            # Gets the email subject in a single line.
+            message_subject = render_to_string(
+                'recover_password/recover_password_email_subject.txt',
+                context
+            )
+
+            message_subject = ''.join(message_subject.splitlines())
+
+            # Renders the plain text message.
+            message_text = render_to_string(
+                'recover_password/recover_password_email.txt',
+                context
+            )
+
+            # Renders the html message.
+            message_html = render_to_string(
+                'recover_password/recover_password_email.html',
+                context
+            )
+
             try:
-                password = randomtext
-                name = serializer.data['name']
-                body = 'Hola ' + name + u', tu contraseña es : ' + password
-                subject = u'UBIN : Recuperar contraseña'
-                subject = subject.encode("utf_8").decode("utf_8")
-                body = body.encode("utf_8").decode("utf_8")
-                send_mail(subject, body, 'web@administrator.com',
-                          [email], fail_silently=False)
-            except Exception as e:
-                return Response({'message': 'The email could not be sent.', 'error': e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                # Send a mail with the data for account activation
+                user.email_user(message_subject, message_text, message_html)
+            except Exception, e:
+                return Response({'message': 'The email could not be sent.', 'error': e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
+                               
         else:
             return Response({'email': 'email is mandatory field.'}, status=status.HTTP_404_NOT_FOUND)
 
