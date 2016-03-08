@@ -64,13 +64,8 @@ vw_type_publications.register(
 Type Advisor
 '''
 # CRUD
-router.register(r'typeAdvisor', TypesAdvisorsViewSet)
-# VIEW : typesAdvisors/pk/user/pk
-router.register(r'typesAdvisors', vwTypesAdvisorsViewSet,
-                base_name='typesAdvisors')
-vw_advisors_users = routers.NestedSimpleRouter(
-    router, r'typesAdvisors', lookup='typeAdvisor')
-vw_advisors_users.register(r'users', AdvisorUsersViewSet, base_name='users')
+router.register(r'typesAdvisors', TypesAdvisorsViewSet)
+
 
 '''
 Types Providers
@@ -366,7 +361,6 @@ urlpatterns = [
     url(r'^api/v1/', include(vw_property_publications.urls)),
     url(r'^api/v1/', include(vw_type_publications.urls)),
     url(r'^api/v1/', include(vw_currencies_publications.urls)),
-    url(r'^api/v1/', include(vw_advisors_users.urls)),
     url(r'^api/v1/', include(vw_providers_type.urls)),
     url(r'^api/v1/', include(vw_events_type.urls)),
     url(r'^api/v1/', include(vw_type_documents.urls)),
