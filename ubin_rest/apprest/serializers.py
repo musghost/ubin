@@ -36,7 +36,6 @@ class NeighborhoodSerializer(serializers.ModelSerializer):
 
 class NeighborhoodFullSerializer(serializers.ModelSerializer):
     town = TownSerializer()
-
     class Meta:
         model = Neighborhood
         fields = ('id', 'name', 'town')
@@ -49,9 +48,13 @@ class TownFullSerializer(serializers.ModelSerializer):
         model = Town
         fields = ('id', 'name', 'state', 'neighborhood')
 
+class TownTownSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Town
+        fields = ('id', 'name')
 
 class StateFullSerializer(serializers.ModelSerializer):
-    towns = TownFullSerializer(many=True, read_only=True)
+    towns = TownTownSerializer(many=True, read_only=True)
 
     class Meta:
         model = State
