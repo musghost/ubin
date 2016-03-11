@@ -1895,6 +1895,39 @@ class EventsFilterViewSet(viewsets.ReadOnlyModelViewSet):
     )
 
 
+class EventsTownFilterViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Parameters filter.
+    ---
+    id, address, type_event__id , date_event, hour,
+    ---
+    date_event, hour, administrator__id , status
+    ---
+    town__id
+    ---
+    """
+    serializer_class = EventsTownSerializer
+    queryset = Events.objects.all()
+    filter_backends = (filters.DjangoFilterBackend,
+                       filters.OrderingFilter, filters.SearchFilter,)
+    search_fields = (
+        'name',
+        'description',
+        'address'
+    )
+    ordering_fields = '__all__'
+    filter_fields = (
+        'id',
+        'name',
+        'address',
+        'type_event__id',
+        'date_event',
+        'hour',
+        'administrator__id',
+        'status',
+        'town__id'
+    )
+
 '''
 -------------- Favorites -------------------------
 '''

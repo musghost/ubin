@@ -584,7 +584,8 @@ class EventsSerializer(serializers.ModelSerializer):
             'date_event',
             'hour',
             'administrator',
-            'status'
+            'status',
+            'town'
         )
 
 
@@ -604,6 +605,26 @@ class EventsFullSerializer(serializers.ModelSerializer):
             'hour',
             'administrator',
             'status'
+        )
+
+class EventsTownSerializer(serializers.ModelSerializer):
+    administrator = UsersDetailSerializer()
+    type_event = TypesEventsSerializer()
+    town = TownSerializer()
+
+    class Meta:
+        model = Events
+        fields = (
+            'id',
+            'name',
+            'address',
+            'description',
+            'type_event',
+            'date_event',
+            'hour',
+            'administrator',
+            'status',
+            'town'
         )
 
 

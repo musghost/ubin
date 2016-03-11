@@ -227,6 +227,8 @@ Events
 '''
 router.register(r'event', EventsViewSet)
 router.register(r'eventsFilter', EventsFilterViewSet)
+router.register(r'events-town-filter', EventsTownFilterViewSet)
+
 
 '''
 Favorites

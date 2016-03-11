@@ -344,6 +344,7 @@ class Events(models.Model):
     hour = models.TimeField(null=False)
     administrator = models.ForeignKey(Users, null=False)
     status = models.BooleanField(default=True)
+    town = models.ForeignKey(Town, null=True, related_name='events_in_town')
 
 
 class Favorites(models.Model):
