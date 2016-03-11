@@ -1864,7 +1864,15 @@ class EventsViewSet(viewsets.ModelViewSet):
     queryset = Events.objects.all()
 
 
-class EventsFilterViewSet(viewsets.ModelViewSet):
+class EventsFilterViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Parameters filter.
+    ---
+    id, address, type_event__id , date_event, hour,
+    ---
+    date_event, hour, administrator__id , status
+    ---
+    """
     serializer_class = EventsFullSerializer
     queryset = Events.objects.all()
     filter_backends = (filters.DjangoFilterBackend,
@@ -1879,8 +1887,7 @@ class EventsFilterViewSet(viewsets.ModelViewSet):
         'id',
         'name',
         'address',
-        'description',
-        'type_event',
+        'type_event__id',
         'date_event',
         'hour',
         'administrator__id',
