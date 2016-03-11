@@ -68,7 +68,7 @@ class Migration(migrations.Migration):
             name='Country',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.TextField(unique=True, max_length=60)),
+                ('name', models.TextField(max_length=60)),
             ],
         ),
         migrations.CreateModel(
@@ -152,7 +152,14 @@ class Migration(migrations.Migration):
             name='Neighborhood',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.TextField(max_length=60)),
+                ('name', models.TextField(max_length=200)),
+                ('key', models.TextField(max_length=50, null=True, blank=True)),
+                ('latitude', models.TextField(max_length=50, null=True, blank=True)),
+                ('longitude', models.TextField(max_length=50, null=True, blank=True)),
+                ('altitude', models.TextField(max_length=50, null=True, blank=True)),
+                ('lat', models.FloatField(null=True)),
+                ('lng', models.FloatField(null=True)),
+                ('status', models.IntegerField(null=True)),
             ],
         ),
         migrations.CreateModel(
@@ -244,7 +251,9 @@ class Migration(migrations.Migration):
             name='State',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.TextField(unique=True, max_length=60)),
+                ('name', models.TextField(max_length=200)),
+                ('key', models.TextField(max_length=50, null=True, blank=True)),
+                ('abrev', models.TextField(max_length=50, null=True, blank=True)),
                 ('country', models.ForeignKey(related_name='states', to='apprest.Country')),
             ],
         ),
@@ -264,7 +273,9 @@ class Migration(migrations.Migration):
             name='Town',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.TextField(max_length=60)),
+                ('name', models.TextField(max_length=200)),
+                ('key', models.TextField(max_length=50, null=True, blank=True)),
+                ('status', models.IntegerField(null=True)),
                 ('state', models.ForeignKey(related_name='towns', to='apprest.State')),
             ],
         ),
