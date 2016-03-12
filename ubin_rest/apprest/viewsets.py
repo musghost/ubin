@@ -63,7 +63,7 @@ from rest_framework.renderers import JSONRenderer
 
 class CountryViewSet(viewsets.ModelViewSet):
     serializer_class = CountrySerializer
-    queryset = Country.objects.all()
+    queryset = Country.objects.all().exclude(name='Otro')
 
     def get_permissions(self):
 
@@ -81,7 +81,7 @@ class CountryViewSet(viewsets.ModelViewSet):
 
 class StateViewSet(viewsets.ModelViewSet):
     serializer_class = StateSerializer
-    queryset = State.objects.all()
+    queryset = State.objects.all().exclude(name='Otro')
     def get_permissions(self):
 
         if self.request.method == 'GET':
@@ -98,7 +98,7 @@ class StateViewSet(viewsets.ModelViewSet):
 
 class TownViewSet(viewsets.ModelViewSet):
     serializer_class = TownSerializer
-    queryset = Town.objects.all()
+    queryset = Town.objects.all().exclude(name='Otro')
 
 
 
@@ -109,7 +109,7 @@ class TownViewSet(viewsets.ModelViewSet):
 
 class NeighborhoodViewSet(viewsets.ModelViewSet):
     serializer_class = NeighborhoodSerializer
-    queryset = Neighborhood.objects.all()
+    queryset = Neighborhood.objects.all().exclude(name='Otro')
 
     def get_permissions(self):
 
@@ -124,7 +124,7 @@ class NeighborhoodViewSet(viewsets.ModelViewSet):
 class NeighborhoodFilterViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (AllowAny,)
     serializer_class = NeighborhoodFullSerializer
-    queryset = Neighborhood.objects.all()
+    queryset = Neighborhood.objects.all().exclude(name='Otro')
     filter_backends = (filters.DjangoFilterBackend,
                        filters.OrderingFilter, filters.SearchFilter,)
     search_fields = (
@@ -141,7 +141,7 @@ class NeighborhoodFilterViewSet(viewsets.ReadOnlyModelViewSet):
 class TownFilterViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (AllowAny,)
     serializer_class = TownFullSerializer
-    queryset = Town.objects.all()
+    queryset = Town.objects.all().exclude(name='Otro')
     filter_backends = (filters.DjangoFilterBackend,
                        filters.OrderingFilter, filters.SearchFilter,)
     search_fields = (
@@ -158,7 +158,7 @@ class TownFilterViewSet(viewsets.ReadOnlyModelViewSet):
 class StateFilterViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (AllowAny,)
     serializer_class = StateFullSerializer
-    queryset = State.objects.all()
+    queryset = State.objects.all().exclude(name='Otro')
     filter_backends = (filters.DjangoFilterBackend,
                        filters.OrderingFilter, filters.SearchFilter,)
     search_fields = (
