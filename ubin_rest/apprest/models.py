@@ -26,16 +26,6 @@ class State(models.Model):
         null=False,
         blank=False
     )
-    key = models.TextField(
-        max_length=50,
-        null=True,
-        blank=True
-    )
-    abrev = models.TextField(
-        max_length=50,
-        null=True,
-        blank=True
-    )
     country = models.ForeignKey(Country, null=False, related_name='states')
 
 
@@ -45,13 +35,7 @@ class Town(models.Model):
         null=False,
         blank=False
     )
-    key = models.TextField(
-        max_length=50,
-        null=True,
-        blank=True
-    )
     state = models.ForeignKey(State, null=False, related_name='towns')
-    status = models.IntegerField(null=True)
 
 class Neighborhood(models.Model):
     name = models.TextField(
@@ -59,29 +43,6 @@ class Neighborhood(models.Model):
         null=False,
         blank=False
     )
-    key = models.TextField(
-        max_length=50,
-        null=True,
-        blank=True
-    )
-    latitude = models.TextField(
-        max_length=50,
-        null=True,
-        blank=True
-    )
-    longitude = models.TextField(
-        max_length=50,
-        null=True,
-        blank=True
-    )
-    altitude = models.TextField(
-        max_length=50,
-        null=True,
-        blank=True
-    )
-    lat=models.FloatField(null=True)
-    lng=models.FloatField(null=True)
-    status = models.IntegerField(null=True)
     town = models.ForeignKey(Town, null=False, related_name='neighborhood')
 
 

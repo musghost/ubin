@@ -153,13 +153,6 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.TextField(max_length=200)),
-                ('key', models.TextField(max_length=50, null=True, blank=True)),
-                ('latitude', models.TextField(max_length=50, null=True, blank=True)),
-                ('longitude', models.TextField(max_length=50, null=True, blank=True)),
-                ('altitude', models.TextField(max_length=50, null=True, blank=True)),
-                ('lat', models.FloatField(null=True)),
-                ('lng', models.FloatField(null=True)),
-                ('status', models.IntegerField(null=True)),
             ],
         ),
         migrations.CreateModel(
@@ -252,8 +245,6 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.TextField(max_length=200)),
-                ('key', models.TextField(max_length=50, null=True, blank=True)),
-                ('abrev', models.TextField(max_length=50, null=True, blank=True)),
                 ('country', models.ForeignKey(related_name='states', to='apprest.Country')),
             ],
         ),
@@ -274,8 +265,6 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.TextField(max_length=200)),
-                ('key', models.TextField(max_length=50, null=True, blank=True)),
-                ('status', models.IntegerField(null=True)),
                 ('state', models.ForeignKey(related_name='towns', to='apprest.State')),
             ],
         ),
