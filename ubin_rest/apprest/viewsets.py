@@ -99,14 +99,7 @@ class StateViewSet(viewsets.ModelViewSet):
 class TownViewSet(viewsets.ModelViewSet):
     serializer_class = TownSerializer
     queryset = Town.objects.all()
-    def get_permissions(self):
 
-        if self.request.method == 'GET':
-            self.permission_classes = [AllowAny, ]
-        else:
-            self.permission_classes = [IsAdminUser, ]
-
-        return super(TownViewSet, self).get_permissions()
 
 
 '''
