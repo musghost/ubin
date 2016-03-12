@@ -134,10 +134,8 @@ class NeighborhoodFilterViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = NeighborhoodFullSerializer
     queryset = Neighborhood.objects.all().exclude(name='Otro')
     filter_backends = (filters.DjangoFilterBackend,
-                       filters.OrderingFilter, filters.SearchFilter,)
-    search_fields = (
-        'name'
-    )
+                       filters.OrderingFilter)
+
     ordering_fields = '__all__'
     filter_fields = (
         'id',
@@ -151,10 +149,8 @@ class TownFilterViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = TownFullSerializer
     queryset = Town.objects.all().exclude(name='Otro')
     filter_backends = (filters.DjangoFilterBackend,
-                       filters.OrderingFilter, filters.SearchFilter,)
-    search_fields = (
-        'name'
-    )
+                       filters.OrderingFilter)
+
     ordering_fields = '__all__'
     filter_fields = (
         'id',
@@ -168,10 +164,8 @@ class StateFilterViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = StateFullSerializer
     queryset = State.objects.all().exclude(name='Otro')
     filter_backends = (filters.DjangoFilterBackend,
-                       filters.OrderingFilter, filters.SearchFilter,)
-    search_fields = (
-        'name'
-    )
+                       filters.OrderingFilter,)
+
     ordering_fields = '__all__'
     filter_fields = (
         'id',
