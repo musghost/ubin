@@ -111,7 +111,7 @@ WSGI_APPLICATION = 'ubin_rest.wsgi.application'
 # Setting Emails
 MANDRILL_API_KEY = "7loT4l0plAgrwEF_IKctyg"
 EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
-DEFAULT_FROM_EMAIL="ubin@ubin.com"
+DEFAULT_FROM_EMAIL="ubin@ubin.mx"
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
