@@ -62,6 +62,7 @@ def clean_metadata_image(path):
     """
     Clean data images
     """
+    """
     # Reset image metas
     image_file = open(path)
     image = Image.open(image_file)
@@ -71,6 +72,7 @@ def clean_metadata_image(path):
     image_without_exif = Image.new(image.mode, image.size)
     image_without_exif.putdata(data)
     image_without_exif.save(path)
+    """
 
 '''
 -----------  Country --------------------------
