@@ -20,7 +20,7 @@ $ install -r requirements.txt
 # Correr el proyecto 
 
 Para correr el proyecto es necesario:
-- Tene una base de datos en postgres con el nombre de ***ubinrest***.
+- Tener una base de datos en postgres con el nombre de ***ubinrest***.
 - La base de datos ***ubinrest*** debe pertenecer a el usuario especificado en settings.
 - El usuario debe tener la cotraseña especificada en settings.
 - Correr las migraciones:
