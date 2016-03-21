@@ -1,9 +1,11 @@
-from rest_framework import serializers
-
-from .models import *
-from rest_framework_jwt.settings import api_settings
 from calendar import timegm
 from datetime import datetime
+
+from rest_framework import serializers
+
+from rest_framework_jwt.settings import api_settings
+
+from .models import * # flake8: noqa
 
 
 class CountrySerializer(serializers.ModelSerializer):
@@ -36,6 +38,7 @@ class NeighborhoodSerializer(serializers.ModelSerializer):
 
 class NeighborhoodFullSerializer(serializers.ModelSerializer):
     town = TownSerializer()
+
     class Meta:
         model = Neighborhood
         fields = ('id', 'name', 'town')
@@ -48,10 +51,13 @@ class TownFullSerializer(serializers.ModelSerializer):
         model = Town
         fields = ('id', 'name', 'state', 'neighborhood')
 
+
 class TownTownSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Town
         fields = ('id', 'name')
+
 
 class StateFullSerializer(serializers.ModelSerializer):
     towns = TownTownSerializer(many=True, read_only=True)
@@ -609,6 +615,7 @@ class EventsFullSerializer(serializers.ModelSerializer):
             'administrator',
             'status'
         )
+
 
 class EventsTownSerializer(serializers.ModelSerializer):
     administrator = UsersDetailSerializer()

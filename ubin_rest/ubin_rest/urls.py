@@ -1,14 +1,14 @@
+
 from django.conf.urls import include, url
-from django.contrib.auth import login, authenticate, logout
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from django.contrib import admin
-admin.autodiscover()
 
-from apprest.viewsets import *
-
+from apprest.viewsets import * # flake8: noqa
 
 from rest_framework.routers import DefaultRouter
+
 from rest_framework_nested import routers
+
+admin.autodiscover()
 
 router = DefaultRouter()
 
@@ -45,7 +45,9 @@ router.register(r'typesProperty', vwTypesPropertyViewSet,
 vw_property_publications = routers.NestedSimpleRouter(
     router, r'typesProperty', lookup='typeProperty')
 vw_property_publications.register(
-    r'publications', vwPublicationsInTypeImmovableViewSet, base_name='publications')
+    r'publications', vwPublicationsInTypeImmovableViewSet,
+    base_name='publications'
+)
 
 '''
 Types Publications
@@ -58,7 +60,9 @@ router.register(r'typesPublications', vwTypesPublicationsViewSet,
 vw_type_publications = routers.NestedSimpleRouter(
     router, r'typesPublications', lookup='typePublication')
 vw_type_publications.register(
-    r'publications', vwPublicationsInTypePublicationViewSet, base_name='publications')
+    r'publications', vwPublicationsInTypePublicationViewSet,
+    base_name='publications'
+)
 
 '''
 Type Advisor
@@ -117,7 +121,9 @@ router.register(r'usersFilter', UsersFilterViewSet)
 vw_classifications_providers = routers.NestedSimpleRouter(
     router, r'users', lookup='user')
 vw_classifications_providers.register(
-    r'clasificationProviders', vwClassificationProvidersViewSet, base_name='clasificationProviders')
+    r'clasificationProviders', vwClassificationProvidersViewSet,
+    base_name='clasificationProviders'
+)
 # VIEW : /users/pk/publications/pk
 vw_publications_users = routers.NestedSimpleRouter(
     router, r'users', lookup='user')
@@ -141,7 +147,9 @@ vw_notifications_users.register(
 vw_push_notifications_users = routers.NestedSimpleRouter(
     router, r'users', lookup='user')
 vw_push_notifications_users.register(
-    r'pushNotifications', vwPushNotificationsViewSet, base_name='pushNotifications')
+    r'pushNotifications', vwPushNotificationsViewSet,
+    base_name='pushNotifications'
+)
 # VIEW : /users/pk/reports/pk
 vw_reports_users = routers.NestedSimpleRouter(router, r'users', lookup='user')
 vw_reports_users.register(r'reports', vwReportsViewSet, base_name='reports')
@@ -166,10 +174,12 @@ router.register(r'providers', vwProvidersViewSet, base_name='providers')
 vw_classification_providers = routers.NestedSimpleRouter(
     router, r'providers', lookup='provider')
 vw_classification_providers.register(
-    r'clasificationProviders', vwProviderClassificationProvidersViewSet, base_name='clasificationProviders')
+    r'clasificationProviders', vwProviderClassificationProvidersViewSet,
+    base_name='clasificationProviders'
+)
 
 '''
-Classification Providers 
+Classification Providers
 '''
 router.register(r'classificationProvider', ClassificationProvidersViewSet)
 
@@ -196,12 +206,16 @@ vw_favorites_publications.register(
 vw_notifications_publications = routers.NestedSimpleRouter(
     router, r'publications', lookup='publication')
 vw_notifications_publications.register(
-    r'notifications', vwNotificationsPublicationsViewSet, base_name='notifications')
+    r'notifications', vwNotificationsPublicationsViewSet,
+    base_name='notifications'
+)
 # VIEW : publications/pk/pushNotifications/pk
 vw_push_notifications_publications = routers.NestedSimpleRouter(
     router, r'publications', lookup='publication')
 vw_push_notifications_publications.register(
-    r'pushNotifications', vwPushNotificationsPubViewSet, base_name='pushNotifications')
+    r'pushNotifications', vwPushNotificationsPubViewSet,
+    base_name='pushNotifications'
+)
 # VIEW : publications/pk/photos/pk
 vw_photos_publications = routers.NestedSimpleRouter(
     router, r'publications', lookup='publication')
@@ -357,7 +371,9 @@ router.register(r'legalStatus', LegalStatusViewSet)
 urlpatterns = [
     url(r'^api/v1/admin/', include(admin.site.urls)),
     url(r'^api/v1/', include(router.urls)),
-    url(r'^api/v1/api-token-verify/', 'rest_framework_jwt.views.verify_jwt_token'),
+    url(r'^api/v1/api-token-verify/',
+        'rest_framework_jwt.views.verify_jwt_token'
+        ),
     url(r'^api/v1/api-token-refresh/',
         'rest_framework_jwt.views.refresh_jwt_token'),
     url(r'^api/v1/', include(vw_property_publications.urls)),
@@ -383,8 +399,6 @@ urlpatterns = [
     url(r'^api/v1/', include(vw_photos_publications.urls)),
     url(r'^api/v1/', include(vw_types_customers.urls)),
     url(r'^api/v1/', include(vw_types_reports.urls)),
-    url(r'^api/v1/api-auth/',
-        include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api/v1/docs/', include('rest_framework_swagger.urls')),
 
 ]

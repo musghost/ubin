@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
+
 from django.contrib.auth.models import (
-    AbstractBaseUser, BaseUserManager, PermissionsMixin)
-from django.db import models
-from django.utils.translation import ugettext_lazy as _
-from django.db.models.signals import post_save
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin
+)
 
 from django.core.mail import EmailMultiAlternatives
 
+from django.db import models
+from django.db.models.signals import post_save
+from django.utils.translation import ugettext_lazy as _
 
-
-# Create your models here.
 
 class Country(models.Model):
     name = models.TextField(
@@ -37,6 +39,7 @@ class Town(models.Model):
     )
     state = models.ForeignKey(State, null=False, related_name='towns')
 
+
 class Neighborhood(models.Model):
     name = models.TextField(
         max_length=200,
@@ -56,8 +59,15 @@ class UsuarioManager(BaseUserManager):
     Manager personalizado para el modelo usuario.
     """
 
-    def _create_user(self, email, password, is_superuser=False, is_staff=False, is_active=False,
-                     **extra_fields):
+    def _create_user(
+        self,
+        email,
+        password,
+        is_superuser=False,
+        is_staff=False,
+        is_active=False,
+        **extra_fields
+    ):
         """
         Método base para la creación de nuevos usuarios.
         """
@@ -172,7 +182,7 @@ class Users(AbstractBaseUser, PermissionsMixin):
         """
         Send email to user.
         """
-        if not from_email :
+        if not from_email:
             from_email = settings.DEFAULT_FROM_EMAIL
 
         message = EmailMultiAlternatives(
@@ -349,9 +359,6 @@ class Favorites(models.Model):
         Publications, null=False, related_name='favorite')
     user = models.ForeignKey(Users, null=False, related_name="favorite")
     status = models.BooleanField(default=True)
-
-    class Meta:
-        unique_together = ("publication", "user")
 
     class Meta:
         unique_together = ("publication", "user")
