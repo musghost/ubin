@@ -10,9 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
+# Build paths inside the project like this: os.path.join(BASE_DIR,
 import datetime
+import os
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -22,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = ')zfta4fqg7r#ihr6+_#al5q!6fc97cq16%8q$vqpul_^j_k#ki'
-MEDIA_ROOT ='/home/ubinrest/media/' #os.environ['UBIN_MEDIA']
+MEDIA_ROOT = '/home/ubinrest/media/'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -49,7 +50,7 @@ INSTALLED_APPS = (
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-      'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
@@ -63,16 +64,20 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ),
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS':
+    'rest_framework.pagination.LimitOffsetPagination',
+    'DEFAULT_PAGINATION_CLASS':
+    'rest_framework.pagination.PageNumberPagination',
     'PAGINATE_BY': 10,                 # Default to 10
-    'PAGINATE_BY_PARAM': 'page_size',  # Allow client to override, using `?page_size = xxx`.
-    'MAX_PAGINATE_BY': 11000             # Maximum limit allowed when using `?page_size = xxx`.
+    # Allow client to override, using `?page_size = xxx`.
+    'PAGINATE_BY_PARAM': 'page_size',
+    # Maximum limit allowed when using `?page_size = xxx`.
+    'MAX_PAGINATE_BY': 11000
 }
 
 FILE_UPLOAD_HANDLERS = (
- 'django.core.files.uploadhandler.MemoryFileUploadHandler',
- 'django.core.files.uploadhandler.TemporaryFileUploadHandler',)
+    'django.core.files.uploadhandler.MemoryFileUploadHandler',
+    'django.core.files.uploadhandler.TemporaryFileUploadHandler',)
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -93,7 +98,7 @@ ROOT_URLCONF = 'ubin_rest.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.realpath(os.path.join(BASE_DIR,'templates'))],
+        'DIRS': [os.path.realpath(os.path.join(BASE_DIR, 'templates'))],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -111,16 +116,16 @@ WSGI_APPLICATION = 'ubin_rest.wsgi.application'
 # Setting Emails
 MANDRILL_API_KEY = "7loT4l0plAgrwEF_IKctyg"
 EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
-DEFAULT_FROM_EMAIL="ubin@ubin.mx"
+DEFAULT_FROM_EMAIL = "ubin@ubin.mx"
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME':'ubinrest',
-        'USER':'ubinrest',
-        'PASSWORD':'cruzade',
+        'NAME': 'ubinrest',
+        'USER': 'ubinrest',
+        'PASSWORD': 'cruzade',
         'HOST': 'localhost',
         'PORT': '',
     }
@@ -151,7 +156,6 @@ STATIC_URL = '/static/'
 
 # Authentication
 AUTH_USER_MODEL = 'apprest.Users'
-
 
 
 # JWT_AUTH for jwt
@@ -194,9 +198,9 @@ SWAGGER_SETTINGS = {
         'patch',
         'delete'
     ],
-    'api_key':'',
-    'is_authenticated': False,
-    'is_superuser': False,
+    'api_key': '',
+    'is_authenticated': True,
+    'is_superuser': True,
     'permission_denied_handler': None,
     'resource_access_handler': None,
     'info': {
@@ -205,7 +209,7 @@ SWAGGER_SETTINGS = {
         'license': 'Apache 2.0',
         'licenseUrl': 'http://www.apache.org/licenses/LICENSE-2.0.html',
         'termsOfServiceUrl': 'http://helloreverb.com/terms/',
-        'title': 'Documentation : APi REST Ubin',
+        'title': 'Documentation : API REST Ubin',
     },
     'doc_expansion': 'none',
 }
