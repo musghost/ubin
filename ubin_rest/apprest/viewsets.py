@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 from .models import *
 from .serializers import *
+import Image
 
 from rest_framework import serializers
 from rest_framework.parsers import FileUploadParser
@@ -55,6 +56,33 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 
 from rest_framework.renderers import JSONRenderer
 
+
+def get_hash_name():
+    """
+    Generation hash_name
+    """
+    randomtext = "".join(
+                    [random.choice(string.digits + string.letters) for i in xrange(200)])
+
+    hash_object = hashlib.sha1(randomtext)
+
+    code = hash_object.hexdigest()
+
+    return hash_object.hexdigest()
+
+def clean_metadata_image(path,image_name):
+    """
+    Clean data images
+    """
+    # Reset image metas
+    image_file = open(path)
+    image = Image.open(image_file)
+
+    # next 3 lines strip exif
+    data = list(image.getdata())
+    image_without_exif = Image.new(image.mode, image.size)
+    image_without_exif.putdata(data)
+    image_without_exif.save(image_name)
 
 '''
 -----------  Country --------------------------
@@ -496,26 +524,31 @@ class RegisterViewSet(viewsets.ViewSet):
         """
         photo = ""
         if len(request.FILES.items()) > 0:
+
             for key, file in request.FILES.items():
-                randomtext = "".join(
-                    [random.choice(string.digits + string.letters) for i in xrange(200)])
-                hash_object = hashlib.sha1(randomtext)
-                code = hash_object.hexdigest()
-                file_name = hash_object.hexdigest()
+
+                file_name = get_hash_name()
+
                 fileExtension = os.path.splitext(file.name)[1]
+
+                # Validate extension.
+                if fileExtension not in ('.jpg', '.png', '.jpeg'):
+                    return Response({'invalid_extension_photo':file.name},status=status.HTTP_400_BAD_REQUEST)
+                       
                 photo = file_name + fileExtension
-                path = settings.MEDIA_ROOT + file_name + fileExtension
+
+                path = settings.MEDIA_ROOT + photo
+
                 dest = open(path.encode('utf-8'), 'wb+')
-                if file.multiple_chunks:
-                    for c in file.chunks():
-                        dest.write(c)
-                else:
-                    dest.write(file.read())
-                    dest.close()
+                dest.write(file.read())
+                dest.close()
+
+                clean_metadata_image(path,photo)    
 
         request.POST = request.POST.copy()
         request.POST['photo'] = photo
         request.POST['is_active'] = True
+
         serializer = UsersSerializer(data=request.POST)
 
         if serializer.is_valid():
@@ -554,12 +587,16 @@ class RegisterViewSet(viewsets.ViewSet):
 
             # Save device
             request.data['user'] = user.id
+
             device_serializer = DevicesUserRegisterSerializer(
                 data=request.data)
+
             if device_serializer.is_valid():
                 device_serializer.save()
+
             user.set_password(request.data['password'])
             user.save()
+
             return Response(RegisterSerializer(user).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -733,24 +770,29 @@ class UsersViewSet(viewsets.ViewSet):
         permission_classes = (IsAdminUser,)
         photo = ""
         for key, file in request.FILES.items():
-            randomtext = "".join(
-                [random.choice(string.digits + string.letters) for i in xrange(200)])
-            hash_object = hashlib.sha1(randomtext)
-            file_name = hash_object.hexdigest()
+            
+            file_name = get_hash_name()
+
             fileExtension = os.path.splitext(file.name)[1]
-            path = settings.MEDIA_ROOT + file_name + fileExtension  # file.name
+
+            # Validate extension.
+            if fileExtension not in ('.jpg', '.png', '.jpeg'):
+                return Response({'invalid_extension_photo':file.name},status=status.HTTP_400_BAD_REQUEST)
+
+            photo = file_name + fileExtension
+            
+            path = settings.MEDIA_ROOT + photo
+
             dest = open(path.encode('utf-8'), 'wb+')
-            hash_name = file_name + fileExtension
-            photo = hash_name
-            path = settings.MEDIA_ROOT
-            if file.multiple_chunks:
-                for c in file.chunks():
-                    dest.write(c)
-            else:
-                dest.write(file.read())
+            dest.write(file.read())
             dest.close()
+
+            clean_metadata_image(path,photo)
+
         request.data['photo'] = photo
+
         serializer = UsersSerializer(data=request.data)
+
         if serializer.is_valid():
             user = serializer.save()
             user.set_password(request.data['password'])
@@ -802,29 +844,41 @@ class UsersViewSet(viewsets.ViewSet):
                 - application/json
         """
         user = get_object_or_404(Users, pk=pk)
+
         photo = user.photo
+
         if len(request.FILES.items()) > 0:
+
             file_path = settings.MEDIA_ROOT + str(photo)
+
             if os.path.isfile(file_path):
                 os.remove(file_path)
+
             for key, file in request.FILES.items():
-                randomtext = "".join(
-                    [random.choice(string.digits + string.letters) for i in xrange(200)])
-                hash_object = hashlib.sha1(randomtext)
-                file_name = hash_object.hexdigest()
+
+                file_name = get_hash_name()
+
                 fileExtension = os.path.splitext(file.name)[1]
-                path = settings.MEDIA_ROOT + file_name + fileExtension  # file.name
+
+                # Validate extension.
+                if fileExtension not in ('.jpg', '.png', '.jpeg'):
+                    return Response({'invalid_extension_photo':file.name},status=status.HTTP_400_BAD_REQUEST)
+
+                photo = file_name + fileExtension
+
+                path = settings.MEDIA_ROOT + photo
+
                 dest = open(path.encode('utf-8'), 'wb+')
-                hash_name = file_name + fileExtension
-                photo = hash_name
-                if file.multiple_chunks:
-                    for c in file.chunks():
-                        dest.write(c)
-                else:
-                    dest.write(file.read())
-                    dest.close()
+                dest.write(file.read())
+                dest.close()
+
+                clean_metadata_image(path,photo)
+
+
         request.data['photo'] = photo
+
         serializer = UsersSerializer(user, data=request.data, partial=True)
+
         if serializer.is_valid():
             user = serializer.save()
             if 'password' in request.data:
@@ -1198,31 +1252,40 @@ class PublicationsViewSet(viewsets.ViewSet):
 
         """
         serializer = PublicationsSerializer(data=request.POST)
+
         if serializer.is_valid():
+
             publication = serializer.save()
-            if request.FILES.items():
+
+            if len(request.FILES.items()) > 0:
+
                 for key, file in request.FILES.items():
-                    randomtext = "".join(
-                        [random.choice(string.digits + string.letters) for i in xrange(200)])
-                    hash_object = hashlib.sha1(randomtext)
-                    code = hash_object.hexdigest()
-                    file_name = hash_object.hexdigest()
+                    
+                    file_name = get_hash_name()
+
                     fileExtension = os.path.splitext(file.name)[1]
+
+                    # Validate extension.
+                    if fileExtension not in ('.jpg', '.png', '.jpeg'):
+                        return Response({'invalid_extension_photo':file.name},status=status.HTTP_400_BAD_REQUEST)
+
                     photo = file_name + fileExtension
+                 
                     Photos(
-                        hash_name=file_name + fileExtension,
+                        hash_name=photo,
                         original_name=file.name,
                         path=settings.MEDIA_ROOT,
                         publication=publication
                     ).save()
-                    path = settings.MEDIA_ROOT + file_name + fileExtension  # file.name
+
+                    path = settings.MEDIA_ROOT + photo
+
                     dest = open(path.encode('utf-8'), 'wb+')
-                    if file.multiple_chunks:
-                        for c in file.chunks():
-                            dest.write(c)
-                    else:
-                        dest.write(file.read())
+                    dest.write(file.read())
                     dest.close()
+
+                    clean_metadata_image(path,photo)
+
             return Response(PublicationsFullSerializer(publication).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -1308,17 +1371,30 @@ class PublicationsViewSet(viewsets.ViewSet):
           - application/json
 
         """
+        # Get publications to update.
         publication = get_object_or_404(Publications, pk=pk)
+
+        # Get all photos in request
         if len(request.FILES.items()) > 0:
+
+            # Each image for validate extension and save image.
             for key, file in request.FILES.items():
-                randomtext = "".join(
-                    [random.choice(string.digits + string.letters) for i in xrange(200)])
-                hash_object = hashlib.sha1(randomtext)
-                code = hash_object.hexdigest()
-                file_name = hash_object.hexdigest()
+
+                # Get new hame image
+                file_name = get_hash_name()
+
+                # Get extension (.jpg,.png,.jpeg)
                 fileExtension = os.path.splitext(file.name)[1]
+
+                # Validate extension.
+                if fileExtension not in ('.jpg', '.png', '.jpeg'):
+                    return Response({'invalid_extension_photo':file.name},status=status.HTTP_400_BAD_REQUEST)
+
+                # Get register photo
                 id_photo = os.path.splitext(file.name)[0]
+
                 photo = None
+
                 try:
                     id_photo = int(id_photo)
                     photo = Photos.objects.get(pk=id_photo)
@@ -1326,30 +1402,40 @@ class PublicationsViewSet(viewsets.ViewSet):
                     photo = None
 
                 if photo:
+
+                    # Remove old photo in server
                     file_path = settings.MEDIA_ROOT + photo.hash_name
+
                     if os.path.isfile(file_path):
                         os.remove(file_path)
+
+                    # Save new photo
                     photo.hash_name = file_name + fileExtension
+
                     photo.save()
-                    path = settings.MEDIA_ROOT + file_name + fileExtension  # file.name
+
+                    # Save new photo in server
+                    path = settings.MEDIA_ROOT + photo.hash_name  # file.name
+
                     dest = open(path.encode('utf-8'), 'wb+')
-                    if file.multiple_chunks:
-                        for c in file.chunks():
-                            dest.write(c)
-                        else:
-                            dest.write(file.read())
-                        dest.close()
+                    dest.write(file.read())
+                    dest.close()
+
+                    clean_metadata_image(path,photo.hash_name)
                 else:
-                    path = settings.MEDIA_ROOT + file_name + fileExtension  # file.name
+
+                    image_name= file_name + fileExtension
+
+                    path = settings.MEDIA_ROOT + image_name  # file.name
+
                     dest = open(path.encode('utf-8'), 'wb+')
-                    if file.multiple_chunks:
-                        for c in file.chunks():
-                            dest.write(c)
-                        else:
-                            dest.write(file.read())
-                        dest.close()
+                    dest.write(file.read())
+                    dest.close()
+
+                    clean_metadata_image(path,image_name)
+
                     Photos(
-                        hash_name=file_name + fileExtension,
+                        hash_name=image_name,
                         original_name=file.name,
                         path=settings.MEDIA_ROOT,
                         publication=publication
@@ -1357,9 +1443,13 @@ class PublicationsViewSet(viewsets.ViewSet):
 
         serializer = PublicationsSerializer(
             publication, data=request.data, partial=True)
+
         if serializer.is_valid():
+
             publication = serializer.save()
+
             return Response(PublicationsFullSerializer(publication).data, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
@@ -1652,27 +1742,43 @@ class DocumentsViewSet(viewsets.ViewSet):
                 - application/json
         """
         permission_classes = (IsAdminUser,)
+
         hash_name = ""
+
         path = ""
-        for key, file in request.FILES.items():
-            randomtext = "".join(
-                [random.choice(string.digits + string.letters) for i in xrange(200)])
-            hash_object = hashlib.sha1(randomtext)
-            file_name = hash_object.hexdigest()
-            fileExtension = os.path.splitext(file.name)[1]
-            path = settings.MEDIA_ROOT + file_name + fileExtension  # file.name
-            dest = open(path.encode('utf-8'), 'wb+')
-            hash_name = file_name + fileExtension
-            path = settings.MEDIA_ROOT
-            if file.multiple_chunks:
-                for c in file.chunks():
-                    dest.write(c)
-            else:
+
+        if len(request.FILES.items()) > 0:
+
+            # This FOR  isn't good implementation 
+            # but app ubin doesn't send correct file name,
+            # then can't get file by name.
+
+            for key, file in request.FILES.items():
+                
+                # Get hash name
+                file_name = get_hash_name()
+
+                # Get extension document
+                fileExtension = os.path.splitext(file.name)[1]
+
+                # Path where will saved document.
+                path = settings.MEDIA_ROOT + file_name + fileExtension
+
+                # Save document in server
+                dest = open(path.encode('utf-8'), 'wb+')
                 dest.write(file.read())
-            dest.close()
-        request.data['hash_name'] = hash_name
-        request.data['path'] = path
+                dest.close()
+
+                hash_name = file_name + fileExtension
+
+                path = settings.MEDIA_ROOT
+            
+            request.data['hash_name'] = hash_name
+
+            request.data['path'] = path
+
         serializer = DocumentsSerializer(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -1736,37 +1842,56 @@ class DocumentsViewSet(viewsets.ViewSet):
             produces:
                 - application/json
         """
+
         permission_classes = (IsAdminUser,)
+
         document = get_object_or_404(Documents, pk=pk)
+
         hash_name = document.hash_name
+
         path = document.path
+
         original_name = document.original_name
+
         if len(request.FILES.items()) > 0:
+
+            # Get document in server
             file_path = settings.MEDIA_ROOT + str(document.hash_name)
+
+            # Remove old document
             if os.path.isfile(file_path):
                 os.remove(file_path)
+
             for key, file in request.FILES.items():
-                randomtext = "".join(
-                    [random.choice(string.digits + string.letters) for i in xrange(200)])
-                hash_object = hashlib.sha1(randomtext)
-                file_name = hash_object.hexdigest()
+
+                # Get document hash name
+                file_name = get_hash_name()
+
+                # Get document extension
                 fileExtension = os.path.splitext(file.name)[1]
+
+                # Document path
                 path = settings.MEDIA_ROOT + file_name + fileExtension  # file.name
+
+                # Save document in server
                 dest = open(path.encode('utf-8'), 'wb+')
+                dest.write(file.read())
+                dest.close()
+
                 hash_name = file_name + fileExtension
                 original_name = file.name
                 path = settings.MEDIA_ROOT
-                if file.multiple_chunks:
-                    for c in file.chunks():
-                        dest.write(c)
-                else:
-                    dest.write(file.read())
-                    dest.close()
+
+                    
         request.data['hash_name'] = hash_name
+
         request.data['path'] = path
+
         request.data['original_name'] = original_name
+
         serializer = DocumentsSerializer(
             document, data=request.data, partial=True)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -2474,19 +2599,26 @@ class RecoverPasswordViewSet(viewsets.ViewSet):
                 - application/json
         """
         if 'email' in request.data:
+
             email = request.data['email']
+
             queryset = Users.objects.filter(email=email, is_active=True)
+
             user = get_object_or_404(queryset)
-            randomtext = "".join(
+
+            new_password = "".join(
                 [random.choice(string.digits + string.letters) for i in xrange(5)])
-            user.set_password(randomtext)
+
+            user.set_password(new_password)
+
             user.save()
+
             serializer = UsersSerializer(user)
 
             context = {
                 'name': user.name,
                 'email': user.email,
-                'password': randomtext
+                'password': new_password
             }
 
             # Gets the email subject in a single line.
@@ -2510,7 +2642,6 @@ class RecoverPasswordViewSet(viewsets.ViewSet):
             )
 
             try:
-                # Send a mail with the data for account activation
                 user.email_user(message_subject, message_text, message_html)
             except Exception, e:
                 return Response({'message': 'The email could not be sent.', 'error': e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
