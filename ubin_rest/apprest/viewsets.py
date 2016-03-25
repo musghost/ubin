@@ -1320,9 +1320,6 @@ class PublicationsViewSet(viewsets.ViewSet):
                     # Save photo in server.
                     save_file_in_server(path, file)
 
-                    # Clean metadata.
-                    clean_metadata_image(path)
-
                     # Save photo in database and add object publication.
                     Photos(
                         hash_name=photo,
@@ -1468,9 +1465,6 @@ class PublicationsViewSet(viewsets.ViewSet):
                     # Save photo in server.
                     save_file_in_server(path, file)
 
-                    # Clean medatada.
-                    clean_metadata_image(path)
-
                 else:
 
                     # If not exist register photo, creates new register.
@@ -1483,9 +1477,6 @@ class PublicationsViewSet(viewsets.ViewSet):
 
                     # Save photo in server.
                     save_file_in_server(path, file)
-
-                    # Clean metadata.
-                    clean_metadata_image(path)
 
                     # Save photo and create relation with publication.
                     Photos(
