@@ -126,7 +126,7 @@ DATABASES = {
         'NAME': 'ubinrest',
         'USER': 'ubinrest',
         'PASSWORD': 'cruzade',
-        'HOST': 'localhost',
+        'HOST': 'postgres',
         'PORT': '',
     }
 }
